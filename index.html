@@ -1,33 +1,133 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto" data-view="loading">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#050506" />
+  <meta name="theme-color" content="#000000" />
   <meta name="color-scheme" content="dark" />
   <title>ALWAFER</title>
-
   <meta name="description" content="Official ALWAFER Agency links, channels, and joining access." />
-
-  <!-- Open Graph / share preview -->
   <meta property="og:title" content="ALWAFER" />
   <meta property="og:description" content="Official links, channels, and agency access." />
   <meta property="og:type" content="website" />
-
+  <meta property="og:image" content="/assets/page-alwafer.png" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230a0a0c'/%3E%3Ctext x='50%25' y='54%25' font-size='34' font-family='Georgia,serif' fill='%23d4af37' text-anchor='middle' dominant-baseline='middle'%3EA%3C/text%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="styles.css?v=20260622-artwork" />
+
+  <!-- CRITICAL inline styles: the visible artwork layer does NOT depend on any
+       external CSS, so a stale cached stylesheet can never produce a card UI. -->
+  <style>
+    html,body{margin:0;padding:0;background:#000;min-height:100%}
+    body{font-family:ui-sans-serif,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Noto Sans Arabic",sans-serif;color:#f5f3ec;-webkit-font-smoothing:antialiased}
+    #app{min-height:100vh;min-height:100dvh}
+    .profile-art-shell{min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;background:#000;padding:16px 0}
+    .artwork-frame{position:relative;width:100%;max-width:440px;margin:0 auto;background:#000;line-height:0}
+    .profile-art{display:block;width:100%;height:auto;-webkit-user-drag:none;user-select:none}
+    .hotspot{position:absolute;display:block;background:transparent;border:0;border-radius:12px;-webkit-tap-highlight-color:transparent;z-index:2}
+    .hotspot.is-disabled{cursor:default}
+    .hotspot:focus-visible{outline:2px solid #d4af37;outline-offset:2px}
+    .artwork-frame.debug .hotspot{background:rgba(212,175,55,.22);outline:1px solid #d4af37}
+    .artwork-frame.debug .hotspot.is-disabled{background:rgba(255,80,80,.22);outline:1px solid #ff5050}
+    .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    .selector-shell{max-width:460px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;justify-content:center;padding:32px 22px;text-align:center}
+    .selector-title{font-size:clamp(28px,9vw,38px);font-weight:800;letter-spacing:.08em;margin:0;background:linear-gradient(92deg,#fff,#ecd28a);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .selector-sub{color:#b0ada4;margin:8px 0 0;font-size:14px}
+    .selector-item{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding:16px 18px;border-radius:16px;text-decoration:none;color:#f5f3ec;background:rgba(255,255,255,.05);border:1px solid rgba(212,175,55,.4);font-weight:800;letter-spacing:.04em}
+    .selector-item .arw{color:#d4af37}
+  </style>
+  <!-- Optional full stylesheet (new immutable filename). Critical CSS above
+       already guarantees the artwork renders without it. -->
+  <link rel="stylesheet" href="styles.artwork.v2.css" />
 </head>
 <body>
-  <div class="bg-aura" aria-hidden="true"></div>
+  <div id="app"><noscript>Please enable JavaScript to view this page.</noscript></div>
 
-  <div id="app" class="app">
-    <!-- The visible page is the approved full-page artwork PNG, rendered by app.js
-         as <img class="profile-art"> with transparent hotspot overlays. -->
-    <noscript>Please enable JavaScript to view this page.</noscript>
-  </div>
-
-  <!-- config first (data), then renderer. Versioned to defeat stale caches. -->
-  <script src="config.js?v=20260622-artwork"></script>
-  <script src="app.js?v=20260622-artwork"></script>
+  <!-- ===================================================================
+       INLINE public renderer. The visible page is ONE <img class="profile-art">
+       plus transparent <a class="hotspot"> overlays. There is NO external
+       public JS dependency, so the page can never render a CSS/card UI even if
+       a stale app.js/styles.css is cached. Link enable/URL state is enhanced
+       from data/link-settings.json (regions stay active by default).
+       =================================================================== -->
+  <script>
+  (function () {
+    "use strict";
+    var ART = { mustafa: "assets/page-alwafer.png", ahmed: "assets/page-ahmed.png", hala: "assets/page-hala.png" };
+    var NAMES = { mustafa: "ALWAFER", ahmed: "Team Ahmed Ramadan", hala: "Hala Al-Saghir" };
+    var ORDER = ["mustafa", "ahmed", "hala"];
+    var REGION = {
+      mena: "https://www.tiktok.com/t/ZMAN6Bu2W/", uk: "https://www.tiktok.com/t/ZSxoyPd4W/",
+      fr: "https://www.tiktok.com/t/ZSxoAQrsm/", de: "https://www.tiktok.com/t/ZSQ1b63XY/",
+      tr: "https://www.tiktok.com/t/ZSxoUt6A7/", cca: "https://www.tiktok.com/t/ZSxECjfqx/"
+    };
+    var BTN_LEFT = 7.5, BTN_W = 85, CHIP_W = 11.2, CHIP_H = 3.8;
+    var CHIP_LEFT = { mena: 12.6, uk: 25.2, fr: 37.8, de: 50.2, tr: 62.8, cca: 75.4 };
+    var PLATS = [["youtube","YouTube"],["tiktok","TikTok"],["telegram","Telegram"],["instagram","Instagram"],["whatsapp","WhatsApp"],["website","Website"]];
+    var LAYOUT = {
+      mustafa: { apply:[37.4,6.4], youtube:[44.3,5.4], tiktok:[50.4,5.4], telegram:[56.2,5.4], instagram:[62.2,5.4], whatsapp:[68.2,5.4], website:[74.0,5.7], chipTop:86.9 },
+      ahmed:   { apply:[39.8,6.7], youtube:[47.6,5.4], tiktok:[54.0,5.4], telegram:[60.1,5.4], instagram:[66.3,5.4], whatsapp:[72.4,5.4], website:[78.6,5.7], chipTop:90.6 },
+      hala:    { apply:[39.9,6.7], youtube:[47.6,5.4], tiktok:[54.0,5.4], telegram:[60.1,5.4], instagram:[66.4,5.4], whatsapp:[72.6,5.4], website:[79.0,5.7], chipTop:89.6 }
+    };
+    function overlayFor(key) {
+      var L = LAYOUT[key], o = [];
+      o.push({ k:"apply", kind:"apply", label:"Apply to Join the Agency", left:BTN_LEFT, width:BTN_W, top:L.apply[0], height:L.apply[1] });
+      PLATS.forEach(function (p) { var t = L[p[0]]; o.push({ k:p[0], kind:"platform", label:p[1], left:BTN_LEFT, width:BTN_W, top:t[0], height:t[1] }); });
+      ["mena","uk","fr","de","tr","cca"].forEach(function (r) { o.push({ k:r, kind:"region", region:r, label:r.toUpperCase(), left:CHIP_LEFT[r], width:CHIP_W, top:L.chipTop, height:CHIP_H }); });
+      return o;
+    }
+    function isNav(u) { if (typeof u !== "string") return false; u = u.trim(); if (!u || u.charAt(0) === "#") return false; return /^(https?:|mailto:|tel:|\/)/i.test(u); }
+    function safe(u) { if (typeof u !== "string") return "#"; u = u.trim(); if (!u) return "#"; var m = u.match(/^([a-zA-Z][a-zA-Z0-9+.\-]*):/); if (m && ["http","https","mailto","tel"].indexOf(m[1].toLowerCase()) < 0) return "#"; return u; }
+    function resolveKey() {
+      var k = "";
+      try { var m = (location.search || "").match(/[?&]profile=([^&]+)/); if (m) k = decodeURIComponent(m[1]).toLowerCase(); } catch (e) {}
+      if (!k && location.hash) k = location.hash.replace(/^#/, "").toLowerCase();
+      return ART[k] ? k : "";
+    }
+    function zoneState(z, key, settings) {
+      var link = null;
+      if (settings) { if (z.kind === "region") link = (settings.sharedRegions || {})[z.k]; else { var p = (settings.profiles || {})[key]; if (p && p.links) link = p.links[z.k]; } }
+      if (link && typeof link === "object") { var u = typeof link.url === "string" ? link.url : ""; var en = link.enabled === true; return { url: u, nav: en && isNav(u) }; }
+      if (z.kind === "region") { var ru = REGION[z.k] || ""; return { url: ru, nav: isNav(ru) }; }
+      return { url: "", nav: false };
+    }
+    function el(t, c) { var n = document.createElement(t); if (c) n.className = c; return n; }
+    function render(key, settings) {
+      var app = document.getElementById("app"); if (!app) return;
+      while (app.firstChild) app.removeChild(app.firstChild);
+      document.documentElement.setAttribute("data-view", key ? "artwork" : "selector");
+      if (!key) {
+        var sh = el("main", "selector-shell");
+        var h = el("h1", "selector-title"); h.textContent = "ALWAFER"; sh.appendChild(h);
+        var sb = el("p", "selector-sub"); sb.textContent = "Choose a profile"; sh.appendChild(sb);
+        ORDER.forEach(function (kk) { var a = el("a", "selector-item"); a.href = "?profile=" + kk; a.textContent = NAMES[kk]; var ar = el("span", "arw"); ar.textContent = "→"; a.appendChild(ar); sh.appendChild(a); });
+        app.appendChild(sh); document.title = "ALWAFER"; return;
+      }
+      var shell = el("main", "profile-art-shell"); shell.setAttribute("data-profile", key);
+      var frame = el("div", "artwork-frame" + (/[?&]hotspots=1\b/.test(location.search) ? " debug" : ""));
+      var img = el("img", "profile-art"); img.src = safe(ART[key]); img.alt = NAMES[key]; img.setAttribute("decoding", "async"); frame.appendChild(img);
+      overlayFor(key).forEach(function (z) {
+        var st = zoneState(z, key, settings);
+        var a = el("a", "hotspot hotspot--" + z.kind + " " + (z.kind === "region" ? "region-" + z.region : z.k) + (st.nav ? "" : " is-disabled"));
+        a.setAttribute("aria-label", z.label); a.setAttribute("data-hotspot", z.k);
+        a.style.cssText = "top:" + z.top + "%;left:" + z.left + "%;width:" + z.width + "%;height:" + z.height + "%;";
+        if (st.nav) { a.href = safe(st.url); if (/^https?:\/\//i.test(st.url)) { a.target = "_blank"; a.rel = "noopener noreferrer"; } }
+        else { a.href = "#"; a.setAttribute("aria-disabled", "true"); a.addEventListener("click", function (e) { e.preventDefault(); }); }
+        var s = el("span", "visually-hidden"); s.textContent = z.label; a.appendChild(s);
+        frame.appendChild(a);
+      });
+      shell.appendChild(frame);
+      var vh = el("div", "visually-hidden"); var t = el("h1"); t.textContent = NAMES[key]; vh.appendChild(t); shell.appendChild(vh);
+      app.appendChild(shell);
+      document.title = NAMES[key] + " — ALWAFER";
+    }
+    function enhance(key) {
+      if (typeof fetch === "undefined") return;
+      fetch("/data/link-settings.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (s) { if (s) render(key, s); }).catch(function () {});
+    }
+    function boot() { var key = resolveKey(); render(key, null); enhance(key); }
+    boot();
+    window.addEventListener("hashchange", boot);
+    window.addEventListener("popstate", boot);
+  })();
+  </script>
 </body>
 </html>
