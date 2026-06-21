@@ -89,4 +89,41 @@ Vercel redeploys automatically from the connected GitHub repo.
 
 ---
 
+## Admin dashboard (`/admin`)
+
+Manage every link without touching code at **`/admin`**. Sign in, pick a page
+(ALWAFER / Team Ahmed Ramadan / Hala Al-Saghir), then for each row (Apply,
+YouTube, TikTok, Telegram, Instagram, WhatsApp, Website) toggle it on/off, paste
+its web address, and Save. You can also edit the shared region links
+(MENA/UK/FR/DE/TR/CCA), export/import a JSON backup, and preview each public page.
+
+- Disabled links (or links with no address) are visible in the artwork but do
+  **not** navigate. Enabled links with a valid address become clickable.
+- Saving commits `data/link-settings.json` to GitHub; Vercel redeploys and the
+  public pages pick up the change automatically.
+
+### How persistence works
+The public pages read `data/link-settings.json`. The admin API
+(`/api/admin/login|logout|me|settings`) authenticates you with an HttpOnly cookie
+session and commits changes to that one file on GitHub `main`. **No secrets are in
+the browser** — the GitHub token and password live only in Vercel env vars.
+
+### Required environment variables (set in Vercel, AVENGERS scope)
+The admin UI and API are deployed, but sign-in and saving stay disabled until
+these are set:
+
+| Variable | Purpose |
+| --- | --- |
+| `ALWAFER_ADMIN_PASSWORD` (or `ALWAFER_ADMIN_PASSWORD_HASH`) | Admin sign-in password (hash = sha256 hex). |
+| `ALWAFER_COOKIE_SECRET` | Random secret that signs the session cookie. |
+| `GITHUB_TOKEN` | A token with write access to this repo (to commit settings). |
+| `GITHUB_OWNER` | `Mbatman9972` |
+| `GITHUB_REPO` | `alwafer-link-hub` |
+| `GITHUB_BRANCH` | `main` |
+
+(Owner/repo/branch default to the values above if unset.) URLs are validated
+server-side: only `http://`, `https://`, `mailto:`, `tel:`, and `#` are allowed.
+
+---
+
 _Powered by ALWAFER Agency._

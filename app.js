@@ -84,15 +84,33 @@
     return typeof search === "string" && /[?&]hotspots=1\b/.test(search);
   }
 
-  // Resolve the destination URL for a hotspot zone.
-  function zoneUrl(zone, config) {
-    if (zone.kind === "region") return (config.regionUrls || {})[zone.region] || "";
-    if (zone.kind === "apply") return config.applyLink || "#";
-    if (zone.kind === "platform") {
-      if (zone.key === "website") return config.websiteUrl || "";
-      return (config.platformUrls || {})[zone.key] || "";
+  // Resolve {url, enabled, navigable} for a hotspot zone from saved settings,
+  // falling back to safe config defaults when settings are missing.
+  function resolveZone(zone, profileKey, settings, config) {
+    var link = null;
+    if (settings) {
+      if (zone.kind === "region") link = (settings.sharedRegions || {})[zone.key];
+      else { var p = (settings.profiles || {})[profileKey]; if (p && p.links) link = p.links[zone.key]; }
     }
-    return "";
+    if (link && typeof link === "object") {
+      var url = typeof link.url === "string" ? link.url : "";
+      var enabled = link.enabled === true;
+      return { url: url, enabled: enabled, navigable: enabled && isNavigable(url) };
+    }
+    // Fallback (settings unavailable): regions stay active, others disabled.
+    if (zone.kind === "region") {
+      var rurl = (config.regionUrls || {})[zone.region] || "";
+      return { url: rurl, enabled: !!rurl, navigable: isNavigable(rurl) };
+    }
+    return { url: "", enabled: false, navigable: false };
+  }
+
+  // Fetch saved link settings; null on failure (callers fall back to defaults).
+  function loadSettings() {
+    if (typeof fetch === "undefined") return Promise.resolve(null);
+    return fetch("/data/link-settings.json", { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; });
   }
 
   /* --------------------------- DOM building -------------------------- */
@@ -109,16 +127,15 @@
   }
   function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
 
-  function hotspot(zone, config) {
-    var url = zoneUrl(zone, config);
-    var navigable = isNavigable(url);
+  function hotspot(zone, resolved) {
+    var navigable = resolved.navigable;
     var attrs = {
-      href: navigable ? safeHref(url) : "#",
+      href: navigable ? safeHref(resolved.url) : "#",
       "aria-label": zone.label,
       "data-hotspot": zone.key
     };
     if (navigable) {
-      var ext = externalAttrs(url);
+      var ext = externalAttrs(resolved.url);
       if (ext.target) { attrs.target = ext.target; attrs.rel = ext.rel; }
     } else {
       attrs["aria-disabled"] = "true";
@@ -136,19 +153,19 @@
   }
 
   // Visually-hidden semantic block (screen-reader description of the artwork).
-  function semanticBlock(profile, config, lang) {
+  function semanticBlock(profile, key, config, lang, settings) {
     var box = el("div", { className: "visually-hidden", attrs: { "aria-hidden": "false" } });
     box.appendChild(el("h1", { text: pick(profile.title, lang), attrs: { dir: "auto" } }));
     var sub = pick(profile.subtitle, lang);
     if (sub) box.appendChild(el("p", { text: sub, attrs: { dir: "auto" } }));
     var ul = el("ul");
     (profile.overlay || config.overlay || []).forEach(function (z) {
-      var url = zoneUrl(z, config);
+      var r = resolveZone(z, key, settings, config);
       var li = el("li");
-      var label = z.label + (isNavigable(url) ? "" : " (coming soon)");
-      if (isNavigable(url)) {
-        var ext = externalAttrs(url);
-        li.appendChild(el("a", { text: label, attrs: { href: safeHref(url), target: ext.target, rel: ext.rel, dir: "auto" } }));
+      var label = z.label + (r.navigable ? "" : " (coming soon)");
+      if (r.navigable) {
+        var ext = externalAttrs(r.url);
+        li.appendChild(el("a", { text: label, attrs: { href: safeHref(r.url), target: ext.target, rel: ext.rel, dir: "auto" } }));
       } else {
         li.appendChild(el("span", { text: label, attrs: { dir: "auto" } }));
       }
@@ -158,7 +175,7 @@
     return box;
   }
 
-  function renderArtworkInto(container, key, config, opts) {
+  function renderArtworkInto(container, key, config, settings, opts) {
     opts = opts || {};
     var lang = "en";
     var profile = config.profiles[key];
@@ -185,11 +202,11 @@
 
     // Hotspot overlays (per-profile map, falls back to a shared one)
     (profile.overlay || config.overlay || []).forEach(function (zone) {
-      frame.appendChild(hotspot(zone, config));
+      frame.appendChild(hotspot(zone, resolveZone(zone, key, settings, config)));
     });
 
     shell.appendChild(frame);
-    shell.appendChild(semanticBlock(profile, config, lang));
+    shell.appendChild(semanticBlock(profile, key, config, lang, settings));
     container.appendChild(shell);
   }
 
@@ -223,7 +240,7 @@
   }
 
   /* ------------------------------ mount ------------------------------ */
-  function mount() {
+  function mount(settings) {
     if (typeof document === "undefined") return;
     var container = document.getElementById("app");
     if (!container) return;
@@ -234,11 +251,14 @@
     document.documentElement.setAttribute("dir", "ltr");
 
     var key = resolveProfileKey(window.location.search, window.location.hash, config);
-    if (key) {
-      renderArtworkInto(container, key, config, { debug: debugHotspots(window.location.search) });
-    } else {
-      renderSelectorInto(container, config);
+
+    function paint(s) {
+      if (key) renderArtworkInto(container, key, config, s, { debug: debugHotspots(window.location.search) });
+      else renderSelectorInto(container, config);
     }
+    // Settings may be passed in (re-render); otherwise fetch them once.
+    if (settings !== undefined) { paint(settings); return; }
+    loadSettings().then(paint);
   }
 
   /* ----------------------------- exports ----------------------------- */
@@ -249,7 +269,8 @@
     externalAttrs: externalAttrs,
     pick: pick,
     resolveProfileKey: resolveProfileKey,
-    zoneUrl: zoneUrl,
+    resolveZone: resolveZone,
+    loadSettings: loadSettings,
     el: el,
     hotspot: hotspot,
     renderArtworkInto: renderArtworkInto,
