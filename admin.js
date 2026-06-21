@@ -1,44 +1,41 @@
 /* =====================================================================
- * admin.js — ALWAFER Link Manager frontend
- * Talks only to /api/admin/* (cookie session). No secrets in here.
+ * admin.js — ALWAFER Link Manager frontend (role-based)
+ * Owner (ALWAFER) edits all profiles + regions. Ahmed/Hala edit only
+ * their own profile's links. Permissions are ALSO enforced server-side.
  * ===================================================================== */
 (function () {
   "use strict";
 
   var API = "/api/admin";
-  var PROFILES = [
-    { key: "mustafa", name: "ALWAFER" },
-    { key: "ahmed",   name: "Team Ahmed Ramadan" },
-    { key: "hala",    name: "Hala Al-Saghir" }
-  ];
+  var NAMES = { mustafa: "ALWAFER", ahmed: "Team Ahmed Ramadan", hala: "Hala Al-Saghir" };
   var LINK_KEYS = ["apply", "youtube", "tiktok", "telegram", "instagram", "whatsapp", "website"];
   var LINK_LABELS = { apply: "Apply to Join the Agency", youtube: "YouTube", tiktok: "TikTok",
     telegram: "Telegram", instagram: "Instagram", whatsapp: "WhatsApp", website: "Website" };
   var REGION_KEYS = ["mena", "uk", "fr", "de", "tr", "cca"];
   var REGION_LABELS = { mena: "MENA", uk: "UK", fr: "FR", de: "DE", tr: "TR", cca: "CCA" };
-  var REGION_DEFAULTS = {
-    mena: "https://www.tiktok.com/t/ZMAN6Bu2W/", uk: "https://www.tiktok.com/t/ZSxoyPd4W/",
+  var REGION_DEFAULTS = { mena: "https://www.tiktok.com/t/ZMAN6Bu2W/", uk: "https://www.tiktok.com/t/ZSxoyPd4W/",
     fr: "https://www.tiktok.com/t/ZSxoAQrsm/", de: "https://www.tiktok.com/t/ZSQ1b63XY/",
-    tr: "https://www.tiktok.com/t/ZSxoUt6A7/", cca: "https://www.tiktok.com/t/ZSxECjfqx/"
+    tr: "https://www.tiktok.com/t/ZSxoUt6A7/", cca: "https://www.tiktok.com/t/ZSxECjfqx/" };
+
+  var state = {
+    settings: null,
+    user: null,                              // {key, displayName, role, profile, allowedProfiles, canEditRegions}
+    perms: { profiles: [], regions: false },
+    profile: "mustafa"
   };
 
-  var state = { settings: null, profile: "mustafa" };
-
-  /* ----- URL validation (mirrors the server) ----- */
+  /* ----- url validation (mirrors server) ----- */
   function isAllowedUrl(u) {
     if (typeof u !== "string") return false;
-    var s = u.trim();
-    if (s === "") return false;
+    var s = u.trim(); if (s === "") return false;
     if (s.charAt(0) === "#") return true;
-    var m = s.match(/^([a-zA-Z][a-zA-Z0-9+.\-]*):/);
-    if (!m) return false;
+    var m = s.match(/^([a-zA-Z][a-zA-Z0-9+.\-]*):/); if (!m) return false;
     var sch = m[1].toLowerCase();
     if (sch === "http" || sch === "https") { try { new URL(s); return true; } catch (e) { return false; } }
     if (sch === "mailto" || sch === "tel") return s.length > sch.length + 1;
     return false;
   }
   function isNavigableUrl(u) { return isAllowedUrl(u) && u.trim().charAt(0) !== "#"; }
-
   function statusFor(link) {
     if (!link || link.enabled !== true) return { cls: "disabled", text: "Disabled" };
     var url = (link.url || "").trim();
@@ -47,55 +44,39 @@
     return { cls: "active", text: "Active" };
   }
 
-  /* ----- DOM helpers ----- */
+  /* ----- dom ----- */
   function $(id) { return document.getElementById(id); }
   function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
-  function clear(n) { while (n.firstChild) n.removeChild(n.firstChild); }
+  function clear(n) { while (n && n.firstChild) n.removeChild(n.firstChild); }
+  function show(n, on) { if (n) n.classList.toggle("hidden", !on); }
+  function toast(msg, type) { var b = $("toasts"); if (!b) return; var t = el("div", "toast " + (type || "info"), msg); b.appendChild(t); setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 3600); }
 
-  function toast(msg, type) {
-    var box = $("toasts"); if (!box) return;
-    var t = el("div", "toast " + (type || "info"), msg);
-    box.appendChild(t);
-    setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 3600);
+  function urlProfileParam() {
+    try { var m = (location.search || "").match(/[?&]profile=([^&]+)/); var p = m ? decodeURIComponent(m[1]).toLowerCase() : ""; return NAMES[p] ? p : ""; } catch (e) { return ""; }
   }
 
   /* ----- settings normalization ----- */
   function defaults() {
     var s = { version: 1, updatedAt: "", profiles: {}, sharedRegions: {} };
-    PROFILES.forEach(function (p) {
-      s.profiles[p.key] = { links: {} };
-      LINK_KEYS.forEach(function (k) { s.profiles[p.key].links[k] = { enabled: false, url: "", label: LINK_LABELS[k] }; });
-    });
+    ["mustafa", "ahmed", "hala"].forEach(function (p) { s.profiles[p] = { links: {} }; LINK_KEYS.forEach(function (k) { s.profiles[p].links[k] = { enabled: false, url: "", label: LINK_LABELS[k] }; }); });
     REGION_KEYS.forEach(function (r) { s.sharedRegions[r] = { enabled: true, url: REGION_DEFAULTS[r], label: REGION_LABELS[r] }; });
     return s;
   }
   function normalize(raw) {
-    var s = defaults();
-    if (!raw || typeof raw !== "object") return s;
-    PROFILES.forEach(function (p) {
-      var src = ((raw.profiles || {})[p.key] || {}).links || {};
-      LINK_KEYS.forEach(function (k) {
-        var l = src[k]; if (l && typeof l === "object") {
-          s.profiles[p.key].links[k] = { enabled: l.enabled === true, url: typeof l.url === "string" ? l.url : "", label: (l.label || LINK_LABELS[k]) };
-        }
-      });
+    var s = defaults(); if (!raw || typeof raw !== "object") return s;
+    ["mustafa", "ahmed", "hala"].forEach(function (p) {
+      var src = ((raw.profiles || {})[p] || {}).links || {};
+      LINK_KEYS.forEach(function (k) { var l = src[k]; if (l && typeof l === "object") s.profiles[p].links[k] = { enabled: l.enabled === true, url: typeof l.url === "string" ? l.url : "", label: l.label || LINK_LABELS[k] }; });
     });
-    REGION_KEYS.forEach(function (r) {
-      var l = (raw.sharedRegions || {})[r]; if (l && typeof l === "object") {
-        s.sharedRegions[r] = { enabled: l.enabled === true, url: typeof l.url === "string" ? l.url : "", label: (l.label || REGION_LABELS[r]) };
-      }
-    });
+    REGION_KEYS.forEach(function (r) { var l = (raw.sharedRegions || {})[r]; if (l && typeof l === "object") s.sharedRegions[r] = { enabled: l.enabled === true, url: typeof l.url === "string" ? l.url : "", label: l.label || REGION_LABELS[r] }; });
     return s;
   }
 
-  /* ----- API ----- */
+  /* ----- api ----- */
   function api(path, opts) {
-    opts = opts || {};
-    opts.credentials = "same-origin";
+    opts = opts || {}; opts.credentials = "same-origin";
     opts.headers = Object.assign({ "Content-Type": "application/json" }, opts.headers || {});
-    return fetch(API + path, opts).then(function (r) {
-      return r.json().catch(function () { return {}; }).then(function (j) { return { status: r.status, body: j }; });
-    });
+    return fetch(API + path, opts).then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { status: r.status, body: j }; }); });
   }
 
   /* ----- views ----- */
@@ -105,145 +86,171 @@
   }
   function showEditor() { $("login-view").hidden = true; $("editor-view").hidden = false; renderEditor(); }
 
-  /* ----- editor rendering ----- */
+  /* ----- editor ----- */
+  function canEdit(profileKey) { return state.perms.profiles.indexOf(profileKey) > -1; }
+
+  function renderHeader() {
+    var chip = $("user-chip"); clear(chip);
+    if (state.user) {
+      chip.appendChild(el("span", null, state.user.displayName));
+      chip.appendChild(el("span", "role", state.user.role === "owner" ? "Owner" : "Editor"));
+    }
+    // owner-only tools
+    var owner = state.user && state.user.role === "owner";
+    show($("export-btn"), owner); show($("import-btn"), owner);
+    show($("regions-title"), state.perms.regions); show($("regions-editor"), state.perms.regions);
+  }
+
   function renderTabs() {
     var nav = $("profile-tabs"); clear(nav);
-    PROFILES.forEach(function (p) {
-      var b = el("button", "tab" + (p.key === state.profile ? " active" : ""), p.name);
-      b.type = "button"; b.setAttribute("data-profile", p.key);
-      b.addEventListener("click", function () { state.profile = p.key; renderEditor(); });
+    var allowed = state.perms.profiles;
+    if (allowed.length <= 1) {
+      nav.appendChild(el("span", "tab active", "Editing: " + (NAMES[allowed[0]] || "")));
+      return;
+    }
+    allowed.forEach(function (p) {
+      var b = el("button", "tab" + (p === state.profile ? " active" : ""), NAMES[p]);
+      b.type = "button"; b.setAttribute("data-profile", p);
+      b.addEventListener("click", function () { state.profile = p; renderEditor(); });
       nav.appendChild(b);
     });
   }
 
-  function buildRow(scope, key, label, link) {
+  function buildRow(scope, key, label, link, editable) {
     var row = el("div", "row"); row.setAttribute("data-row", scope + ":" + key);
     var main = el("div", "row-main");
     main.appendChild(el("span", "row-label", label));
     var st = statusFor(link);
-    var badge = el("span", "status " + st.cls, st.text); badge.setAttribute("data-status", "");
-    main.appendChild(badge);
+    var badge = el("span", "status " + st.cls, st.text); main.appendChild(badge);
     row.appendChild(main);
 
     var ctrl = el("div", "row-controls");
-    // toggle
     var sw = el("label", "switch");
-    var cb = document.createElement("input"); cb.type = "checkbox"; cb.className = "toggle"; cb.checked = link.enabled === true;
-    cb.setAttribute("aria-label", "Enable " + label);
+    var cb = document.createElement("input"); cb.type = "checkbox"; cb.className = "toggle"; cb.checked = link.enabled === true; cb.setAttribute("aria-label", "Enable " + label);
+    var url = document.createElement("input"); url.type = "url"; url.className = "url"; url.placeholder = "Paste link (https://…)"; url.value = link.url || "";
+    var lbl = document.createElement("input"); lbl.type = "text"; lbl.className = "label"; lbl.placeholder = "Button name (optional)"; lbl.value = link.label || label;
+    if (!editable) { cb.disabled = true; url.disabled = true; lbl.disabled = true; }
     sw.appendChild(cb); sw.appendChild(el("span", "slider"));
-    ctrl.appendChild(sw);
-    // url
-    var url = document.createElement("input"); url.type = "url"; url.className = "url";
-    url.placeholder = "Paste link (https://…)"; url.value = link.url || "";
-    ctrl.appendChild(url);
-    // label
-    var lbl = document.createElement("input"); lbl.type = "text"; lbl.className = "label";
-    lbl.placeholder = "Button name (optional)"; lbl.value = link.label || label;
-    ctrl.appendChild(lbl);
+    ctrl.appendChild(sw); ctrl.appendChild(url); ctrl.appendChild(lbl);
     row.appendChild(ctrl);
 
-    function sync() {
-      link.enabled = cb.checked; link.url = url.value; link.label = lbl.value;
-      var s = statusFor(link); badge.className = "status " + s.cls; badge.textContent = s.text;
-      row.classList.toggle("invalid", s.cls === "missing" || s.cls === "invalid");
-    }
-    cb.addEventListener("change", sync);
-    url.addEventListener("input", sync);
-    lbl.addEventListener("input", sync);
+    function sync() { link.enabled = cb.checked; link.url = url.value; link.label = lbl.value; var s = statusFor(link); badge.className = "status " + s.cls; badge.textContent = s.text; row.classList.toggle("invalid", s.cls === "missing" || s.cls === "invalid"); }
+    cb.addEventListener("change", sync); url.addEventListener("input", sync); lbl.addEventListener("input", sync);
     return row;
+  }
+
+  function renderPreviews() {
+    var bar = $("preview-bar-links"); if (!bar) return; clear(bar);
+    state.perms.profiles.forEach(function (p) {
+      bar.appendChild(el("span", null, " "));
+      var a = el("a", "preview-link", NAMES[p]); a.href = "/?profile=" + p; a.target = "_blank"; a.rel = "noopener noreferrer"; a.setAttribute("data-preview", p);
+      bar.appendChild(a);
+    });
   }
 
   function renderEditor() {
     if (!state.settings) state.settings = defaults();
+    if (state.perms.profiles.indexOf(state.profile) < 0) state.profile = state.perms.profiles[0] || "mustafa";
+    renderHeader();
     renderTabs();
-    var prof = state.settings.profiles[state.profile];
+    $("links-title").textContent = (state.perms.profiles.length > 1 ? "Links — " : "Links — ") + (NAMES[state.profile] || "");
+    var prof = state.settings.profiles[state.profile] || { links: {} };
     var links = $("links-editor"); clear(links);
-    LINK_KEYS.forEach(function (k) { links.appendChild(buildRow(state.profile, k, LINK_LABELS[k], prof.links[k])); });
-    var regions = $("regions-editor"); clear(regions);
-    REGION_KEYS.forEach(function (r) { regions.appendChild(buildRow("region", r, REGION_LABELS[r], state.settings.sharedRegions[r])); });
+    LINK_KEYS.forEach(function (k) { links.appendChild(buildRow(state.profile, k, LINK_LABELS[k], prof.links[k] || { enabled: false, url: "", label: LINK_LABELS[k] }, true)); });
+    if (state.perms.regions) {
+      var regions = $("regions-editor"); clear(regions);
+      REGION_KEYS.forEach(function (r) { regions.appendChild(buildRow("region", r, REGION_LABELS[r], state.settings.sharedRegions[r], true)); });
+    }
+    renderPreviews();
   }
 
-  /* ----- validation across everything ----- */
+  /* ----- validation + save ----- */
   function validateAll() {
-    var problems = [];
-    PROFILES.forEach(function (p) {
-      LINK_KEYS.forEach(function (k) {
-        var l = state.settings.profiles[p.key].links[k];
-        if (l.enabled && !isNavigableUrl((l.url || "").trim())) problems.push(p.name + " · " + LINK_LABELS[k]);
-      });
+    var probs = [];
+    state.perms.profiles.forEach(function (p) {
+      LINK_KEYS.forEach(function (k) { var l = state.settings.profiles[p].links[k]; if (l.enabled && !isNavigableUrl((l.url || "").trim())) probs.push(NAMES[p] + " · " + LINK_LABELS[k]); });
     });
-    REGION_KEYS.forEach(function (r) {
-      var l = state.settings.sharedRegions[r];
-      if (l.enabled && !isNavigableUrl((l.url || "").trim())) problems.push("Region · " + REGION_LABELS[r]);
-    });
-    return problems;
+    if (state.perms.regions) REGION_KEYS.forEach(function (r) { var l = state.settings.sharedRegions[r]; if (l.enabled && !isNavigableUrl((l.url || "").trim())) probs.push("Region · " + REGION_LABELS[r]); });
+    return probs;
   }
-
-  /* ----- actions ----- */
-  function loadSettings() {
-    return api("/settings", { method: "GET" }).then(function (res) {
-      if (res.status === 200 && res.body.settings) { state.settings = normalize(res.body.settings); return true; }
-      return false;
-    }).then(function (ok) {
-      if (ok) return true;
-      // fallback: public file (so the editor still shows current data)
-      return fetch("/data/link-settings.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; })
-        .then(function (j) { state.settings = normalize(j); return true; })
-        .catch(function () { state.settings = defaults(); return true; });
-    });
+  function buildSavePayload() {
+    var out = { profiles: {}, sharedRegions: {} };
+    state.perms.profiles.forEach(function (p) { out.profiles[p] = state.settings.profiles[p]; });
+    if (state.perms.regions) out.sharedRegions = state.settings.sharedRegions;
+    return out;
   }
-
   function onSave() {
-    var problems = validateAll();
-    if (problems.length) { toast("Fix these first: " + problems.slice(0, 3).join(", ") + (problems.length > 3 ? "…" : ""), "error"); renderEditor(); return; }
-    api("/settings", { method: "POST", body: JSON.stringify({ settings: state.settings }) }).then(function (res) {
-      if (res.status === 200) { toast("Saved. Your pages will update shortly.", "ok"); }
+    var probs = validateAll();
+    if (probs.length) { toast("Fix these first: " + probs.slice(0, 3).join(", ") + (probs.length > 3 ? "…" : ""), "error"); renderEditor(); return; }
+    api("/settings", { method: "POST", body: JSON.stringify({ settings: buildSavePayload() }) }).then(function (res) {
+      if (res.status === 200) toast("Saved. Your page will update shortly.", "ok");
       else if (res.status === 401) { toast("Your session ended. Please sign in again.", "error"); showLogin("Please sign in again."); }
-      else if (res.body && res.body.error === "github_not_configured") { toast("Saving isn’t set up yet. Ask your developer to finish setup.", "error"); }
-      else if (res.body && res.body.message) { toast(res.body.message, "error"); }
-      else { toast("Could not save. Please try again.", "error"); }
+      else if (res.body && res.body.error === "github_not_configured") toast("Saving isn’t set up yet. Ask your developer to finish setup.", "error");
+      else if (res.body && res.body.message) toast(res.body.message, "error");
+      else toast("Could not save. Please try again.", "error");
     }).catch(function () { toast("Network problem. Please try again.", "error"); });
   }
-
   function onReset() { loadSettings().then(function () { renderEditor(); toast("Changes discarded.", "info"); }); }
-
   function onExport() {
-    state.settings.updatedAt = state.settings.updatedAt || "";
-    var data = JSON.stringify(state.settings, null, 2);
-    var blob = new Blob([data], { type: "application/json" });
-    var url = URL.createObjectURL(blob);
-    var a = el("a"); a.href = url; a.download = "alwafer-link-settings.json";
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
-    toast("Backup downloaded.", "ok");
+    var data = JSON.stringify(buildSavePayload(), null, 2);
+    var blob = new Blob([data], { type: "application/json" }); var url = URL.createObjectURL(blob);
+    var a = el("a"); a.href = url; a.download = "alwafer-link-settings.json"; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000); toast("Backup downloaded.", "ok");
   }
-
   function onImportFile(file) {
     var reader = new FileReader();
     reader.onload = function () {
-      try { var raw = JSON.parse(reader.result); state.settings = normalize(raw); renderEditor(); toast("Backup loaded. Review, then Save.", "ok"); }
-      catch (e) { toast("That file isn’t a valid backup.", "error"); }
+      try {
+        var raw = JSON.parse(reader.result); var inc = normalize(raw);
+        // only apply sections the current user may edit
+        state.perms.profiles.forEach(function (p) { state.settings.profiles[p] = inc.profiles[p]; });
+        if (state.perms.regions) state.settings.sharedRegions = inc.sharedRegions;
+        renderEditor(); toast("Backup loaded. Review, then Save.", "ok");
+      } catch (e) { toast("That file isn’t a valid backup.", "error"); }
     };
     reader.onerror = function () { toast("Could not read that file.", "error"); };
     reader.readAsText(file);
   }
 
-  function doLogin(password) {
-    return api("/login", { method: "POST", body: JSON.stringify({ password: password }) }).then(function (res) {
-      if (res.status === 200) { return loadSettings().then(function () { showEditor(); return true; }); }
-      if (res.status === 503) { showLogin("Admin sign-in isn’t set up yet.", "error"); return false; }
-      showLogin("Incorrect password.", "error"); return false;
+  /* ----- auth flow ----- */
+  function applyUser(user) {
+    state.user = user;
+    state.perms = { profiles: (user.allowedProfiles || []).slice(), regions: !!user.canEditRegions };
+    // route to a profile this user may edit; redirect URL for profile-scoped users
+    var wanted = urlProfileParam();
+    if (user.role !== "owner") {
+      state.profile = user.profile;
+      if (wanted && wanted !== user.profile && history && history.replaceState) history.replaceState(null, "", "/admin?profile=" + user.profile);
+    } else {
+      state.profile = (state.perms.profiles.indexOf(wanted) > -1) ? wanted : state.perms.profiles[0];
+    }
+  }
+  function loadSettings() {
+    return api("/settings", { method: "GET" }).then(function (res) {
+      if (res.status === 200 && res.body) {
+        if (res.body.user) applyUser(res.body.user);
+        if (res.body.perms) state.perms = { profiles: res.body.perms.profiles.slice(), regions: !!res.body.perms.regions };
+        state.settings = normalize(res.body.settings);
+        return true;
+      }
+      return false;
     });
   }
-
-  function doLogout() {
-    api("/logout", { method: "POST" }).then(function () { showLogin("Signed out."); });
+  function doLogin(account, password) {
+    return api("/login", { method: "POST", body: JSON.stringify({ account: account, password: password }) }).then(function (res) {
+      if (res.status === 200 && res.body.user) { applyUser(res.body.user); return loadSettings().then(function () { showEditor(); return true; }); }
+      if (res.status === 503) { showLogin("Admin sign-in isn’t set up yet.", "error"); return false; }
+      showLogin("Incorrect account or password.", "error"); return false;
+    });
   }
+  function doLogout() { api("/logout", { method: "POST" }).then(function () { state.user = null; showLogin("Signed out."); }); }
 
   /* ----- init ----- */
   function init() {
+    // preselect the account matching ?profile=
+    var pre = urlProfileParam(); if (pre && $("login-account")) $("login-account").value = pre;
     var lf = $("login-form");
-    if (lf) lf.addEventListener("submit", function (e) { e.preventDefault(); doLogin($("login-password").value); });
+    if (lf) lf.addEventListener("submit", function (e) { e.preventDefault(); doLogin($("login-account").value, $("login-password").value); });
     if ($("logout-btn")) $("logout-btn").addEventListener("click", doLogout);
     if ($("save-btn")) $("save-btn").addEventListener("click", onSave);
     if ($("reset-btn")) $("reset-btn").addEventListener("click", onReset);
@@ -252,16 +259,15 @@
     if ($("import-file")) $("import-file").addEventListener("change", function (e) { if (e.target.files[0]) onImportFile(e.target.files[0]); e.target.value = ""; });
 
     api("/me", { method: "GET" }).then(function (res) {
-      if (res.body && res.body.authenticated) { loadSettings().then(showEditor); }
-      else { showLogin(); }
+      if (res.body && res.body.authenticated && res.body.user) { applyUser(res.body.user); loadSettings().then(showEditor); }
+      else showLogin();
     }).catch(function () { showLogin(); });
   }
 
-  // expose for tests
   window.AdminApp = {
     init: init, isAllowedUrl: isAllowedUrl, isNavigableUrl: isNavigableUrl, statusFor: statusFor,
     normalize: normalize, defaults: defaults, renderEditor: renderEditor, validateAll: validateAll,
-    state: state, showEditor: showEditor, showLogin: showLogin, loadSettings: loadSettings, onExport: onExport
+    buildSavePayload: buildSavePayload, applyUser: applyUser, state: state, showEditor: showEditor, showLogin: showLogin, canEdit: canEdit
   };
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);

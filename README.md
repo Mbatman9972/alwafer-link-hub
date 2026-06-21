@@ -102,11 +102,26 @@ its web address, and Save. You can also edit the shared region links
 - Saving commits `data/link-settings.json` to GitHub; Vercel redeploys and the
   public pages pick up the change automatically.
 
+### Roles (three accounts)
+Sign in at `/admin` by choosing an account + password:
+
+| Account | Role | Can edit |
+| --- | --- | --- |
+| **ALWAFER** (`mustafa`) | owner | all three profiles' links **+ shared region links** |
+| **Team Ahmed Ramadan** (`ahmed`) | profile | only the Ahmed profile links |
+| **Hala Al-Saghir** (`hala`) | profile | only the Hala profile links |
+
+Permissions are enforced **server-side** — Ahmed/Hala cannot edit ALWAFER, each
+other, or the region links even with a crafted request. Admin URLs:
+`/admin?profile=mustafa`, `/admin?profile=ahmed`, `/admin?profile=hala` (a
+profile user opening someone else's URL is redirected to their own).
+
 ### How persistence works
 The public pages read `data/link-settings.json`. The admin API
-(`/api/admin/login|logout|me|settings`) authenticates you with an HttpOnly cookie
-session and commits changes to that one file on GitHub `main`. **No secrets are in
-the browser** — the GitHub token and password live only in Vercel env vars.
+(`/api/admin/login|logout|me|settings`) authenticates you with an HttpOnly signed
+cookie that carries your user key + role, and commits changes to that one file on
+GitHub `main`. **No secrets are in the browser** — tokens and password hashes live
+only in Vercel env vars.
 
 ### Required environment variables (set in Vercel, AVENGERS scope)
 The admin UI and API are deployed, but sign-in and saving stay disabled until
@@ -114,15 +129,26 @@ these are set:
 
 | Variable | Purpose |
 | --- | --- |
-| `ALWAFER_ADMIN_PASSWORD` (or `ALWAFER_ADMIN_PASSWORD_HASH`) | Admin sign-in password (hash = sha256 hex). |
+| `ALWAFER_ADMIN_USERS_JSON` | The three users with **sha256 password hashes** (see below). |
 | `ALWAFER_COOKIE_SECRET` | Random secret that signs the session cookie. |
-| `GITHUB_TOKEN` | A token with write access to this repo (to commit settings). |
-| `GITHUB_OWNER` | `Mbatman9972` |
-| `GITHUB_REPO` | `alwafer-link-hub` |
-| `GITHUB_BRANCH` | `main` |
+| `GITHUB_TOKEN` | Fine-grained PAT, Contents: Read+Write on this repo. |
+| `GITHUB_OWNER` | `Mbatman9972` (default) |
+| `GITHUB_REPO` | `alwafer-link-hub` (default) |
+| `GITHUB_BRANCH` | `main` (default) |
 
-(Owner/repo/branch default to the values above if unset.) URLs are validated
-server-side: only `http://`, `https://`, `mailto:`, `tel:`, and `#` are allowed.
+`ALWAFER_ADMIN_USERS_JSON` shape (passwords are never stored — only sha256 hashes):
+
+```json
+{
+  "mustafa": { "displayName": "ALWAFER", "role": "owner", "passwordHash": "<sha256>" },
+  "ahmed":   { "displayName": "Team Ahmed Ramadan", "role": "profile", "profile": "ahmed", "passwordHash": "<sha256>" },
+  "hala":    { "displayName": "Hala Al-Saghir", "role": "profile", "profile": "hala", "passwordHash": "<sha256>" }
+}
+```
+
+(Alternatively set `ALWAFER_OWNER_PASSWORD_HASH` / `ALWAFER_AHMED_PASSWORD_HASH` /
+`ALWAFER_HALA_PASSWORD_HASH`.) URLs are validated server-side: only `http://`,
+`https://`, `mailto:`, `tel:`, and `#` are allowed.
 
 ---
 

@@ -20,6 +20,14 @@
       <h1 class="brand-title">ALWAFER</h1>
       <p class="brand-sub">Link Manager</p>
       <label class="field">
+        <span class="field-label">Account</span>
+        <select id="login-account" name="account">
+          <option value="mustafa">ALWAFER (owner)</option>
+          <option value="ahmed">Team Ahmed Ramadan</option>
+          <option value="hala">Hala Al-Saghir</option>
+        </select>
+      </label>
+      <label class="field">
         <span class="field-label">Password</span>
         <input type="password" id="login-password" name="password" autocomplete="current-password" required />
       </label>
@@ -36,7 +44,10 @@
         <span class="brand-title sm">ALWAFER</span>
         <span class="brand-tag">Link Manager</span>
       </div>
-      <button id="logout-btn" class="btn btn-ghost">Sign out</button>
+      <div class="brand-row">
+        <span id="user-chip" class="user-chip"></span>
+        <button id="logout-btn" class="btn btn-ghost">Sign out</button>
+      </div>
     </header>
 
     <p class="lead">Choose a page, then turn links on or off and paste their web addresses. Region links are shared across all pages.</p>
@@ -47,7 +58,7 @@
       <h2 class="section-title" id="links-title">Page links</h2>
       <div id="links-editor" class="rows"></div>
 
-      <h2 class="section-title">Agency Regions <span class="muted">(shared on every page)</span></h2>
+      <h2 class="section-title" id="regions-title">Agency Regions <span class="muted">(shared on every page)</span></h2>
       <div id="regions-editor" class="rows"></div>
     </main>
 
@@ -62,9 +73,7 @@
 
     <div class="preview-bar">
       <span class="preview-label">Open a page:</span>
-      <a class="preview-link" href="/?profile=mustafa" target="_blank" rel="noopener noreferrer" data-preview="mustafa">ALWAFER</a>
-      <a class="preview-link" href="/?profile=ahmed" target="_blank" rel="noopener noreferrer" data-preview="ahmed">Team Ahmed Ramadan</a>
-      <a class="preview-link" href="/?profile=hala" target="_blank" rel="noopener noreferrer" data-preview="hala">Hala Al-Saghir</a>
+      <span id="preview-bar-links"></span>
     </div>
   </section>
 
