@@ -15,23 +15,19 @@
   <meta property="og:type" content="website" />
 
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230a0a0c'/%3E%3Ctext x='50%25' y='54%25' font-size='34' font-family='Georgia,serif' fill='%23d4af37' text-anchor='middle' dominant-baseline='middle'%3EA%3C/text%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=20260622-artwork" />
 </head>
 <body>
   <div class="bg-aura" aria-hidden="true"></div>
 
   <div id="app" class="app">
-    <!-- Rendered by app.js. Non-JS fallback below. -->
-    <noscript>
-      <main class="card">
-        <h1 class="display-title">ALWAFER</h1>
-        <p class="display-tagline">Please enable JavaScript to view the links.</p>
-      </main>
-    </noscript>
+    <!-- The visible page is the approved full-page artwork PNG, rendered by app.js
+         as <img class="profile-art"> with transparent hotspot overlays. -->
+    <noscript>Please enable JavaScript to view this page.</noscript>
   </div>
 
-  <!-- config first (data), then renderer -->
-  <script src="config.js"></script>
-  <script src="app.js"></script>
+  <!-- config first (data), then renderer. Versioned to defeat stale caches. -->
+  <script src="config.js?v=20260622-artwork"></script>
+  <script src="app.js?v=20260622-artwork"></script>
 </body>
 </html>
