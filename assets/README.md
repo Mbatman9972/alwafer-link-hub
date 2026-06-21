@@ -1,28 +1,38 @@
-# assets/ — profile images
+# assets/ — approved page artwork
 
-Drop the three approved images here using these **exact** file names. `config.js`
-already points to them, so no code changes are needed once they exist:
+The profile routes render ONE approved full-page artwork image each, with
+transparent clickable hotspots overlaid on top. Drop the three approved images
+here using these **exact** file names (already referenced by `config.js`):
 
-| File | Used by | Route |
+| File | Route | Profile |
 | --- | --- | --- |
-| `profile-alwafer.png` | ALWAFER brand page | `/?profile=mustafa` |
-| `profile-ahmed.jpg` | Team Ahmed Ramadan | `/?profile=ahmed` |
-| `profile-hala.jpg` | Hala Al-Saghir | `/?profile=hala` |
+| `page-alwafer.png` | `/?profile=mustafa` | ALWAFER |
+| `page-ahmed.png` | `/?profile=ahmed` | Team Ahmed Ramadan |
+| `page-hala.png` | `/?profile=hala` | Hala Al-Saghir |
 
-Notes:
-- If you prefer a different extension (e.g. `.png` instead of `.jpg`), update the
-  matching `image:` path in `config.js`.
-- Until a file is present, the page shows a premium glowing gold **monogram**
-  (A / AR / HS) as a graceful fallback — it is **not** a broken image.
-- Recommended: square images, ~600×600px or larger, under ~300 KB for fast loading
-  on mobile / TikTok traffic.
+Requirements:
+- **9:16 portrait** images (the frame preserves that ratio and scales on mobile).
+- PNG (or update the `artwork:` path in `config.js` if you use another extension).
+- Keep each well-optimised (ideally < ~500 KB) for fast TikTok mobile loading.
 
 After adding the files:
 
 ```bash
 git add assets/
-git commit -m "Add profile images"
+git commit -m "Add approved page artwork"
 git push
 ```
 
-Vercel redeploys automatically and the real photos appear.
+Then tune the hotspot coordinates (see below) and deploy.
+
+## Tuning the clickable hotspots
+
+The clickable zones live in `config.js` -> `OVERLAY` as percentages of the frame.
+Open any profile route with `?hotspots=1` to outline the zones, e.g.:
+
+```
+/?profile=mustafa&hotspots=1
+```
+
+Adjust each zone's `top` / `left` / `width` / `height` until the outline sits on
+the matching button in the artwork. All three profiles share the same map.
