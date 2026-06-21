@@ -1,0 +1,11 @@
+# Vercel
+.vercel
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+
+# Dependencies (this is a dependency-free static site; nothing should appear here)
+node_modules/
