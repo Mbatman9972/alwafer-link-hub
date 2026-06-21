@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="color-scheme" content="dark" />
+  <title>Team Ahmed Ramadan</title>
+  <meta name="description" content="Official Team Ahmed Ramadan links, channels, and joining access." />
+  <meta property="og:title" content="Team Ahmed Ramadan" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/assets/page-ahmed.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230a0a0c'/%3E%3Ctext x='50%25' y='54%25' font-size='34' font-family='Georgia,serif' fill='%23d4af37' text-anchor='middle' dominant-baseline='middle'%3EA%3C/text%3E%3C/svg%3E" />
+  <style>
+    html,body{margin:0;padding:0;background:#000;min-height:100%}
+    body{font-family:ui-sans-serif,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Noto Sans Arabic",sans-serif;color:#f5f3ec;-webkit-font-smoothing:antialiased}
+    #app{min-height:100vh;min-height:100dvh}
+    .profile-art-shell{min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;background:#000;padding:16px 0}
+    .artwork-frame{position:relative;width:100%;max-width:440px;margin:0 auto;background:#000;line-height:0}
+    .profile-art{display:block;width:100%;height:auto;-webkit-user-drag:none;user-select:none}
+    .hotspot{position:absolute;display:block;background:transparent;border:0;border-radius:12px;-webkit-tap-highlight-color:transparent;z-index:2}
+    .hotspot.is-disabled{cursor:default}
+    .hotspot:focus-visible{outline:2px solid #d4af37;outline-offset:2px}
+    .artwork-frame.debug .hotspot{background:rgba(212,175,55,.22);outline:1px solid #d4af37}
+    .artwork-frame.debug .hotspot.is-disabled{background:rgba(255,80,80,.22);outline:1px solid #ff5050}
+    .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  </style>
+</head>
+<body>
+  <div id="app"><noscript>Please enable JavaScript to view this page.</noscript></div>
+  <!-- Self-contained direct route: inline artwork renderer, no external public JS. -->
+  <script>
+  (function(){
+  "use strict";
+  var KEY="ahmed";
+  var ART="/assets/page-ahmed.png";
+  var NAME="Team Ahmed Ramadan";
+  var REGION={mena:"https://www.tiktok.com/t/ZMAN6Bu2W/",uk:"https://www.tiktok.com/t/ZSxoyPd4W/",fr:"https://www.tiktok.com/t/ZSxoAQrsm/",de:"https://www.tiktok.com/t/ZSQ1b63XY/",tr:"https://www.tiktok.com/t/ZSxoUt6A7/",cca:"https://www.tiktok.com/t/ZSxECjfqx/"};
+  var BTN_LEFT=7.5,BTN_W=85,CHIP_W=11.2,CHIP_H=3.8;
+  var CHIP_LEFT={mena:12.6,uk:25.2,fr:37.8,de:50.2,tr:62.8,cca:75.4};
+  var PLATS=[["youtube","YouTube"],["tiktok","TikTok"],["telegram","Telegram"],["instagram","Instagram"],["whatsapp","WhatsApp"],["website","Website"]];
+  var L={"apply":[39.8,6.7],"youtube":[47.6,5.4],"tiktok":[54,5.4],"telegram":[60.1,5.4],"instagram":[66.3,5.4],"whatsapp":[72.4,5.4],"website":[78.6,5.7],"chipTop":90.6};
+  function overlay(){var o=[];o.push({k:"apply",kind:"apply",label:"Apply to Join the Agency",left:BTN_LEFT,width:BTN_W,top:L.apply[0],height:L.apply[1]});PLATS.forEach(function(q){var t=L[q[0]];o.push({k:q[0],kind:"platform",label:q[1],left:BTN_LEFT,width:BTN_W,top:t[0],height:t[1]});});["mena","uk","fr","de","tr","cca"].forEach(function(r){o.push({k:r,kind:"region",region:r,label:r.toUpperCase(),left:CHIP_LEFT[r],width:CHIP_W,top:L.chipTop,height:CHIP_H});});return o;}
+  function isNav(u){if(typeof u!=="string")return false;u=u.trim();if(!u||u.charAt(0)==="#")return false;return /^(https?:|mailto:|tel:|\/)/i.test(u);}
+  function safe(u){if(typeof u!=="string")return "#";u=u.trim();if(!u)return "#";var m=u.match(/^([a-zA-Z][a-zA-Z0-9+.\-]*):/);if(m&&["http","https","mailto","tel"].indexOf(m[1].toLowerCase())<0)return "#";return u;}
+  function zoneState(z,s){var link=null;if(s){if(z.kind==="region")link=(s.sharedRegions||{})[z.k];else{var p=(s.profiles||{})[KEY];if(p&&p.links)link=p.links[z.k];}}if(link&&typeof link==="object"){var u=typeof link.url==="string"?link.url:"";var en=link.enabled===true;return{url:u,nav:en&&isNav(u)};}if(z.kind==="region"){var ru=REGION[z.k]||"";return{url:ru,nav:isNav(ru)};}return{url:"",nav:false};}
+  function el(t,c){var n=document.createElement(t);if(c)n.className=c;return n;}
+  function render(s){var app=document.getElementById("app");if(!app)return;while(app.firstChild)app.removeChild(app.firstChild);var shell=el("main","profile-art-shell");shell.setAttribute("data-profile",KEY);var frame=el("div","artwork-frame"+(/[?&]hotspots=1\b/.test(location.search)?" debug":""));var img=el("img","profile-art");img.src=ART;img.alt=NAME;img.setAttribute("decoding","async");frame.appendChild(img);overlay().forEach(function(z){var st=zoneState(z,s);var a=el("a","hotspot hotspot--"+z.kind+" "+(z.kind==="region"?"region-"+z.region:z.k)+(st.nav?"":" is-disabled"));a.setAttribute("aria-label",z.label);a.setAttribute("data-hotspot",z.k);a.style.cssText="top:"+z.top+"%;left:"+z.left+"%;width:"+z.width+"%;height:"+z.height+"%;";if(st.nav){a.href=safe(st.url);if(/^https?:\/\//i.test(st.url)){a.target="_blank";a.rel="noopener noreferrer";}}else{a.href="#";a.setAttribute("aria-disabled","true");a.addEventListener("click",function(e){e.preventDefault();});}var sp=el("span","visually-hidden");sp.textContent=z.label;a.appendChild(sp);frame.appendChild(a);});shell.appendChild(frame);var vh=el("div","visually-hidden");var h=el("h1");h.textContent=NAME;vh.appendChild(h);shell.appendChild(vh);app.appendChild(shell);document.title=NAME;}
+  render(null);
+  if(typeof fetch!=="undefined"){fetch("/data/link-settings.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).then(function(s){if(s)render(s);}).catch(function(){});}
+})();
+  </script>
+</body>
+</html>

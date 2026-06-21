@@ -12,6 +12,14 @@
       "headers": [{ "key": "Cache-Control", "value": "no-store, must-revalidate" }]
     },
     {
+      "source": "/(alwafer|ahmed|hala)",
+      "headers": [{ "key": "Cache-Control", "value": "no-store, must-revalidate" }]
+    },
+    {
+      "source": "/(alwafer|ahmed|hala)/",
+      "headers": [{ "key": "Cache-Control", "value": "no-store, must-revalidate" }]
+    },
+    {
       "source": "/data/(.*)",
       "headers": [{ "key": "Cache-Control", "value": "no-store" }]
     },
