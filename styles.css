@@ -29,8 +29,9 @@ body {
   min-height: 100dvh;
   width: 100%;
   display: flex;
-  align-items: flex-start;
+  align-items: center;        /* center the artwork on the black page */
   justify-content: center;
+  padding: 16px 0;
   background: #000;
 }
 
