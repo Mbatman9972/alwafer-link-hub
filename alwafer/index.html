@@ -27,14 +27,21 @@
   </style>
 </head>
 <body>
-  <div id="app"><noscript>Please enable JavaScript to view this page.</noscript></div>
-  <!-- Self-contained direct route: inline artwork renderer, no external public JS. -->
+  <!-- Static artwork: the approved full-page PNG is the visible page BEFORE any JS
+       runs. Inline JS only layers transparent hotspot overlays on top. -->
+  <div id="app">
+    <main class="profile-art-shell" data-profile="mustafa">
+      <div class="artwork-frame">
+        <img class="profile-art" src="/assets/page-alwafer.png" alt="ALWAFER" decoding="async" fetchpriority="high" />
+      </div>
+      <div class="visually-hidden"><h1>ALWAFER</h1></div>
+    </main>
+    <noscript>ALWAFER — official links.</noscript>
+  </div>
   <script>
   (function(){
   "use strict";
   var KEY="mustafa";
-  var ART="/assets/page-alwafer.png";
-  var NAME="ALWAFER";
   var REGION={mena:"https://www.tiktok.com/t/ZMAN6Bu2W/",uk:"https://www.tiktok.com/t/ZSxoyPd4W/",fr:"https://www.tiktok.com/t/ZSxoAQrsm/",de:"https://www.tiktok.com/t/ZSQ1b63XY/",tr:"https://www.tiktok.com/t/ZSxoUt6A7/",cca:"https://www.tiktok.com/t/ZSxECjfqx/"};
   var BTN_LEFT=7.5,BTN_W=85,CHIP_W=11.2,CHIP_H=3.8;
   var CHIP_LEFT={mena:12.6,uk:25.2,fr:37.8,de:50.2,tr:62.8,cca:75.4};
@@ -45,9 +52,9 @@
   function safe(u){if(typeof u!=="string")return "#";u=u.trim();if(!u)return "#";var m=u.match(/^([a-zA-Z][a-zA-Z0-9+.\-]*):/);if(m&&["http","https","mailto","tel"].indexOf(m[1].toLowerCase())<0)return "#";return u;}
   function zoneState(z,s){var link=null;if(s){if(z.kind==="region")link=(s.sharedRegions||{})[z.k];else{var p=(s.profiles||{})[KEY];if(p&&p.links)link=p.links[z.k];}}if(link&&typeof link==="object"){var u=typeof link.url==="string"?link.url:"";var en=link.enabled===true;return{url:u,nav:en&&isNav(u)};}if(z.kind==="region"){var ru=REGION[z.k]||"";return{url:ru,nav:isNav(ru)};}return{url:"",nav:false};}
   function el(t,c){var n=document.createElement(t);if(c)n.className=c;return n;}
-  function render(s){var app=document.getElementById("app");if(!app)return;while(app.firstChild)app.removeChild(app.firstChild);var shell=el("main","profile-art-shell");shell.setAttribute("data-profile",KEY);var frame=el("div","artwork-frame"+(/[?&]hotspots=1\b/.test(location.search)?" debug":""));var img=el("img","profile-art");img.src=ART;img.alt=NAME;img.setAttribute("decoding","async");frame.appendChild(img);overlay().forEach(function(z){var st=zoneState(z,s);var a=el("a","hotspot hotspot--"+z.kind+" "+(z.kind==="region"?"region-"+z.region:z.k)+(st.nav?"":" is-disabled"));a.setAttribute("aria-label",z.label);a.setAttribute("data-hotspot",z.k);a.style.cssText="top:"+z.top+"%;left:"+z.left+"%;width:"+z.width+"%;height:"+z.height+"%;";if(st.nav){a.href=safe(st.url);if(/^https?:\/\//i.test(st.url)){a.target="_blank";a.rel="noopener noreferrer";}}else{a.href="#";a.setAttribute("aria-disabled","true");a.addEventListener("click",function(e){e.preventDefault();});}var sp=el("span","visually-hidden");sp.textContent=z.label;a.appendChild(sp);frame.appendChild(a);});shell.appendChild(frame);var vh=el("div","visually-hidden");var h=el("h1");h.textContent=NAME;vh.appendChild(h);shell.appendChild(vh);app.appendChild(shell);document.title=NAME;}
-  render(null);
-  if(typeof fetch!=="undefined"){fetch("/data/link-settings.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).then(function(s){if(s)render(s);}).catch(function(){});}
+  function applyHotspots(s){var frame=document.querySelector(".artwork-frame");if(!frame)return;var old=frame.querySelectorAll(".hotspot");for(var i=0;i<old.length;i++)frame.removeChild(old[i]);if(/[?&]hotspots=1\b/.test(location.search))frame.className="artwork-frame debug";overlay().forEach(function(z){var st=zoneState(z,s);var a=el("a","hotspot hotspot--"+z.kind+" "+(z.kind==="region"?"region-"+z.region:z.k)+(st.nav?"":" is-disabled"));a.setAttribute("aria-label",z.label);a.setAttribute("data-hotspot",z.k);a.style.cssText="top:"+z.top+"%;left:"+z.left+"%;width:"+z.width+"%;height:"+z.height+"%;";if(st.nav){a.href=safe(st.url);if(/^https?:\/\//i.test(st.url)){a.target="_blank";a.rel="noopener noreferrer";}}else{a.href="#";a.setAttribute("aria-disabled","true");a.addEventListener("click",function(e){e.preventDefault();});}var sp=el("span","visually-hidden");sp.textContent=z.label;a.appendChild(sp);frame.appendChild(a);});}
+  applyHotspots(null);
+  if(typeof fetch!=="undefined"){fetch("/data/link-settings.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).then(function(s){if(s)applyHotspots(s);}).catch(function(){});}
 })();
   </script>
 </body>
