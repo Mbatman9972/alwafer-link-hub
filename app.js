@@ -142,7 +142,7 @@
     var sub = pick(profile.subtitle, lang);
     if (sub) box.appendChild(el("p", { text: sub, attrs: { dir: "auto" } }));
     var ul = el("ul");
-    (config.overlay || []).forEach(function (z) {
+    (profile.overlay || config.overlay || []).forEach(function (z) {
       var url = zoneUrl(z, config);
       var li = el("li");
       var label = z.label + (isNavigable(url) ? "" : " (coming soon)");
@@ -183,8 +183,8 @@
     });
     frame.appendChild(img);
 
-    // Hotspot overlays
-    (config.overlay || []).forEach(function (zone) {
+    // Hotspot overlays (per-profile map, falls back to a shared one)
+    (profile.overlay || config.overlay || []).forEach(function (zone) {
       frame.appendChild(hotspot(zone, config));
     });
 

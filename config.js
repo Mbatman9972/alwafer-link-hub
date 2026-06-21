@@ -1,13 +1,13 @@
 /* =====================================================================
- * config.js — ALWAFER Link Hub  (APPROVED-ARTWORK / overlay mode)
+ * config.js — ALWAFER Link Hub  (APPROVED FULL-PAGE ARTWORK / overlay)
  * ---------------------------------------------------------------------
- * Each profile route renders ONE approved 9:16 artwork image, with
- * transparent clickable hotspot anchors overlaid on top of it.
+ * Each profile route renders ONE approved 9:16 full-page artwork image
+ * (941x1672), with transparent clickable hotspots overlaid exactly on
+ * the visible buttons/chips drawn in the artwork.
  *
- * To change content you only edit this file:
- *   - artwork image path per profile
- *   - region URLs / platform URLs / apply URL
- *   - the SHARED hotspot coordinate map (OVERLAY) — percentages
+ * Hotspot coordinates below were MEASURED from the artwork pixels
+ * (button bands + chip columns). All values are % of the artwork frame.
+ * Open /?profile=<key>&hotspots=1 to see the zones outlined and fine-tune.
  * ===================================================================== */
 (function () {
   "use strict";
@@ -22,81 +22,75 @@
     CCA:  "https://www.tiktok.com/t/ZSxECjfqx/"
   };
 
-  /* Personal/platform URLs. Empty => the overlay stays present but is a
-   * non-navigating placeholder (href="#", aria-disabled). Paste a real
-   * URL to make that hotspot active. */
-  var PLATFORM_URLS = {
-    youtube:   "",
-    tiktok:    "",
-    telegram:  "",
-    instagram: "",
-    whatsapp:  ""
-  };
+  /* Social URLs not provided yet => overlay present but non-navigating. */
+  var PLATFORM_URLS = { youtube: "", tiktok: "", telegram: "", instagram: "", whatsapp: "" };
   var WEBSITE_URL = "";
 
   /* Apply button — placeholder until the real URL is provided. */
   var APPLY_LINK = "#apply-link-to-be-added";
 
-  /* -------------------------------------------------------------------
-   * SHARED HOTSPOT MAP  (all three artworks share the same layout)
-   * -------------------------------------------------------------------
-   * Coordinates are PERCENTAGES of the artwork frame (which keeps the
-   * 9:16 aspect ratio), so they scale on every screen size.
-   *
-   *   top/left/width/height are % of the frame.
-   *
-   * NOTE: these are reasonable starting positions for a top->bottom
-   * vertical layout. They MUST be fine-tuned against the real approved
-   * artwork (open any profile route with ?hotspots=1 to see the zones
-   * outlined, then adjust the numbers below until they sit on the
-   * buttons in the image).
-   * ----------------------------------------------------------------- */
-  var OVERLAY = [
-    { key: "apply",     kind: "apply",    label: "Apply to Join the Agency", top: 41.0, left: 8,   width: 84,   height: 6 },
+  /* -------- shared geometry (same across all three artworks) -------- */
+  var BTN_LEFT = 7.5, BTN_WIDTH = 85;            // full-width buttons
+  var CHIP_W = 11.2, CHIP_H = 3.8;               // region chips
+  var CHIP_LEFT = { MENA: 12.6, UK: 25.2, FR: 37.8, DE: 50.2, TR: 62.8, CCA: 75.4 };
 
-    { key: "youtube",   kind: "platform", label: "YouTube",   top: 49.0, left: 8, width: 84, height: 5 },
-    { key: "tiktok",    kind: "platform", label: "TikTok",    top: 54.5, left: 8, width: 84, height: 5 },
-    { key: "telegram",  kind: "platform", label: "Telegram",  top: 60.0, left: 8, width: 84, height: 5 },
-    { key: "instagram", kind: "platform", label: "Instagram", top: 65.5, left: 8, width: 84, height: 5 },
-    { key: "whatsapp",  kind: "platform", label: "WhatsApp",  top: 71.0, left: 8, width: 84, height: 5 },
-    { key: "website",   kind: "platform", label: "Website",   top: 76.5, left: 8, width: 84, height: 5 },
+  // Build the 13-hotspot map for a profile from its measured vertical layout.
+  // L = { apply:[top,h], youtube:[top,h], ... website:[top,h], chipTop:Number }
+  function buildOverlay(L) {
+    var o = [];
+    o.push({ key: "apply", kind: "apply", label: "Apply to Join the Agency",
+             left: BTN_LEFT, width: BTN_WIDTH, top: L.apply[0], height: L.apply[1] });
+    [["youtube", "YouTube"], ["tiktok", "TikTok"], ["telegram", "Telegram"],
+     ["instagram", "Instagram"], ["whatsapp", "WhatsApp"], ["website", "Website"]
+    ].forEach(function (p) {
+      var t = L[p[0]];
+      o.push({ key: p[0], kind: "platform", label: p[1],
+               left: BTN_LEFT, width: BTN_WIDTH, top: t[0], height: t[1] });
+    });
+    ["MENA", "UK", "FR", "DE", "TR", "CCA"].forEach(function (r) {
+      o.push({ key: r.toLowerCase(), kind: "region", region: r, label: r,
+               left: CHIP_LEFT[r], width: CHIP_W, top: L.chipTop, height: CHIP_H });
+    });
+    return o;
+  }
 
-    { key: "mena", kind: "region", region: "MENA", label: "MENA", top: 85, left: 6.0,  width: 13, height: 4 },
-    { key: "uk",   kind: "region", region: "UK",   label: "UK",   top: 85, left: 21.5, width: 13, height: 4 },
-    { key: "fr",   kind: "region", region: "FR",   label: "FR",   top: 85, left: 37.0, width: 13, height: 4 },
-    { key: "de",   kind: "region", region: "DE",   label: "DE",   top: 85, left: 52.5, width: 13, height: 4 },
-    { key: "tr",   kind: "region", region: "TR",   label: "TR",   top: 85, left: 68.0, width: 13, height: 4 },
-    { key: "cca",  kind: "region", region: "CCA",  label: "CCA",  top: 85, left: 83.5, width: 13, height: 4 }
-  ];
+  // Per-profile vertical layout, measured from each artwork (ALWAFER sits
+  // ~2.5% higher than Ahmed/Hala because its header is shorter).
+  var LAYOUT = {
+    mustafa: { apply: [37.4, 6.4], youtube: [44.3, 5.4], tiktok: [50.4, 5.4], telegram: [56.2, 5.4],
+               instagram: [62.2, 5.4], whatsapp: [68.2, 5.4], website: [74.0, 5.7], chipTop: 86.9 },
+    ahmed:   { apply: [39.8, 6.7], youtube: [47.6, 5.4], tiktok: [54.0, 5.4], telegram: [60.1, 5.4],
+               instagram: [66.3, 5.4], whatsapp: [72.4, 5.4], website: [78.6, 5.7], chipTop: 90.6 },
+    hala:    { apply: [39.9, 6.7], youtube: [47.6, 5.4], tiktok: [54.0, 5.4], telegram: [60.1, 5.4],
+               instagram: [66.4, 5.4], whatsapp: [72.6, 5.4], website: [79.0, 5.7], chipTop: 89.6 }
+  };
 
   var CONFIG = {
     brand: { en: "ALWAFER", ar: "وكالة الوافر" },
-
     applyLink: APPLY_LINK,
     regionUrls: REGION_URLS,
     platformUrls: PLATFORM_URLS,
     websiteUrl: WEBSITE_URL,
-    overlay: OVERLAY,
-
     profileOrder: ["mustafa", "ahmed", "hala"],
 
-    /* Profiles: artwork path + semantic (screen-reader) text only.
-       The visible page IS the artwork; this text is visually hidden. */
     profiles: {
       mustafa: {
         artwork:  "assets/page-alwafer.png",
         title:    { en: "ALWAFER",        ar: "وكالة الوافر" },
-        subtitle: { en: "Alwafer Agency", ar: "وكالة الوافر الرسمية" }
+        subtitle: { en: "Alwafer Agency", ar: "وكالة الوافر الرسمية" },
+        overlay:  buildOverlay(LAYOUT.mustafa)
       },
       ahmed: {
         artwork:  "assets/page-ahmed.png",
         title:    { en: "TEAM AHMED RAMADAN", ar: "فريق أحمد رمضان" },
-        subtitle: { en: "Official Agency Network", ar: "شبكة الوكالة الرسمية" }
+        subtitle: { en: "Official Agency Network", ar: "شبكة الوكالة الرسمية" },
+        overlay:  buildOverlay(LAYOUT.ahmed)
       },
       hala: {
         artwork:  "assets/page-hala.png",
         title:    { en: "HALA AL-SAGHIR", ar: "حلا الصغير" },
-        subtitle: { en: "Official Profile", ar: "الملف الرسمي" }
+        subtitle: { en: "Official Profile", ar: "الملف الرسمي" },
+        overlay:  buildOverlay(LAYOUT.hala)
       }
     }
   };
