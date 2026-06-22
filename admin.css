@@ -69,8 +69,9 @@ body {
 
 /* ----- editor ----- */
 .editor-view { max-width: 760px; margin: 0 auto; padding: 22px 16px 40px; }
-.admin-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.admin-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .brand-row { display: flex; align-items: center; gap: 10px; }
+.admin-header .brand-row:last-child { flex-wrap: wrap; justify-content: flex-end; }
 .brand-tag { color: var(--text-faint); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
 .lead { color: var(--text-dim); font-size: 14px; margin: 16px 2px 18px; }
 .muted { color: var(--text-faint); font-weight: 400; font-size: 13px; }

@@ -10,4 +10,4 @@ desktop.ini
 # Dependencies (this is a dependency-free static site; nothing should appear here)
 node_modules/
 
-.vercel
+.env*.local

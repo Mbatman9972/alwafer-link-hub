@@ -13,9 +13,9 @@ top — the visible page is the artwork, not a CSS recreation.
 
 | Page | URL |
 | --- | --- |
-| **ALWAFER** | `https://alwafer-link-hub.vercel.app/?profile=mustafa` |
-| **Team Ahmed Ramadan** | `https://alwafer-link-hub.vercel.app/?profile=ahmed` |
-| **Hala Al-Saghir** | `https://alwafer-link-hub.vercel.app/?profile=hala` |
+| **ALWAFER** | `https://alwafer-link-hub.vercel.app/alwafer/` |
+| **Team Ahmed Ramadan** | `https://alwafer-link-hub.vercel.app/ahmed/` |
+| **Hala Al-Saghir** | `https://alwafer-link-hub.vercel.app/hala/` |
 
 Route keys (`mustafa` / `ahmed` / `hala`) are unchanged. No profile selected → a small
 functional selector page. Add `&hotspots=1` to outline the clickable zones for tuning.
@@ -49,7 +49,7 @@ The zones live in `OVERLAY` as percentages of the frame:
   top: 41.0, left: 8, width: 84, height: 6 },
 ```
 
-Open `/?profile=mustafa&hotspots=1`, then adjust `top/left/width/height` until each
+Open `/alwafer/?hotspots=1`, then adjust `top/left/width/height` until each
 outline sits on the matching button in the artwork. All three profiles share this map.
 
 ### Activate a link
@@ -112,9 +112,10 @@ Sign in at `/admin` by choosing an account + password:
 | **Hala Al-Saghir** (`hala`) | profile | only the Hala profile links |
 
 Permissions are enforced **server-side** — Ahmed/Hala cannot edit ALWAFER, each
-other, or the region links even with a crafted request. Admin URLs:
-`/admin?profile=mustafa`, `/admin?profile=ahmed`, `/admin?profile=hala` (a
-profile user opening someone else's URL is redirected to their own).
+other, or the region links even with a crafted request. Individual admin URLs are
+`/admin/alwafer/`, `/admin/ahmed/`, and `/admin/hala/`. The unscoped `/admin`
+route remains the owner's full control room. Legacy `?profile=` admin URLs redirect
+to their canonical individual routes.
 
 ### How persistence works
 The public pages read `data/link-settings.json`. The admin API

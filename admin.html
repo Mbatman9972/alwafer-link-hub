@@ -8,7 +8,7 @@
   <meta name="robots" content="noindex, nofollow" />
   <title>ALWAFER · Link Manager</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230a0a0c'/%3E%3Ctext x='50%25' y='54%25' font-size='34' font-family='Georgia,serif' fill='%23d4af37' text-anchor='middle' dominant-baseline='middle'%3EA%3C/text%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="admin.css" />
+  <link rel="stylesheet" href="/admin.css" />
 </head>
 <body>
   <div class="admin-aura" aria-hidden="true"></div>
@@ -46,11 +46,12 @@
       </div>
       <div class="brand-row">
         <span id="user-chip" class="user-chip"></span>
-        <button id="logout-btn" class="btn btn-ghost">Sign out</button>
+        <a id="owner-control-link" class="btn btn-ghost hidden" href="/admin">Owner control room</a>
+        <button id="logout-btn" class="btn btn-ghost">Sign out / Lock</button>
       </div>
     </header>
 
-    <p class="lead">Choose a page, then turn links on or off and paste their web addresses. Region links are shared across all pages.</p>
+    <p id="editor-lead" class="lead">Turn links on or off and paste their web addresses.</p>
 
     <nav id="profile-tabs" class="tabs" aria-label="Pages"></nav>
 
@@ -79,6 +80,6 @@
 
   <div id="toasts" class="toasts" aria-live="polite"></div>
 
-  <script src="admin.js"></script>
+  <script src="/admin.js"></script>
 </body>
 </html>

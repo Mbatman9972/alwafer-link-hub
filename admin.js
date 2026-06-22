@@ -20,8 +20,10 @@
   var state = {
     settings: null,
     user: null,                              // {key, displayName, role, profile, allowedProfiles, canEditRegions}
+    serverPerms: { profiles: [], regions: false },
     perms: { profiles: [], regions: false },
-    profile: "mustafa"
+    profile: "mustafa",
+    routeProfile: null
   };
 
   /* ----- url validation (mirrors server) ----- */
@@ -51,8 +53,15 @@
   function show(n, on) { if (n) n.classList.toggle("hidden", !on); }
   function toast(msg, type) { var b = $("toasts"); if (!b) return; var t = el("div", "toast " + (type || "info"), msg); b.appendChild(t); setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 3600); }
 
-  function urlProfileParam() {
-    try { var m = (location.search || "").match(/[?&]profile=([^&]+)/); var p = m ? decodeURIComponent(m[1]).toLowerCase() : ""; return NAMES[p] ? p : ""; } catch (e) { return ""; }
+  function routeProfile() {
+    try {
+      var m = (location.pathname || "").match(/^\/admin\/(alwafer|ahmed|hala)\/?$/i);
+      if (!m) return "";
+      return m[1].toLowerCase() === "alwafer" ? "mustafa" : m[1].toLowerCase();
+    } catch (e) { return ""; }
+  }
+  function adminPath(profile) {
+    return "/admin/" + (profile === "mustafa" ? "alwafer" : profile) + "/";
   }
 
   /* ----- settings normalization ----- */
@@ -92,12 +101,13 @@
   function renderHeader() {
     var chip = $("user-chip"); clear(chip);
     if (state.user) {
-      chip.appendChild(el("span", null, state.user.displayName));
+      chip.appendChild(el("span", null, "Signed in as " + state.user.displayName));
       chip.appendChild(el("span", "role", state.user.role === "owner" ? "Owner" : "Editor"));
     }
     // owner-only tools
     var owner = state.user && state.user.role === "owner";
-    show($("export-btn"), owner); show($("import-btn"), owner);
+    show($("export-btn"), owner && !state.routeProfile); show($("import-btn"), owner && !state.routeProfile);
+    show($("owner-control-link"), owner && !!state.routeProfile);
     show($("regions-title"), state.perms.regions); show($("regions-editor"), state.perms.regions);
   }
 
@@ -143,7 +153,7 @@
     var bar = $("preview-bar-links"); if (!bar) return; clear(bar);
     state.perms.profiles.forEach(function (p) {
       bar.appendChild(el("span", null, " "));
-      var a = el("a", "preview-link", NAMES[p]); a.href = "/?profile=" + p; a.target = "_blank"; a.rel = "noopener noreferrer"; a.setAttribute("data-preview", p);
+      var a = el("a", "preview-link", NAMES[p]); a.href = "/" + (p === "mustafa" ? "alwafer" : p) + "/"; a.target = "_blank"; a.rel = "noopener noreferrer"; a.setAttribute("data-preview", p);
       bar.appendChild(a);
     });
   }
@@ -152,6 +162,9 @@
     if (!state.settings) state.settings = defaults();
     if (state.perms.profiles.indexOf(state.profile) < 0) state.profile = state.perms.profiles[0] || "mustafa";
     renderHeader();
+    $("editor-lead").textContent = state.routeProfile
+      ? "Manage " + (NAMES[state.profile] || "this profile") + " links" + (state.perms.regions ? " and shared agency regions." : ".")
+      : "Owner control room: choose a page, then manage its links and shared agency regions.";
     renderTabs();
     $("links-title").textContent = (state.perms.profiles.length > 1 ? "Links — " : "Links — ") + (NAMES[state.profile] || "");
     var prof = state.settings.profiles[state.profile] || { links: {} };
@@ -174,7 +187,7 @@
     return probs;
   }
   function buildSavePayload() {
-    var out = { profiles: {}, sharedRegions: {} };
+    var out = { profiles: {} };
     state.perms.profiles.forEach(function (p) { out.profiles[p] = state.settings.profiles[p]; });
     if (state.perms.regions) out.sharedRegions = state.settings.sharedRegions;
     return out;
@@ -215,21 +228,30 @@
   /* ----- auth flow ----- */
   function applyUser(user) {
     state.user = user;
-    state.perms = { profiles: (user.allowedProfiles || []).slice(), regions: !!user.canEditRegions };
-    // route to a profile this user may edit; redirect URL for profile-scoped users
-    var wanted = urlProfileParam();
+    state.serverPerms = { profiles: (user.allowedProfiles || []).slice(), regions: !!user.canEditRegions };
+    var wanted = state.routeProfile;
     if (user.role !== "owner") {
       state.profile = user.profile;
-      if (wanted && wanted !== user.profile && history && history.replaceState) history.replaceState(null, "", "/admin?profile=" + user.profile);
+      state.perms = { profiles: [user.profile], regions: false };
+      if (wanted && wanted !== user.profile && history && history.replaceState) {
+        state.routeProfile = user.profile;
+        history.replaceState(null, "", adminPath(user.profile));
+      }
+    } else if (wanted) {
+      // Individual owner URLs stay visually scoped. Full owner authority remains
+      // available through the explicit /admin control room.
+      state.profile = wanted;
+      state.perms = { profiles: [wanted], regions: wanted === "mustafa" };
     } else {
-      state.profile = (state.perms.profiles.indexOf(wanted) > -1) ? wanted : state.perms.profiles[0];
+      state.perms = { profiles: state.serverPerms.profiles.slice(), regions: state.serverPerms.regions };
+      state.profile = state.perms.profiles[0] || "mustafa";
     }
   }
   function loadSettings() {
     return api("/settings", { method: "GET" }).then(function (res) {
       if (res.status === 200 && res.body) {
         if (res.body.user) applyUser(res.body.user);
-        if (res.body.perms) state.perms = { profiles: res.body.perms.profiles.slice(), regions: !!res.body.perms.regions };
+        if (res.body.perms) state.serverPerms = { profiles: res.body.perms.profiles.slice(), regions: !!res.body.perms.regions };
         state.settings = normalize(res.body.settings);
         return true;
       }
@@ -243,12 +265,15 @@
       showLogin("Incorrect account or password.", "error"); return false;
     });
   }
-  function doLogout() { api("/logout", { method: "POST" }).then(function () { state.user = null; showLogin("Signed out."); }); }
+  function doLogout() { api("/logout", { method: "POST" }).then(function () {
+    state.user = null; state.settings = null; state.serverPerms = { profiles: [], regions: false }; state.perms = { profiles: [], regions: false };
+    $("login-password").value = ""; showLogin("Signed out. This page is locked.", "ok");
+  }); }
 
   /* ----- init ----- */
   function init() {
-    // preselect the account matching ?profile=
-    var pre = urlProfileParam(); if (pre && $("login-account")) $("login-account").value = pre;
+    state.routeProfile = routeProfile() || null;
+    var pre = state.routeProfile; if (pre && $("login-account")) { $("login-account").value = pre; $("login-account").disabled = true; }
     var lf = $("login-form");
     if (lf) lf.addEventListener("submit", function (e) { e.preventDefault(); doLogin($("login-account").value, $("login-password").value); });
     if ($("logout-btn")) $("logout-btn").addEventListener("click", doLogout);

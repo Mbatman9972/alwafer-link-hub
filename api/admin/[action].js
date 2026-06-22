@@ -219,6 +219,22 @@ function applyAllowedEdits(current, input, perms) {
   result.updatedAt = new Date().toISOString();
   return { ok: result };
 }
+function forbiddenScope(input, perms) {
+  input = input || {};
+  var allowed = {};
+  perms.profiles.forEach(function (p) { allowed[p] = true; });
+  var profiles = input.profiles;
+  if (profiles && typeof profiles === "object") {
+    var keys = Object.keys(profiles);
+    for (var i = 0; i < keys.length; i++) {
+      if (!allowed[keys[i]]) return "Not permitted to edit profile: " + keys[i];
+    }
+  }
+  if (!perms.regions && Object.prototype.hasOwnProperty.call(input, "sharedRegions")) {
+    return "Not permitted to edit shared regions";
+  }
+  return "";
+}
 function filterForUser(settings, perms) {
   var base = normalizeBaseline(settings);
   if (perms.regions && perms.profiles.length === PROFILE_KEYS.length) return base; // owner: everything
@@ -296,6 +312,8 @@ async function handler(req, res) {
 
       if (method === "POST") {
         var payload = await readBody(req);
+        var denied = forbiddenScope(payload && payload.settings, perms);
+        if (denied) return send(res, 403, { error: "forbidden_scope", message: denied });
         if (!process.env.GITHUB_TOKEN) {
           // still validate so the user gets accurate feedback
           var dry = applyAllowedEdits(buildDefaults(), payload && payload.settings, perms);
@@ -325,6 +343,7 @@ module.exports.verifyToken = verifyToken;
 module.exports.checkHash = checkHash;
 module.exports.permsFor = permsFor;
 module.exports.applyAllowedEdits = applyAllowedEdits;
+module.exports.forbiddenScope = forbiddenScope;
 module.exports.filterForUser = filterForUser;
 module.exports.buildDefaults = buildDefaults;
 module.exports.loadUsers = loadUsers;
