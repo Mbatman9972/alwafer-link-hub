@@ -274,6 +274,9 @@
   /* ----- init ----- */
   function init() {
     state.routeProfile = routeProfile() || null;
+    if (state.routeProfile && location.search && history && history.replaceState) {
+      history.replaceState(null, "", adminPath(state.routeProfile));
+    }
     var pre = state.routeProfile; if (pre && $("login-account")) { $("login-account").value = pre; $("login-account").disabled = true; }
     var lf = $("login-form");
     if (lf) lf.addEventListener("submit", function (e) { e.preventDefault(); doLogin($("login-account").value, $("login-password").value); });
