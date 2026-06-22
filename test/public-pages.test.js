@@ -31,6 +31,10 @@ for (const page of pages) {
 test("canonical URLs retain trailing slashes", () => {
   const config = JSON.parse(fs.readFileSync(path.join(root, "vercel.json"), "utf8"));
   assert.equal(config.trailingSlash, true);
+  assert.deepEqual(config.rewrites.map((rule) => rule.source), [
+    "/admin/alwafer/", "/admin/ahmed/", "/admin/hala/"
+  ]);
+  assert.ok(config.rewrites.every((rule) => rule.destination === "/admin/"));
 });
 
 test("admin renders the required owner identity wording", () => {
