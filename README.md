@@ -18,14 +18,14 @@ top — the visible page is the artwork, not a CSS recreation.
 | **Hala Al-Saghir** | `https://alwafer-link-hub.vercel.app/hala/` |
 
 Route keys (`mustafa` / `ahmed` / `hala`) are unchanged. No profile selected → a small
-functional selector page. Add `&hotspots=1` to outline the clickable zones for tuning.
+functional selector page. Add `?hotspots=1` to a canonical profile URL to outline the clickable zones for tuning.
 
 ---
 
 ## How it works
 
-1. `config.js` maps each profile to its artwork image (`assets/page-*.png`) and holds a
-   **shared hotspot map** (`OVERLAY`) plus the region/platform/apply URLs.
+1. `config.js` maps each profile to its artwork image (`assets/page-*.png`) and documents
+   the pixel-measured hotspot geometry used by the static profile pages.
 2. `app.js` renders one `<img class="profile-art">` inside an `.artwork-frame` and lays
    transparent `<a class="hotspot">` anchors over it using **percentage** positions, so
    everything scales on mobile while keeping the 9:16 ratio.
@@ -53,12 +53,10 @@ Open `/alwafer/?hotspots=1`, then adjust `top/left/width/height` until each
 outline sits on the matching button in the artwork. All three profiles share this map.
 
 ### Activate a link
-- **Region links** (MENA/UK/FR/DE/TR/CCA) are already active — edit `REGION_URLS`.
-- **Platform links** (YouTube/TikTok/Telegram/Instagram/WhatsApp/Website) and **Apply**
-  are placeholders: their hotspots exist but do not navigate (`href="#"`,
-  `aria-disabled="true"`). Paste a real URL into `PLATFORM_URLS` / `WEBSITE_URL` /
-  `APPLY_LINK` to make that hotspot active. Active external links open in a new tab with
-  `target="_blank" rel="noopener noreferrer"`.
+Use the scoped admin pages to update `data/link-settings.json`. Region links are active by
+default. Disabled or empty links render as inert `href="#"` hotspots with
+`aria-disabled="true"`; active external links use `target="_blank"` and
+`rel="noopener noreferrer"`.
 
 ---
 

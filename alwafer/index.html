@@ -43,10 +43,10 @@
   "use strict";
   var KEY="mustafa";
   var REGION={mena:"https://www.tiktok.com/t/ZMAN6Bu2W/",uk:"https://www.tiktok.com/t/ZSxoyPd4W/",fr:"https://www.tiktok.com/t/ZSxoAQrsm/",de:"https://www.tiktok.com/t/ZSQ1b63XY/",tr:"https://www.tiktok.com/t/ZSxoUt6A7/",cca:"https://www.tiktok.com/t/ZSxECjfqx/"};
-  var BTN_LEFT=7.5,BTN_W=85,CHIP_W=11.2,CHIP_H=3.8;
-  var CHIP_LEFT={mena:12.6,uk:25.2,fr:37.8,de:50.2,tr:62.8,cca:75.4};
+  var BTN_LEFT=15.0,BTN_W=69.0,CHIP_W=10.6,CHIP_H=3.9;
+  var CHIP_LEFT={mena:13.5,uk:25.7,fr:38.2,de:50.6,tr:63.0,cca:75.5};
   var PLATS=[["youtube","YouTube"],["tiktok","TikTok"],["telegram","Telegram"],["instagram","Instagram"],["whatsapp","WhatsApp"],["website","Website"]];
-  var L={"apply":[37.4,6.4],"youtube":[44.3,5.4],"tiktok":[50.4,5.4],"telegram":[56.2,5.4],"instagram":[62.2,5.4],"whatsapp":[68.2,5.4],"website":[74,5.7],"chipTop":86.9};
+  var L={"apply":[38.5,5.7],"youtube":[45.3,5.1],"tiktok":[51.3,5.1],"telegram":[57.1,5.1],"instagram":[63.0,5.1],"whatsapp":[68.9,5.1],"website":[74.8,5.1],"chipTop":86.9};
   function overlay(){var o=[];o.push({k:"apply",kind:"apply",label:"Apply to Join the Agency",left:BTN_LEFT,width:BTN_W,top:L.apply[0],height:L.apply[1]});PLATS.forEach(function(q){var t=L[q[0]];o.push({k:q[0],kind:"platform",label:q[1],left:BTN_LEFT,width:BTN_W,top:t[0],height:t[1]});});["mena","uk","fr","de","tr","cca"].forEach(function(r){o.push({k:r,kind:"region",region:r,label:r.toUpperCase(),left:CHIP_LEFT[r],width:CHIP_W,top:L.chipTop,height:CHIP_H});});return o;}
   function isNav(u){if(typeof u!=="string")return false;u=u.trim();if(!u||u.charAt(0)==="#")return false;return /^(https?:|mailto:|tel:|\/)/i.test(u);}
   function safe(u){if(typeof u!=="string")return "#";u=u.trim();if(!u)return "#";var m=u.match(/^([a-zA-Z][a-zA-Z0-9+.\-]*):/);if(m&&["http","https","mailto","tel"].indexOf(m[1].toLowerCase())<0)return "#";return u;}

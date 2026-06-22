@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
-  "trailingSlash": false,
+  "trailingSlash": true,
   "redirects": [
     { "source": "/admin", "has": [{ "type": "query", "key": "profile", "value": "mustafa" }], "destination": "/admin/alwafer/", "permanent": true },
     { "source": "/admin", "has": [{ "type": "query", "key": "profile", "value": "ahmed" }], "destination": "/admin/ahmed/", "permanent": true },

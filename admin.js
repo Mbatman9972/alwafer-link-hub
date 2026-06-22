@@ -101,8 +101,8 @@
   function renderHeader() {
     var chip = $("user-chip"); clear(chip);
     if (state.user) {
-      chip.appendChild(el("span", null, "Signed in as " + state.user.displayName));
-      chip.appendChild(el("span", "role", state.user.role === "owner" ? "Owner" : "Editor"));
+      chip.appendChild(el("span", null, "Signed in as " + state.user.displayName + (state.user.role === "owner" ? " owner" : "")));
+      if (state.user.role !== "owner") chip.appendChild(el("span", "role", "Editor"));
     }
     // owner-only tools
     var owner = state.user && state.user.role === "owner";

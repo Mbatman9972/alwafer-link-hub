@@ -93,3 +93,33 @@ test("allowed profile-only payload reaches persistence gate", async () => {
   assert.equal(result.status, 503);
   assert.equal(result.body.error, "github_not_configured");
 });
+
+test("Hala may submit only Hala settings", async () => {
+  const { cookie } = await login("hala", "hala-test");
+  const settings = api.buildDefaults();
+  const result = await request("settings", "POST", {
+    settings: { profiles: { hala: settings.profiles.hala } }
+  }, cookie);
+  assert.equal(result.status, 503);
+  assert.equal(result.body.error, "github_not_configured");
+});
+
+test("owner may submit every profile and shared regions", async () => {
+  const { response, cookie } = await login("mustafa", "owner-test");
+  assert.equal(response.status, 200);
+  assert.deepEqual(response.body.user.allowedProfiles, ["mustafa", "ahmed", "hala"]);
+  assert.equal(response.body.user.canEditRegions, true);
+
+  const settings = api.buildDefaults();
+  const result = await request("settings", "POST", { settings }, cookie);
+  assert.equal(result.status, 503);
+  assert.equal(result.body.error, "github_not_configured");
+});
+
+test("logout clears the signed session cookie", async () => {
+  const { cookie } = await login("ahmed", "ahmed-test");
+  const response = await request("logout", "POST", {}, cookie);
+  assert.equal(response.status, 200);
+  assert.match(String(response.headers["set-cookie"]), /alwafer_admin=;/);
+  assert.match(String(response.headers["set-cookie"]), /Max-Age=0/);
+});

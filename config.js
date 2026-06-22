@@ -30,26 +30,24 @@
   var APPLY_LINK = "#apply-link-to-be-added";
 
   /* -------- shared geometry (same across all three artworks) -------- */
-  var BTN_LEFT = 7.5, BTN_WIDTH = 85;            // full-width buttons
-  var CHIP_W = 11.2, CHIP_H = 3.8;               // region chips
-  var CHIP_LEFT = { MENA: 12.6, UK: 25.2, FR: 37.8, DE: 50.2, TR: 62.8, CCA: 75.4 };
+  var CHIP_H = 3.9;
 
   // Build the 13-hotspot map for a profile from its measured vertical layout.
   // L = { apply:[top,h], youtube:[top,h], ... website:[top,h], chipTop:Number }
   function buildOverlay(L) {
     var o = [];
     o.push({ key: "apply", kind: "apply", label: "Apply to Join the Agency",
-             left: BTN_LEFT, width: BTN_WIDTH, top: L.apply[0], height: L.apply[1] });
+             left: L.buttonLeft, width: L.buttonWidth, top: L.apply[0], height: L.apply[1] });
     [["youtube", "YouTube"], ["tiktok", "TikTok"], ["telegram", "Telegram"],
      ["instagram", "Instagram"], ["whatsapp", "WhatsApp"], ["website", "Website"]
     ].forEach(function (p) {
       var t = L[p[0]];
       o.push({ key: p[0], kind: "platform", label: p[1],
-               left: BTN_LEFT, width: BTN_WIDTH, top: t[0], height: t[1] });
+               left: L.buttonLeft, width: L.buttonWidth, top: t[0], height: t[1] });
     });
     ["MENA", "UK", "FR", "DE", "TR", "CCA"].forEach(function (r) {
       o.push({ key: r.toLowerCase(), kind: "region", region: r, label: r,
-               left: CHIP_LEFT[r], width: CHIP_W, top: L.chipTop, height: CHIP_H });
+               left: L.chipLeft[r], width: L.chipWidth, top: L.chipTop, height: CHIP_H });
     });
     return o;
   }
@@ -57,12 +55,15 @@
   // Per-profile vertical layout, measured from each artwork (ALWAFER sits
   // ~2.5% higher than Ahmed/Hala because its header is shorter).
   var LAYOUT = {
-    mustafa: { apply: [37.4, 6.4], youtube: [44.3, 5.4], tiktok: [50.4, 5.4], telegram: [56.2, 5.4],
-               instagram: [62.2, 5.4], whatsapp: [68.2, 5.4], website: [74.0, 5.7], chipTop: 86.9 },
-    ahmed:   { apply: [39.8, 6.7], youtube: [47.6, 5.4], tiktok: [54.0, 5.4], telegram: [60.1, 5.4],
-               instagram: [66.3, 5.4], whatsapp: [72.4, 5.4], website: [78.6, 5.7], chipTop: 90.6 },
-    hala:    { apply: [39.9, 6.7], youtube: [47.6, 5.4], tiktok: [54.0, 5.4], telegram: [60.1, 5.4],
-               instagram: [66.4, 5.4], whatsapp: [72.6, 5.4], website: [79.0, 5.7], chipTop: 89.6 }
+    mustafa: { buttonLeft: 15.0, buttonWidth: 69.0, apply: [38.5, 5.7], youtube: [45.3, 5.1], tiktok: [51.3, 5.1], telegram: [57.1, 5.1],
+               instagram: [63.0, 5.1], whatsapp: [68.9, 5.1], website: [74.8, 5.1], chipTop: 86.9, chipWidth: 10.6,
+               chipLeft: { MENA: 13.5, UK: 25.7, FR: 38.2, DE: 50.6, TR: 63.0, CCA: 75.5 } },
+    ahmed:   { buttonLeft: 14.5, buttonWidth: 70.4, apply: [41.0, 6.7], youtube: [48.4, 5.4], tiktok: [54.7, 5.4], telegram: [61.0, 5.4],
+               instagram: [67.2, 5.4], whatsapp: [73.4, 5.4], website: [79.5, 5.4], chipTop: 90.6, chipWidth: 10.7,
+               chipLeft: { MENA: 13.3, UK: 25.8, FR: 38.2, DE: 50.4, TR: 62.9, CCA: 75.2 } },
+    hala:    { buttonLeft: 14.7, buttonWidth: 70.0, apply: [41.0, 6.7], youtube: [48.3, 5.4], tiktok: [54.7, 5.4], telegram: [61.0, 5.4],
+               instagram: [67.2, 5.4], whatsapp: [73.4, 5.4], website: [79.8, 5.4], chipTop: 89.6, chipWidth: 10.8,
+               chipLeft: { MENA: 13.1, UK: 25.5, FR: 38.0, DE: 50.5, TR: 63.1, CCA: 75.7 } }
   };
 
   var CONFIG = {
