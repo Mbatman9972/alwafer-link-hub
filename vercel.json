@@ -8,9 +8,9 @@
     { "source": "/admin", "has": [{ "type": "query", "key": "profile", "value": "hala" }], "destination": "/admin/hala/", "permanent": true }
   ],
   "rewrites": [
-    { "source": "/admin/alwafer", "destination": "/admin.html" },
-    { "source": "/admin/ahmed", "destination": "/admin.html" },
-    { "source": "/admin/hala", "destination": "/admin.html" }
+    { "source": "/admin/alwafer", "destination": "/admin" },
+    { "source": "/admin/ahmed", "destination": "/admin" },
+    { "source": "/admin/hala", "destination": "/admin" }
   ],
   "headers": [
     {
