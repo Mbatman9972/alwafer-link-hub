@@ -267,6 +267,7 @@
   }
   function doLogout() { api("/logout", { method: "POST" }).then(function () {
     state.user = null; state.settings = null; state.serverPerms = { profiles: [], regions: false }; state.perms = { profiles: [], regions: false };
+    clear($("user-chip")); clear($("profile-tabs")); clear($("links-editor")); clear($("regions-editor")); clear($("preview-bar-links"));
     $("login-password").value = ""; showLogin("Signed out. This page is locked.", "ok");
   }); }
 
