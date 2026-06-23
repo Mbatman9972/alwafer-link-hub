@@ -1,20 +1,48 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-23T00:00:00.000Z",
+  "updatedAt": "2026-06-23T16:37:12.621Z",
   "profiles": {
     "mustafa": {
       "title": "ALWAFER",
       "subtitle": "Alwafer Agency",
       "tagline": "Empowering creators. Building influence. Elevating brands.\nتمكّن المبدعين، نبني التأثير، نرتقي بالعلامات التجارية.",
-      "profileImage": "/assets/page-alwafer.png",
+      "profileImage": "/assets/page-ahmed.png",
       "links": {
-        "apply": { "enabled": false, "url": "", "label": "Apply to Join the Agency" },
-        "youtube": { "enabled": false, "url": "", "label": "YouTube" },
-        "tiktok": { "enabled": false, "url": "", "label": "TikTok" },
-        "telegram": { "enabled": false, "url": "", "label": "Telegram" },
-        "instagram": { "enabled": false, "url": "", "label": "Instagram" },
-        "whatsapp": { "enabled": false, "url": "", "label": "WhatsApp" },
-        "website": { "enabled": false, "url": "", "label": "Website" }
+        "apply": {
+          "enabled": false,
+          "url": "",
+          "label": "Apply to Join the Agency"
+        },
+        "youtube": {
+          "enabled": false,
+          "url": "",
+          "label": "YouTube"
+        },
+        "tiktok": {
+          "enabled": false,
+          "url": "",
+          "label": "TikTok"
+        },
+        "telegram": {
+          "enabled": false,
+          "url": "",
+          "label": "Telegram"
+        },
+        "instagram": {
+          "enabled": false,
+          "url": "",
+          "label": "Instagram"
+        },
+        "whatsapp": {
+          "enabled": false,
+          "url": "",
+          "label": "WhatsApp"
+        },
+        "website": {
+          "enabled": true,
+          "url": "https://example.com/alwafer-admin-test",
+          "label": "Website"
+        }
       }
     },
     "ahmed": {
@@ -23,13 +51,41 @@
       "tagline": "Empowering creators. Building influence. Elevating brands.\nتمكّن المبدعين، نبني التأثير، نرتقي بالعلامات التجارية.",
       "profileImage": "/assets/page-ahmed.png",
       "links": {
-        "apply": { "enabled": false, "url": "", "label": "Apply to Join the Agency" },
-        "youtube": { "enabled": false, "url": "", "label": "YouTube" },
-        "tiktok": { "enabled": false, "url": "", "label": "TikTok" },
-        "telegram": { "enabled": false, "url": "", "label": "Telegram" },
-        "instagram": { "enabled": false, "url": "", "label": "Instagram" },
-        "whatsapp": { "enabled": false, "url": "", "label": "WhatsApp" },
-        "website": { "enabled": false, "url": "", "label": "Website" }
+        "apply": {
+          "enabled": false,
+          "url": "",
+          "label": "Apply to Join the Agency"
+        },
+        "youtube": {
+          "enabled": false,
+          "url": "",
+          "label": "YouTube"
+        },
+        "tiktok": {
+          "enabled": false,
+          "url": "",
+          "label": "TikTok"
+        },
+        "telegram": {
+          "enabled": false,
+          "url": "",
+          "label": "Telegram"
+        },
+        "instagram": {
+          "enabled": false,
+          "url": "",
+          "label": "Instagram"
+        },
+        "whatsapp": {
+          "enabled": false,
+          "url": "",
+          "label": "WhatsApp"
+        },
+        "website": {
+          "enabled": false,
+          "url": "",
+          "label": "Website"
+        }
       }
     },
     "hala": {
@@ -38,22 +94,74 @@
       "tagline": "Empowering creators. Building influence. Elevating brands.\nتمكّن المبدعين، نبني التأثير، نرتقي بالعلامات التجارية.",
       "profileImage": "/assets/page-hala.png",
       "links": {
-        "apply": { "enabled": false, "url": "", "label": "Apply to Join the Agency" },
-        "youtube": { "enabled": false, "url": "", "label": "YouTube" },
-        "tiktok": { "enabled": false, "url": "", "label": "TikTok" },
-        "telegram": { "enabled": false, "url": "", "label": "Telegram" },
-        "instagram": { "enabled": false, "url": "", "label": "Instagram" },
-        "whatsapp": { "enabled": false, "url": "", "label": "WhatsApp" },
-        "website": { "enabled": false, "url": "", "label": "Website" }
+        "apply": {
+          "enabled": false,
+          "url": "",
+          "label": "Apply to Join the Agency"
+        },
+        "youtube": {
+          "enabled": false,
+          "url": "",
+          "label": "YouTube"
+        },
+        "tiktok": {
+          "enabled": false,
+          "url": "",
+          "label": "TikTok"
+        },
+        "telegram": {
+          "enabled": false,
+          "url": "",
+          "label": "Telegram"
+        },
+        "instagram": {
+          "enabled": false,
+          "url": "",
+          "label": "Instagram"
+        },
+        "whatsapp": {
+          "enabled": false,
+          "url": "",
+          "label": "WhatsApp"
+        },
+        "website": {
+          "enabled": false,
+          "url": "",
+          "label": "Website"
+        }
       }
     }
   },
   "sharedRegions": {
-    "mena": { "enabled": true, "url": "https://www.tiktok.com/t/ZMAN6Bu2W/", "label": "MENA" },
-    "uk": { "enabled": true, "url": "https://www.tiktok.com/t/ZSxoyPd4W/", "label": "UK" },
-    "fr": { "enabled": true, "url": "https://www.tiktok.com/t/ZSxoAQrsm/", "label": "FR" },
-    "de": { "enabled": true, "url": "https://www.tiktok.com/t/ZSQ1b63XY/", "label": "DE" },
-    "tr": { "enabled": true, "url": "https://www.tiktok.com/t/ZSxoUt6A7/", "label": "TR" },
-    "cca": { "enabled": true, "url": "https://www.tiktok.com/t/ZSxECjfqx/", "label": "CCA" }
+    "mena": {
+      "enabled": true,
+      "url": "https://www.tiktok.com/t/ZMAN6Bu2W/",
+      "label": "MENA"
+    },
+    "uk": {
+      "enabled": true,
+      "url": "https://www.tiktok.com/t/ZSxoyPd4W/",
+      "label": "UK"
+    },
+    "fr": {
+      "enabled": true,
+      "url": "https://www.tiktok.com/t/ZSxoAQrsm/",
+      "label": "FR"
+    },
+    "de": {
+      "enabled": true,
+      "url": "https://www.tiktok.com/t/ZSQ1b63XY/",
+      "label": "DE"
+    },
+    "tr": {
+      "enabled": true,
+      "url": "https://www.tiktok.com/t/ZSxoUt6A7/",
+      "label": "TR"
+    },
+    "cca": {
+      "enabled": true,
+      "url": "https://www.tiktok.com/t/ZSxECjfqx/",
+      "label": "CCA"
+    }
   }
 }
