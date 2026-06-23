@@ -17,6 +17,11 @@ process.env.ALWAFER_ADMIN_USERS_JSON = JSON.stringify({
 delete process.env.GITHUB_TOKEN;
 
 const api = require("../api/admin/[action].js");
+const apiSlash = require("../api/admin/[action]/index.js");
+
+test("slash-compatible admin API entrypoint reuses the same handler", () => {
+  assert.equal(apiSlash, api);
+});
 
 function request(action, method, body, cookie) {
   const req = {
