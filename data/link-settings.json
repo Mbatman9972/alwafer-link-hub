@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-23T18:11:14.860Z",
+  "updatedAt": "2026-06-23T18:11:56.269Z",
   "profiles": {
     "mustafa": {
       "title": "ALWAFER",
       "subtitle": "Alwafer Agency",
       "tagline": "Empowering creators. Building influence. Elevating brands.\nتمكّن المبدعين، نبني التأثير، نرتقي بالعلامات التجارية.",
-      "profileImage": "/assets/profiles/alwafer-profile.png",
+      "profileImage": "/assets/profiles/ahmed-profile.png",
       "links": {
         "apply": {
           "enabled": false,
