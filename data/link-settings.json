@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-23T16:37:12.621Z",
+  "updatedAt": "2026-06-23T16:37:14.393Z",
   "profiles": {
     "mustafa": {
       "title": "ALWAFER",
@@ -82,8 +82,8 @@
           "label": "WhatsApp"
         },
         "website": {
-          "enabled": false,
-          "url": "",
+          "enabled": true,
+          "url": "https://example.com/ahmed-admin-test",
           "label": "Website"
         }
       }
