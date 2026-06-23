@@ -6,29 +6,49 @@ const path = require("node:path");
 const test = require("node:test");
 
 const root = path.resolve(__dirname, "..");
+const app = require("../app.js");
+
 const pages = [
-  { route: "alwafer", image: "page-alwafer.png", key: "mustafa", left: "15.0", width: "69.0" },
-  { route: "ahmed", image: "page-ahmed.png", key: "ahmed", left: "14.5", width: "70.4" },
-  { route: "hala", image: "page-hala.png", key: "hala", left: "14.7", width: "70.0" }
+  { route: "alwafer", key: "mustafa", title: "ALWAFER" },
+  { route: "ahmed", key: "ahmed", title: "Team Ahmed Ramadan" },
+  { route: "hala", key: "hala", title: "Hala Al-Saghir" }
 ];
 
 for (const page of pages) {
-  test(`${page.route} keeps one artwork image and a 13-hotspot inline renderer`, () => {
+  test(`${page.route} loads the real shared dashboard renderer, not static PNG hotspots`, () => {
     const html = fs.readFileSync(path.join(root, page.route, "index.html"), "utf8");
-    assert.equal((html.match(/<img class="profile-art"/g) || []).length, 1);
-    assert.match(html, new RegExp(`/assets/${page.image.replace(".", "\\.")}`));
-    assert.match(html, new RegExp(`var KEY="${page.key}"`));
-    assert.match(html, new RegExp(`BTN_LEFT=${page.left},BTN_W=${page.width}`));
-    assert.match(html, /\["mena","uk","fr","de","tr","cca"\]/);
-    assert.match(html, /\[\["youtube","YouTube"\].*\["website","Website"\]\]/);
-    assert.match(html, /a\.setAttribute\("aria-disabled","true"\)/);
-    assert.match(html, /a\.target="_blank";a\.rel="noopener noreferrer"/);
-    assert.doesNotMatch(html, /<script[^>]+src=/i);
-    assert.doesNotMatch(html, /profile-card|social-grid/i);
+    assert.match(html, /<script src="\/app\.js" defer><\/script>/);
+    assert.match(html, /<link rel="stylesheet" href="\/styles\.css"/);
+    assert.doesNotMatch(html, /<img class="profile-art"/);
+    assert.doesNotMatch(html, /class="hotspot|data-hotspot|BTN_LEFT|applyHotspots/);
+    assert.equal(app.resolveProfile(`/${page.route}/`, ""), page.key);
   });
 }
 
-test("canonical URLs retain trailing slashes", () => {
+test("public renderer exposes the required real dashboard primitives", () => {
+  const js = fs.readFileSync(path.join(root, "app.js"), "utf8");
+  assert.match(js, /className: "dash-button"/);
+  assert.match(js, /className: "region-chip"/);
+  assert.match(js, /className: "profile-switcher"/);
+  assert.match(js, /href: "\/" \+ SLUGS\[key\] \+ "\/"/);
+  assert.match(js, /target = "_blank"/);
+  assert.match(js, /rel = "noopener noreferrer"/);
+  assert.match(js, /aria-disabled/);
+});
+
+test("settings model includes profile content, profile image, links, and shared regions", () => {
+  const data = JSON.parse(fs.readFileSync(path.join(root, "data/link-settings.json"), "utf8"));
+  for (const profile of ["mustafa", "ahmed", "hala"]) {
+    assert.equal(typeof data.profiles[profile].title, "string");
+    assert.equal(typeof data.profiles[profile].subtitle, "string");
+    assert.equal(typeof data.profiles[profile].tagline, "string");
+    assert.match(data.profiles[profile].profileImage, /^\/assets\/page-/);
+    assert.deepEqual(Object.keys(data.profiles[profile].links), app.LINK_KEYS);
+  }
+  assert.deepEqual(Object.keys(data.sharedRegions), app.REGION_KEYS);
+});
+
+test("canonical URLs retain trailing slashes and admin profile routes", () => {
   const config = JSON.parse(fs.readFileSync(path.join(root, "vercel.json"), "utf8"));
   assert.equal(config.trailingSlash, true);
   assert.deepEqual(config.rewrites.map((rule) => rule.source), [
@@ -37,13 +57,14 @@ test("canonical URLs retain trailing slashes", () => {
   assert.ok(config.rewrites.every((rule) => rule.destination === "/admin/"));
 });
 
-test("admin renders the required owner identity wording", () => {
+test("admin renders the required signed-in identity wording", () => {
   const js = fs.readFileSync(path.join(root, "admin.js"), "utf8");
+  assert.match(js, /Signed in as /);
   assert.match(js, /state\.user\.role === "owner" \? " owner" : ""/);
 });
 
 test("repository text has no forbidden ALWAFER misspellings", () => {
-  const files = ["index.html", "config.js", "app.js", "admin.html", "admin.js", "README.md"];
+  const files = ["index.html", "config.js", "app.js", "admin.html", "admin.js", "README.md", "styles.css"];
   const forbidden = new RegExp([
     "Alwa" + "fir", "Alwa" + "far", "ALWA" + "FAR",
     "ALWA" + "FIR", "ALA" + "FER", "Ala" + "fir"

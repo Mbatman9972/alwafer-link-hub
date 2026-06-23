@@ -1,61 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#000000" />
+  <meta name="theme-color" content="#050506" />
   <meta name="color-scheme" content="dark" />
   <title>Team Ahmed Ramadan</title>
   <meta name="description" content="Official Team Ahmed Ramadan links, channels, and joining access." />
   <meta property="og:title" content="Team Ahmed Ramadan" />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="/assets/page-ahmed.png" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230a0a0c'/%3E%3Ctext x='50%25' y='54%25' font-size='34' font-family='Georgia,serif' fill='%23d4af37' text-anchor='middle' dominant-baseline='middle'%3EA%3C/text%3E%3C/svg%3E" />
-  <style>
-    html,body{margin:0;padding:0;background:#000;min-height:100%}
-    body{font-family:ui-sans-serif,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Noto Sans Arabic",sans-serif;color:#f5f3ec;-webkit-font-smoothing:antialiased}
-    #app{min-height:100vh;min-height:100dvh}
-    .profile-art-shell{min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;background:#000;padding:16px 0}
-    .artwork-frame{position:relative;width:100%;max-width:440px;margin:0 auto;background:#000;line-height:0}
-    .profile-art{display:block;width:100%;height:auto;-webkit-user-drag:none;user-select:none}
-    .hotspot{position:absolute;display:block;background:transparent;border:0;border-radius:12px;-webkit-tap-highlight-color:transparent;z-index:2}
-    .hotspot.is-disabled{cursor:default}
-    .hotspot:focus-visible{outline:2px solid #d4af37;outline-offset:2px}
-    .artwork-frame.debug .hotspot{background:rgba(212,175,55,.22);outline:1px solid #d4af37}
-    .artwork-frame.debug .hotspot.is-disabled{background:rgba(255,80,80,.22);outline:1px solid #ff5050}
-    .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-  </style>
+  <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <!-- Static artwork: the approved full-page PNG is the visible page BEFORE any JS
-       runs. Inline JS only layers transparent hotspot overlays on top. -->
-  <div id="app">
-    <main class="profile-art-shell" data-profile="ahmed">
-      <div class="artwork-frame">
-        <img class="profile-art" src="/assets/page-ahmed.png" alt="Team Ahmed Ramadan" decoding="async" fetchpriority="high" />
-      </div>
-      <div class="visually-hidden"><h1>Team Ahmed Ramadan</h1></div>
-    </main>
-    <noscript>Team Ahmed Ramadan — official links.</noscript>
-  </div>
-  <script>
-  (function(){
-  "use strict";
-  var KEY="ahmed";
-  var REGION={mena:"https://www.tiktok.com/t/ZMAN6Bu2W/",uk:"https://www.tiktok.com/t/ZSxoyPd4W/",fr:"https://www.tiktok.com/t/ZSxoAQrsm/",de:"https://www.tiktok.com/t/ZSQ1b63XY/",tr:"https://www.tiktok.com/t/ZSxoUt6A7/",cca:"https://www.tiktok.com/t/ZSxECjfqx/"};
-  var BTN_LEFT=14.5,BTN_W=70.4,CHIP_W=10.7,CHIP_H=3.9;
-  var CHIP_LEFT={mena:13.3,uk:25.8,fr:38.2,de:50.4,tr:62.9,cca:75.2};
-  var PLATS=[["youtube","YouTube"],["tiktok","TikTok"],["telegram","Telegram"],["instagram","Instagram"],["whatsapp","WhatsApp"],["website","Website"]];
-  var L={"apply":[41.0,6.7],"youtube":[48.4,5.4],"tiktok":[54.7,5.4],"telegram":[61.0,5.4],"instagram":[67.2,5.4],"whatsapp":[73.4,5.4],"website":[79.5,5.4],"chipTop":90.6};
-  function overlay(){var o=[];o.push({k:"apply",kind:"apply",label:"Apply to Join the Agency",left:BTN_LEFT,width:BTN_W,top:L.apply[0],height:L.apply[1]});PLATS.forEach(function(q){var t=L[q[0]];o.push({k:q[0],kind:"platform",label:q[1],left:BTN_LEFT,width:BTN_W,top:t[0],height:t[1]});});["mena","uk","fr","de","tr","cca"].forEach(function(r){o.push({k:r,kind:"region",region:r,label:r.toUpperCase(),left:CHIP_LEFT[r],width:CHIP_W,top:L.chipTop,height:CHIP_H});});return o;}
-  function isNav(u){if(typeof u!=="string")return false;u=u.trim();if(!u||u.charAt(0)==="#")return false;return /^(https?:|mailto:|tel:|\/)/i.test(u);}
-  function safe(u){if(typeof u!=="string")return "#";u=u.trim();if(!u)return "#";var m=u.match(/^([a-zA-Z][a-zA-Z0-9+.\-]*):/);if(m&&["http","https","mailto","tel"].indexOf(m[1].toLowerCase())<0)return "#";return u;}
-  function zoneState(z,s){var link=null;if(s){if(z.kind==="region")link=(s.sharedRegions||{})[z.k];else{var p=(s.profiles||{})[KEY];if(p&&p.links)link=p.links[z.k];}}if(link&&typeof link==="object"){var u=typeof link.url==="string"?link.url:"";var en=link.enabled===true;return{url:u,nav:en&&isNav(u)};}if(z.kind==="region"){var ru=REGION[z.k]||"";return{url:ru,nav:isNav(ru)};}return{url:"",nav:false};}
-  function el(t,c){var n=document.createElement(t);if(c)n.className=c;return n;}
-  function applyHotspots(s){var frame=document.querySelector(".artwork-frame");if(!frame)return;var old=frame.querySelectorAll(".hotspot");for(var i=0;i<old.length;i++)frame.removeChild(old[i]);if(/[?&]hotspots=1\b/.test(location.search))frame.className="artwork-frame debug";overlay().forEach(function(z){var st=zoneState(z,s);var a=el("a","hotspot hotspot--"+z.kind+" "+(z.kind==="region"?"region-"+z.region:z.k)+(st.nav?"":" is-disabled"));a.setAttribute("aria-label",z.label);a.setAttribute("data-hotspot",z.k);a.style.cssText="top:"+z.top+"%;left:"+z.left+"%;width:"+z.width+"%;height:"+z.height+"%;";if(st.nav){a.href=safe(st.url);if(/^https?:\/\//i.test(st.url)){a.target="_blank";a.rel="noopener noreferrer";}}else{a.href="#";a.setAttribute("aria-disabled","true");a.addEventListener("click",function(e){e.preventDefault();});}var sp=el("span","visually-hidden");sp.textContent=z.label;a.appendChild(sp);frame.appendChild(a);});}
-  applyHotspots(null);
-  if(typeof fetch!=="undefined"){fetch("/data/link-settings.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).then(function(s){if(s)applyHotspots(s);}).catch(function(){});}
-})();
-  </script>
+  <div id="app"><noscript>Team Ahmed Ramadan — official links.</noscript></div>
+  <script src="/app.js" defer></script>
 </body>
 </html>

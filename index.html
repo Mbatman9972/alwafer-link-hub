@@ -1,132 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#000000" />
+  <meta name="theme-color" content="#050506" />
   <meta name="color-scheme" content="dark" />
   <title>ALWAFER</title>
-  <meta name="description" content="Official ALWAFER Agency links, channels, and joining access." />
+  <meta name="description" content="Official ALWAFER Agency public dashboards, creator links, and joining access." />
   <meta property="og:title" content="ALWAFER" />
   <meta property="og:description" content="Official links, channels, and agency access." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="/assets/page-alwafer.png" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230a0a0c'/%3E%3Ctext x='50%25' y='54%25' font-size='34' font-family='Georgia,serif' fill='%23d4af37' text-anchor='middle' dominant-baseline='middle'%3EA%3C/text%3E%3C/svg%3E" />
-
-  <!-- CRITICAL inline styles: the visible artwork layer does NOT depend on any
-       external CSS, so a stale cached stylesheet can never produce a card UI. -->
-  <style>
-    html,body{margin:0;padding:0;background:#000;min-height:100%}
-    body{font-family:ui-sans-serif,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Noto Sans Arabic",sans-serif;color:#f5f3ec;-webkit-font-smoothing:antialiased}
-    #app{min-height:100vh;min-height:100dvh}
-    .profile-art-shell{min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;background:#000;padding:16px 0}
-    .artwork-frame{position:relative;width:100%;max-width:440px;margin:0 auto;background:#000;line-height:0}
-    .profile-art{display:block;width:100%;height:auto;-webkit-user-drag:none;user-select:none}
-    .hotspot{position:absolute;display:block;background:transparent;border:0;border-radius:12px;-webkit-tap-highlight-color:transparent;z-index:2}
-    .hotspot.is-disabled{cursor:default}
-    .hotspot:focus-visible{outline:2px solid #d4af37;outline-offset:2px}
-    .artwork-frame.debug .hotspot{background:rgba(212,175,55,.22);outline:1px solid #d4af37}
-    .artwork-frame.debug .hotspot.is-disabled{background:rgba(255,80,80,.22);outline:1px solid #ff5050}
-    .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-    .selector-shell{max-width:460px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;justify-content:center;padding:32px 22px;text-align:center}
-    .selector-title{font-size:clamp(28px,9vw,38px);font-weight:800;letter-spacing:.08em;margin:0;background:linear-gradient(92deg,#fff,#ecd28a);-webkit-background-clip:text;background-clip:text;color:transparent}
-    .selector-sub{color:#b0ada4;margin:8px 0 0;font-size:14px}
-    .selector-item{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding:16px 18px;border-radius:16px;text-decoration:none;color:#f5f3ec;background:rgba(255,255,255,.05);border:1px solid rgba(212,175,55,.4);font-weight:800;letter-spacing:.04em}
-    .selector-item .arw{color:#d4af37}
-  </style>
-  <!-- Optional full stylesheet (new immutable filename). Critical CSS above
-       already guarantees the artwork renders without it. -->
-  <link rel="stylesheet" href="styles.artwork.v2.css" />
+  <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <div id="app"><noscript>Please enable JavaScript to view this page.</noscript></div>
-
-  <!-- ===================================================================
-       INLINE public renderer. The visible page is ONE <img class="profile-art">
-       plus transparent <a class="hotspot"> overlays. There is NO external
-       public JS dependency, so the page can never render a CSS/card UI even if
-       a stale app.js/styles.css is cached. Link enable/URL state is enhanced
-       from data/link-settings.json (regions stay active by default).
-       =================================================================== -->
-  <script>
-  (function () {
-    "use strict";
-    var ART = { mustafa: "assets/page-alwafer.png", ahmed: "assets/page-ahmed.png", hala: "assets/page-hala.png" };
-    var NAMES = { mustafa: "ALWAFER", ahmed: "Team Ahmed Ramadan", hala: "Hala Al-Saghir" };
-    var ORDER = ["mustafa", "ahmed", "hala"];
-    var REGION = {
-      mena: "https://www.tiktok.com/t/ZMAN6Bu2W/", uk: "https://www.tiktok.com/t/ZSxoyPd4W/",
-      fr: "https://www.tiktok.com/t/ZSxoAQrsm/", de: "https://www.tiktok.com/t/ZSQ1b63XY/",
-      tr: "https://www.tiktok.com/t/ZSxoUt6A7/", cca: "https://www.tiktok.com/t/ZSxECjfqx/"
-    };
-    var CHIP_H = 3.9;
-    var PLATS = [["youtube","YouTube"],["tiktok","TikTok"],["telegram","Telegram"],["instagram","Instagram"],["whatsapp","WhatsApp"],["website","Website"]];
-    var LAYOUT = {
-      mustafa: { buttonLeft:15.0, buttonWidth:69.0, apply:[38.5,5.7], youtube:[45.3,5.1], tiktok:[51.3,5.1], telegram:[57.1,5.1], instagram:[63.0,5.1], whatsapp:[68.9,5.1], website:[74.8,5.1], chipTop:86.9, chipWidth:10.6, chipLeft:{mena:13.5,uk:25.7,fr:38.2,de:50.6,tr:63.0,cca:75.5} },
-      ahmed:   { buttonLeft:14.5, buttonWidth:70.4, apply:[41.0,6.7], youtube:[48.4,5.4], tiktok:[54.7,5.4], telegram:[61.0,5.4], instagram:[67.2,5.4], whatsapp:[73.4,5.4], website:[79.5,5.4], chipTop:90.6, chipWidth:10.7, chipLeft:{mena:13.3,uk:25.8,fr:38.2,de:50.4,tr:62.9,cca:75.2} },
-      hala:    { buttonLeft:14.7, buttonWidth:70.0, apply:[41.0,6.7], youtube:[48.3,5.4], tiktok:[54.7,5.4], telegram:[61.0,5.4], instagram:[67.2,5.4], whatsapp:[73.4,5.4], website:[79.8,5.4], chipTop:89.6, chipWidth:10.8, chipLeft:{mena:13.1,uk:25.5,fr:38.0,de:50.5,tr:63.1,cca:75.7} }
-    };
-    function overlayFor(key) {
-      var L = LAYOUT[key], o = [];
-      o.push({ k:"apply", kind:"apply", label:"Apply to Join the Agency", left:L.buttonLeft, width:L.buttonWidth, top:L.apply[0], height:L.apply[1] });
-      PLATS.forEach(function (p) { var t = L[p[0]]; o.push({ k:p[0], kind:"platform", label:p[1], left:L.buttonLeft, width:L.buttonWidth, top:t[0], height:t[1] }); });
-      ["mena","uk","fr","de","tr","cca"].forEach(function (r) { o.push({ k:r, kind:"region", region:r, label:r.toUpperCase(), left:L.chipLeft[r], width:L.chipWidth, top:L.chipTop, height:CHIP_H }); });
-      return o;
-    }
-    function isNav(u) { if (typeof u !== "string") return false; u = u.trim(); if (!u || u.charAt(0) === "#") return false; return /^(https?:|mailto:|tel:|\/)/i.test(u); }
-    function safe(u) { if (typeof u !== "string") return "#"; u = u.trim(); if (!u) return "#"; var m = u.match(/^([a-zA-Z][a-zA-Z0-9+.\-]*):/); if (m && ["http","https","mailto","tel"].indexOf(m[1].toLowerCase()) < 0) return "#"; return u; }
-    function resolveKey() {
-      var k = "";
-      try { var m = (location.search || "").match(/[?&]profile=([^&]+)/); if (m) k = decodeURIComponent(m[1]).toLowerCase(); } catch (e) {}
-      if (!k && location.hash) k = location.hash.replace(/^#/, "").toLowerCase();
-      return ART[k] ? k : "";
-    }
-    function zoneState(z, key, settings) {
-      var link = null;
-      if (settings) { if (z.kind === "region") link = (settings.sharedRegions || {})[z.k]; else { var p = (settings.profiles || {})[key]; if (p && p.links) link = p.links[z.k]; } }
-      if (link && typeof link === "object") { var u = typeof link.url === "string" ? link.url : ""; var en = link.enabled === true; return { url: u, nav: en && isNav(u) }; }
-      if (z.kind === "region") { var ru = REGION[z.k] || ""; return { url: ru, nav: isNav(ru) }; }
-      return { url: "", nav: false };
-    }
-    function el(t, c) { var n = document.createElement(t); if (c) n.className = c; return n; }
-    function render(key, settings) {
-      var app = document.getElementById("app"); if (!app) return;
-      while (app.firstChild) app.removeChild(app.firstChild);
-      document.documentElement.setAttribute("data-view", key ? "artwork" : "selector");
-      if (!key) {
-        var sh = el("main", "selector-shell");
-        var h = el("h1", "selector-title"); h.textContent = "ALWAFER"; sh.appendChild(h);
-        var sb = el("p", "selector-sub"); sb.textContent = "Choose a profile"; sh.appendChild(sb);
-        ORDER.forEach(function (kk) { var a = el("a", "selector-item"); a.href = "?profile=" + kk; a.textContent = NAMES[kk]; var ar = el("span", "arw"); ar.textContent = "→"; a.appendChild(ar); sh.appendChild(a); });
-        app.appendChild(sh); document.title = "ALWAFER"; return;
-      }
-      var shell = el("main", "profile-art-shell"); shell.setAttribute("data-profile", key);
-      var frame = el("div", "artwork-frame" + (/[?&]hotspots=1\b/.test(location.search) ? " debug" : ""));
-      var img = el("img", "profile-art"); img.src = safe(ART[key]); img.alt = NAMES[key]; img.setAttribute("decoding", "async"); frame.appendChild(img);
-      overlayFor(key).forEach(function (z) {
-        var st = zoneState(z, key, settings);
-        var a = el("a", "hotspot hotspot--" + z.kind + " " + (z.kind === "region" ? "region-" + z.region : z.k) + (st.nav ? "" : " is-disabled"));
-        a.setAttribute("aria-label", z.label); a.setAttribute("data-hotspot", z.k);
-        a.style.cssText = "top:" + z.top + "%;left:" + z.left + "%;width:" + z.width + "%;height:" + z.height + "%;";
-        if (st.nav) { a.href = safe(st.url); if (/^https?:\/\//i.test(st.url)) { a.target = "_blank"; a.rel = "noopener noreferrer"; } }
-        else { a.href = "#"; a.setAttribute("aria-disabled", "true"); a.addEventListener("click", function (e) { e.preventDefault(); }); }
-        var s = el("span", "visually-hidden"); s.textContent = z.label; a.appendChild(s);
-        frame.appendChild(a);
-      });
-      shell.appendChild(frame);
-      var vh = el("div", "visually-hidden"); var t = el("h1"); t.textContent = NAMES[key]; vh.appendChild(t); shell.appendChild(vh);
-      app.appendChild(shell);
-      document.title = NAMES[key] + " — ALWAFER";
-    }
-    function enhance(key) {
-      if (typeof fetch === "undefined") return;
-      fetch("/data/link-settings.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (s) { if (s) render(key, s); }).catch(function () {});
-    }
-    function boot() { var key = resolveKey(); render(key, null); enhance(key); }
-    boot();
-    window.addEventListener("hashchange", boot);
-    window.addEventListener("popstate", boot);
-  })();
-  </script>
+  <div id="app"><noscript>Please enable JavaScript to view the ALWAFER dashboard.</noscript></div>
+  <script src="/app.js" defer></script>
 </body>
 </html>

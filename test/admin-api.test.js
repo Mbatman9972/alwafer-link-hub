@@ -57,7 +57,7 @@ test("Ahmed session is restricted to Ahmed settings", async () => {
   assert.equal(response.body.user.canEditRegions, false);
 
   const crossProfile = await request("settings", "POST", {
-    settings: { profiles: { mustafa: {} } }
+    settings: { profiles: { mustafa: { title: "HACKED", profileImage: "https://example.com/hacked.png" } } }
   }, cookie);
   assert.equal(crossProfile.status, 403);
   assert.equal(crossProfile.body.error, "forbidden_scope");
@@ -87,11 +87,25 @@ test("Hala session cannot modify Ahmed, ALWAFER, or regions", async () => {
 test("allowed profile-only payload reaches persistence gate", async () => {
   const { cookie } = await login("ahmed", "ahmed-test");
   const settings = api.buildDefaults();
+  settings.profiles.ahmed.title = "Ahmed Test Title";
+  settings.profiles.ahmed.profileImage = "https://example.com/ahmed.png";
   const result = await request("settings", "POST", {
     settings: { profiles: { ahmed: settings.profiles.ahmed } }
   }, cookie);
   assert.equal(result.status, 503);
   assert.equal(result.body.error, "github_not_configured");
+});
+
+test("profile image URL validation rejects unsafe values before persistence", async () => {
+  const { cookie } = await login("ahmed", "ahmed-test");
+  const settings = api.buildDefaults();
+  settings.profiles.ahmed.profileImage = "javascript:alert(1)";
+  const result = await request("settings", "POST", {
+    settings: { profiles: { ahmed: settings.profiles.ahmed } }
+  }, cookie);
+  assert.equal(result.status, 400);
+  assert.equal(result.body.error, "validation");
+  assert.match(result.body.message, /profile image/i);
 });
 
 test("Hala may submit only Hala settings", async () => {

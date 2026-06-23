@@ -93,10 +93,16 @@ body {
 .row-label { font-weight: 700; }
 .row-controls { display: grid; grid-template-columns: auto 1fr; gap: 10px; margin-top: 12px; align-items: center; }
 .row-controls .url { grid-column: 1 / -1; }
-.row input.url, .row input.label { width: 100%; padding: 10px 12px; border-radius: 10px; font: inherit;
+.row input.url, .row input.label, .row textarea.url { width: 100%; padding: 10px 12px; border-radius: 10px; font: inherit;
   color: var(--text); background: rgba(0,0,0,.35); border: 1px solid var(--border); }
-.row input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,.22); }
+.row input:focus, .row textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,.22); }
 .row .label { max-width: 220px; }
+.profile-editor { margin-bottom: 22px; }
+.field-row { cursor: default; }
+.profile-controls { grid-template-columns: 1fr; }
+.profile-controls .url { grid-column: auto; }
+.textarea { min-height: 92px; resize: vertical; line-height: 1.45; }
+.field-hint { margin: -6px 2px 4px; color: var(--text-faint); font-size: 13px; line-height: 1.45; }
 
 /* status badge */
 .status { font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
