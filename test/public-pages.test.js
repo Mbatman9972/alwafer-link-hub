@@ -30,6 +30,8 @@ test("public renderer exposes the required real dashboard primitives", () => {
   assert.match(js, /className: "dash-button"/);
   assert.match(js, /className: "region-chip"/);
   assert.match(js, /className: "profile-switcher"/);
+  assert.doesNotMatch(js, /className: "profile-subtitle"/);
+  assert.doesNotMatch(js, /profile\.subtitle/);
   assert.match(js, /href: "\/" \+ SLUGS\[key\] \+ "\/"/);
   assert.match(js, /"\/admin\/" \+ SLUGS\[activeKey\] \+ "\/"/);
   assert.match(js, /data-admin-edit/);

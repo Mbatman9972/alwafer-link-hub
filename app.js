@@ -274,14 +274,15 @@
     lang.appendChild(el("span", { text: "العربية", attrs: { dir: "rtl" } }));
     card.appendChild(lang);
 
-    var avatar = el("div", { className: "profile-avatar" });
+    var avatar = el("div", { className: "profile-avatar profile-avatar--" + key });
     var img = el("img", {
       className: "profile-image",
       attrs: {
         src: safeImage(profile.profileImage, defaults.profileImage),
         alt: profile.title,
         decoding: "async",
-        fetchpriority: "high"
+        fetchpriority: "high",
+        "data-profile-image": key
       }
     });
     img.addEventListener("error", function () { img.src = defaults.profileImage; });
@@ -289,7 +290,6 @@
     card.appendChild(avatar);
 
     card.appendChild(el("h1", { className: "profile-title", text: profile.title, attrs: { dir: "auto" } }));
-    card.appendChild(el("p", { className: "profile-subtitle", text: profile.subtitle, attrs: { dir: "auto" } }));
     card.appendChild(el("div", { className: "gold-divider", attrs: { "aria-hidden": "true" } }));
     card.appendChild(el("p", { className: "profile-tagline", text: profile.tagline, attrs: { dir: "auto" } }));
 

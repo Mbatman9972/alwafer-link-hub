@@ -124,8 +124,8 @@ button, input, textarea { font: inherit; }
 }
 
 .profile-avatar {
-  width: 172px;
-  height: 172px;
+  width: 188px;
+  height: 188px;
   margin: 22px auto 24px;
   padding: 5px;
   border-radius: 999px;
@@ -137,9 +137,23 @@ button, input, textarea { font: inherit; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: center center;
   border-radius: inherit;
   background: #080808;
+}
+.profile-avatar--mustafa .profile-image {
+  object-fit: cover;
+  object-position: center center;
+}
+.profile-avatar--ahmed .profile-image {
+  object-fit: cover;
+  object-position: center center;
+  transform: scale(1.08);
+}
+.profile-avatar--hala .profile-image {
+  object-fit: cover;
+  object-position: center center;
+  transform: scale(1.1);
 }
 .profile-title {
   margin: 0;
@@ -150,12 +164,6 @@ button, input, textarea { font: inherit; }
   font-weight: 900;
   color: #f1c96a;
   text-shadow: 0 2px 0 rgba(0,0,0,.5), 0 16px 34px rgba(0,0,0,.65);
-}
-.profile-subtitle {
-  margin: 9px 0 0;
-  text-align: center;
-  font-size: clamp(20px, 5.2vw, 28px);
-  color: #ffd978;
 }
 .gold-divider {
   width: 180px;
