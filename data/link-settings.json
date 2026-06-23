@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-23T18:47:05.073Z",
+  "updatedAt": "2026-06-23T18:47:06.263Z",
   "profiles": {
     "mustafa": {
       "title": "ALWAFER",
@@ -100,8 +100,8 @@
           "label": "Apply to Join the Agency"
         },
         "youtube": {
-          "enabled": false,
-          "url": "",
+          "enabled": true,
+          "url": "https://example.com/hala-youtube-test",
           "label": "YouTube"
         },
         "tiktok": {
