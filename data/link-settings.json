@@ -6,7 +6,7 @@
       "title": "ALWAFER",
       "subtitle": "Alwafer Agency",
       "tagline": "Empowering creators. Building influence. Elevating brands.\nتمكّن المبدعين، نبني التأثير، نرتقي بالعلامات التجارية.",
-      "profileImage": "/assets/page-alwafer.png",
+      "profileImage": "/assets/profiles/alwafer-profile.png",
       "links": {
         "apply": {
           "enabled": false,
@@ -49,7 +49,7 @@
       "title": "TEAM AHMED RAMADAN",
       "subtitle": "Official Agency Network",
       "tagline": "Empowering creators. Building influence. Elevating brands.\nتمكّن المبدعين، نبني التأثير، نرتقي بالعلامات التجارية.",
-      "profileImage": "/assets/page-ahmed.png",
+      "profileImage": "/assets/profiles/ahmed-profile.png",
       "links": {
         "apply": {
           "enabled": false,
@@ -92,7 +92,7 @@
       "title": "HALA AL-SAGHIR",
       "subtitle": "Official Profile",
       "tagline": "Empowering creators. Building influence. Elevating brands.\nتمكّن المبدعين، نبني التأثير، نرتقي بالعلامات التجارية.",
-      "profileImage": "/assets/page-hala.png",
+      "profileImage": "/assets/profiles/hala-profile.jpg",
       "links": {
         "apply": {
           "enabled": false,

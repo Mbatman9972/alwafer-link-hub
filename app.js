@@ -42,21 +42,21 @@
       title: "ALWAFER",
       subtitle: "Alwafer Agency",
       tagline: "Empowering creators. Building influence. Elevating brands.\nتمكّن المبدعين، نبني التأثير، نرتقي بالعلامات التجارية.",
-      profileImage: "/assets/page-alwafer.png",
+      profileImage: "/assets/profiles/alwafer-profile.png",
       artwork: "/assets/page-alwafer.png"
     },
     ahmed: {
       title: "TEAM AHMED RAMADAN",
       subtitle: "Official Agency Network",
       tagline: "Empowering creators. Building influence. Elevating brands.\nتمكّن المبدعين، نبني التأثير، نرتقي بالعلامات التجارية.",
-      profileImage: "/assets/page-ahmed.png",
+      profileImage: "/assets/profiles/ahmed-profile.png",
       artwork: "/assets/page-ahmed.png"
     },
     hala: {
       title: "HALA AL-SAGHIR",
       subtitle: "Official Profile",
       tagline: "Empowering creators. Building influence. Elevating brands.\nتمكّن المبدعين، نبني التأثير، نرتقي بالعلامات التجارية.",
-      profileImage: "/assets/page-hala.png",
+      profileImage: "/assets/profiles/hala-profile.jpg",
       artwork: "/assets/page-hala.png"
     }
   };
@@ -234,6 +234,12 @@
       });
       menu.appendChild(item);
     });
+    var edit = el("a", {
+      className: "switcher-item switcher-edit",
+      text: "Edit this profile",
+      attrs: { href: "/admin/" + SLUGS[activeKey] + "/", "data-admin-edit": activeKey }
+    });
+    menu.appendChild(edit);
     button.addEventListener("click", function () {
       var open = menu.hasAttribute("hidden");
       if (open) menu.removeAttribute("hidden");

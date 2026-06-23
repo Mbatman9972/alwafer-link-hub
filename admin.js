@@ -28,9 +28,9 @@
     cca: "https://www.tiktok.com/t/ZSxECjfqx/"
   };
   var PROFILE_DEFAULTS = {
-    mustafa: { title: "ALWAFER", subtitle: "Alwafer Agency", profileImage: "/assets/page-alwafer.png" },
-    ahmed: { title: "TEAM AHMED RAMADAN", subtitle: "Official Agency Network", profileImage: "/assets/page-ahmed.png" },
-    hala: { title: "HALA AL-SAGHIR", subtitle: "Official Profile", profileImage: "/assets/page-hala.png" }
+    mustafa: { title: "ALWAFER", subtitle: "Alwafer Agency", profileImage: "/assets/profiles/alwafer-profile.png" },
+    ahmed: { title: "TEAM AHMED RAMADAN", subtitle: "Official Agency Network", profileImage: "/assets/profiles/ahmed-profile.png" },
+    hala: { title: "HALA AL-SAGHIR", subtitle: "Official Profile", profileImage: "/assets/profiles/hala-profile.jpg" }
   };
   var DEFAULT_TAGLINE = "Empowering creators. Building influence. Elevating brands.\nتمكّن المبدعين، نبني التأثير، نرتقي بالعلامات التجارية.";
 

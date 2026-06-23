@@ -117,6 +117,11 @@ button, input, textarea { font: inherit; }
 }
 .switcher-item:hover,
 .switcher-item.is-active { background: rgba(212, 175, 55, 0.14); color: #ffd979; }
+.switcher-edit {
+  margin-top: 6px;
+  border-top: 1px solid rgba(212, 175, 55, 0.22);
+  color: #f1c96a;
+}
 
 .profile-avatar {
   width: 172px;

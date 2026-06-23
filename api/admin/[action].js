@@ -19,9 +19,9 @@ const LINK_LABELS = { apply: "Apply to Join the Agency", youtube: "YouTube", tik
 const REGION_LABELS = { mena: "MENA", uk: "UK", fr: "FR", de: "DE", tr: "TR", cca: "CCA" };
 const DEFAULT_NAMES = { mustafa: "ALWAFER", ahmed: "Team Ahmed Ramadan", hala: "Hala Al-Saghir" };
 const PROFILE_DEFAULTS = {
-  mustafa: { title: "ALWAFER", subtitle: "Alwafer Agency", profileImage: "/assets/page-alwafer.png" },
-  ahmed: { title: "TEAM AHMED RAMADAN", subtitle: "Official Agency Network", profileImage: "/assets/page-ahmed.png" },
-  hala: { title: "HALA AL-SAGHIR", subtitle: "Official Profile", profileImage: "/assets/page-hala.png" }
+  mustafa: { title: "ALWAFER", subtitle: "Alwafer Agency", profileImage: "/assets/profiles/alwafer-profile.png" },
+  ahmed: { title: "TEAM AHMED RAMADAN", subtitle: "Official Agency Network", profileImage: "/assets/profiles/ahmed-profile.png" },
+  hala: { title: "HALA AL-SAGHIR", subtitle: "Official Profile", profileImage: "/assets/profiles/hala-profile.jpg" }
 };
 const DEFAULT_TAGLINE = "Empowering creators. Building influence. Elevating brands.\nتمكّن المبدعين، نبني التأثير، نرتقي بالعلامات التجارية.";
 const REGION_DEFAULT_URLS = { mena: "https://www.tiktok.com/t/ZMAN6Bu2W/", uk: "https://www.tiktok.com/t/ZSxoyPd4W/",

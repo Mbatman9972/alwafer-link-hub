@@ -9,9 +9,9 @@ const root = path.resolve(__dirname, "..");
 const app = require("../app.js");
 
 const pages = [
-  { route: "alwafer", key: "mustafa", title: "ALWAFER" },
-  { route: "ahmed", key: "ahmed", title: "Team Ahmed Ramadan" },
-  { route: "hala", key: "hala", title: "Hala Al-Saghir" }
+  { route: "alwafer", key: "mustafa", title: "ALWAFER", image: "/assets/profiles/alwafer-profile.png" },
+  { route: "ahmed", key: "ahmed", title: "Team Ahmed Ramadan", image: "/assets/profiles/ahmed-profile.png" },
+  { route: "hala", key: "hala", title: "Hala Al-Saghir", image: "/assets/profiles/hala-profile.jpg" }
 ];
 
 for (const page of pages) {
@@ -31,6 +31,8 @@ test("public renderer exposes the required real dashboard primitives", () => {
   assert.match(js, /className: "region-chip"/);
   assert.match(js, /className: "profile-switcher"/);
   assert.match(js, /href: "\/" \+ SLUGS\[key\] \+ "\/"/);
+  assert.match(js, /"\/admin\/" \+ SLUGS\[activeKey\] \+ "\/"/);
+  assert.match(js, /data-admin-edit/);
   assert.match(js, /target = "_blank"/);
   assert.match(js, /rel = "noopener noreferrer"/);
   assert.match(js, /aria-disabled/);
@@ -38,11 +40,13 @@ test("public renderer exposes the required real dashboard primitives", () => {
 
 test("settings model includes profile content, profile image, links, and shared regions", () => {
   const data = JSON.parse(fs.readFileSync(path.join(root, "data/link-settings.json"), "utf8"));
-  for (const profile of ["mustafa", "ahmed", "hala"]) {
+  for (const page of pages) {
+    const profile = page.key;
     assert.equal(typeof data.profiles[profile].title, "string");
     assert.equal(typeof data.profiles[profile].subtitle, "string");
     assert.equal(typeof data.profiles[profile].tagline, "string");
-    assert.match(data.profiles[profile].profileImage, /^\/assets\/page-/);
+    assert.equal(data.profiles[profile].profileImage, page.image);
+    assert.doesNotMatch(data.profiles[profile].profileImage, /^\/assets\/page-/);
     assert.deepEqual(Object.keys(data.profiles[profile].links), app.LINK_KEYS);
   }
   assert.deepEqual(Object.keys(data.sharedRegions), app.REGION_KEYS);
