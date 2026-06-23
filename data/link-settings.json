@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-23T18:12:34.692Z",
+  "updatedAt": "2026-06-23T18:12:35.870Z",
   "profiles": {
     "mustafa": {
       "title": "ALWAFER",
@@ -125,8 +125,8 @@
           "label": "WhatsApp"
         },
         "website": {
-          "enabled": true,
-          "url": "https://example.com/hala-test",
+          "enabled": false,
+          "url": "",
           "label": "Website"
         }
       }
