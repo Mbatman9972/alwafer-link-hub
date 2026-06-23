@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-23T16:37:16.087Z",
+  "updatedAt": "2026-06-23T16:37:55.910Z",
   "profiles": {
     "mustafa": {
       "title": "ALWAFER",
       "subtitle": "Alwafer Agency",
       "tagline": "Empowering creators. Building influence. Elevating brands.\nتمكّن المبدعين، نبني التأثير، نرتقي بالعلامات التجارية.",
-      "profileImage": "/assets/page-ahmed.png",
+      "profileImage": "/assets/page-alwafer.png",
       "links": {
         "apply": {
           "enabled": false,
@@ -39,8 +39,8 @@
           "label": "WhatsApp"
         },
         "website": {
-          "enabled": true,
-          "url": "https://example.com/alwafer-admin-test",
+          "enabled": false,
+          "url": "",
           "label": "Website"
         }
       }
