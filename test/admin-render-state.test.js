@@ -44,13 +44,3 @@ test("admin.js routes every view switch through the explicit setView state machi
   // showEditor scrolls to the top after rendering.
   assert.match(adminJs, /window\.scrollTo\(0, 0\)/);
 });
-
-test("admin.js debug panel reports live DOM truth and a bumped build", () => {
-  assert.match(adminJs, /ADMIN_BUILD_VERSION = "owner-debug-2026-06-24-v2"/);
-  assert.match(adminJs, /debugRow\("login visible"/);
-  assert.match(adminJs, /debugRow\("editor visible"/);
-  assert.match(adminJs, /debugRow\("editor selector count"/);
-  assert.match(adminJs, /debugRow\("login selector count"/);
-  assert.match(adminJs, /querySelectorAll\('\[data-admin-editor="true"\]'\)/);
-  assert.match(adminJs, /querySelectorAll\('\[data-admin-login="true"\]'\)/);
-});

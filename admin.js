@@ -6,8 +6,6 @@
 
   var API = "/api/admin";
   var LOGIN_TIMEOUT_MS = 8000;
-  var ADMIN_BUILD_VERSION = "owner-debug-2026-06-24-v2";
-  var DEBUG_ADMIN = /(?:^\?|&)debugAdmin=1(?:&|$)/.test(String(location.search || ""));
   var NAMES = { mustafa: "ALWAFER", ahmed: "Team Ahmed Ramadan", hala: "Hala Al-Saghir" };
   var SLUGS = { mustafa: "alwafer", ahmed: "ahmed", hala: "hala" };
   var LINK_KEYS = ["apply", "youtube", "tiktok", "telegram", "instagram", "whatsapp", "website"];
@@ -45,17 +43,6 @@
     profile: "mustafa",
     routeProfile: null
   };
-  var debugState = {
-    uiState: "loading",
-    loginRequestUrl: "",
-    lastLoginStatus: "not attempted",
-    sessionCookie: "not checked",
-    meStatus: "not checked",
-    authenticatedUserKey: "none",
-    canSave: "unknown",
-    lastVisibleError: ""
-  };
-
   function $(id) { return document.getElementById(id); }
   function el(tag, cls, text) {
     var node = document.createElement(tag);
@@ -65,15 +52,6 @@
   }
   function clear(node) { while (node && node.firstChild) node.removeChild(node.firstChild); }
   function show(node, on) { if (node) node.classList.toggle("hidden", !on); }
-  function isElementVisible(node) {
-    if (!node || node.hidden) return false;
-    if (typeof window !== "undefined" && typeof window.getComputedStyle === "function") {
-      var style = window.getComputedStyle(node);
-      if (style && (style.display === "none" || style.visibility === "hidden")) return false;
-      if (style && style.position === "fixed") return true;
-    }
-    return node.offsetParent != null;
-  }
   /* Single source of truth for which top-level view is on screen. Toggles BOTH
      the semantic `hidden` attribute (also fixed in admin.css via .view[hidden])
      and the `.hidden` class (display:none !important), so the editor and login
@@ -139,62 +117,6 @@
     return match[1].toLowerCase() === "alwafer" ? "mustafa" : match[1].toLowerCase();
   }
   function adminPath(profile) { return "/admin/" + (profile === "mustafa" ? "alwafer" : profile) + "/"; }
-  function userKey(user) {
-    if (!user || typeof user !== "object") return "none";
-    return user.key || (user.role === "owner" ? "mustafa" : (user.profile || "none"));
-  }
-  function sessionCookieState(authenticated) {
-    var visible = typeof document.cookie === "string" && document.cookie.indexOf("alwafer_admin=") >= 0;
-    if (visible) return "yes (JS-visible)";
-    if (authenticated) return "yes (HttpOnly, inferred by /me)";
-    return "no";
-  }
-  function updateDebug(extra) {
-    if (extra) {
-      Object.keys(extra).forEach(function (key) { debugState[key] = extra[key]; });
-    }
-    renderDebug();
-  }
-  function debugRow(label, value) {
-    var row = el("div", "admin-debug-row");
-    row.appendChild(el("span", "admin-debug-label", label));
-    row.appendChild(el("span", "admin-debug-value", value == null ? "" : String(value)));
-    return row;
-  }
-  function renderDebug() {
-    if (!DEBUG_ADMIN || !document.body) return;
-    var panel = $("admin-debug-panel");
-    if (!panel) {
-      panel = el("aside", "admin-debug-panel");
-      panel.id = "admin-debug-panel";
-      panel.setAttribute("aria-label", "Admin diagnostics");
-      document.body.appendChild(panel);
-    }
-    var selected = $("login-account") ? $("login-account").value : "";
-    clear(panel);
-    panel.appendChild(el("h2", null, "Admin diagnostics"));
-    panel.appendChild(debugRow("admin build", ADMIN_BUILD_VERSION));
-    panel.appendChild(debugRow("route profile", state.routeProfile || routeProfile() || "none"));
-    panel.appendChild(debugRow("selected account key", selected || "none"));
-    panel.appendChild(debugRow("login request URL", debugState.loginRequestUrl || adminApiPath("/login")));
-    panel.appendChild(debugRow("last login response", debugState.lastLoginStatus));
-    panel.appendChild(debugRow("session cookie", debugState.sessionCookie));
-    panel.appendChild(debugRow("/api/admin/me status", debugState.meStatus));
-    panel.appendChild(debugRow("authenticated user key", debugState.authenticatedUserKey));
-    panel.appendChild(debugRow("canSave", debugState.canSave));
-    panel.appendChild(debugRow("UI state", debugState.uiState));
-    // Live DOM truth — computed from the actual elements, not from debugState,
-    // so the panel can never disagree with what is on screen.
-    var loginVisible = isElementVisible($("login-view"));
-    var editorVisible = isElementVisible($("editor-view"));
-    var editorCount = document.querySelectorAll('[data-admin-editor="true"]').length;
-    var loginCount = document.querySelectorAll('[data-admin-login="true"]').length;
-    panel.appendChild(debugRow("login visible", String(loginVisible)));
-    panel.appendChild(debugRow("editor visible", String(editorVisible)));
-    panel.appendChild(debugRow("editor selector count", String(editorCount)));
-    panel.appendChild(debugRow("login selector count", String(loginCount)));
-    panel.appendChild(debugRow("last visible error", debugState.lastVisibleError || "none"));
-  }
 
   function defaults() {
     var settings = { version: 1, updatedAt: "", profiles: {}, sharedRegions: [] };
@@ -323,20 +245,12 @@
     var msg = $("login-msg");
     msg.textContent = message || "";
     msg.className = "form-msg" + (cls ? " " + cls : "");
-    updateDebug({
-      uiState: cls === "error" ? "error" : "login",
-      lastVisibleError: cls === "error" ? (message || "") : debugState.lastVisibleError
-    });
   }
   function setLoginMessage(message, cls) {
     var msg = $("login-msg");
     if (!msg) return;
     msg.textContent = message || "";
     msg.className = "form-msg" + (cls ? " " + cls : "");
-    updateDebug({
-      uiState: cls === "error" ? "error" : (message ? "loading" : debugState.uiState),
-      lastVisibleError: cls === "error" ? (message || "") : debugState.lastVisibleError
-    });
   }
   function showEditor() {
     setLoginBusy(false);
@@ -346,7 +260,6 @@
     if (typeof window !== "undefined" && typeof window.scrollTo === "function") {
       try { window.scrollTo(0, 0); } catch (e) { /* non-fatal */ }
     }
-    updateDebug({ uiState: "editor", lastVisibleError: "" });
   }
 
   function renderHeader() {
@@ -728,29 +641,14 @@
       if (res.status === 200 && res.body) {
         if (res.body.user) applyUser(res.body.user);
         if (res.body.perms) state.serverPerms = { profiles: res.body.perms.profiles.slice(), regions: !!res.body.perms.regions };
-        updateDebug({
-          authenticatedUserKey: userKey(res.body.user || state.user),
-          canSave: String(!!res.body.canSave)
-        });
         state.settings = normalize(res.body.settings);
         return true;
       }
       return false;
     });
   }
-  function recordMe(res) {
-    var body = res && res.body ? res.body : {};
-    var authenticated = !!body.authenticated;
-    updateDebug({
-      meStatus: res ? String(res.status) : "not checked",
-      sessionCookie: sessionCookieState(authenticated),
-      authenticatedUserKey: authenticated ? userKey(body.user) : "none",
-      canSave: Object.prototype.hasOwnProperty.call(body, "canSave") ? String(!!body.canSave) : debugState.canSave
-    });
-    return res;
-  }
   function readMe(timeoutMs) {
-    return api("/me", { method: "GET", timeoutMs: timeoutMs || 0 }).then(recordMe);
+    return api("/me", { method: "GET", timeoutMs: timeoutMs || 0 });
   }
   function checkSession() {
     return readMe().then(function (res) {
@@ -763,16 +661,8 @@
   function doLogin(account, password) {
     setLoginBusy(true);
     setView("login");
-    updateDebug({
-      uiState: "loading",
-      loginRequestUrl: adminApiPath("/login"),
-      lastLoginStatus: "pending",
-      selectedAccount: account,
-      lastVisibleError: ""
-    });
     setLoginMessage("Signing in…", "info");
     return api("/login", { method: "POST", body: JSON.stringify({ account: account, password: password }), timeoutMs: LOGIN_TIMEOUT_MS }).then(function (res) {
-      updateDebug({ lastLoginStatus: String(res.status) });
       if (res.status === 200 && res.body.user) {
         return readMe(LOGIN_TIMEOUT_MS).then(function (me) {
           if (!(me.status === 200 && me.body && me.body.authenticated && me.body.user)) {
@@ -819,12 +709,11 @@
 
   function init() {
     state.routeProfile = routeProfile() || null;
-    updateDebug({ uiState: "loading", loginRequestUrl: adminApiPath("/login") });
-    if (state.routeProfile && location.search && !DEBUG_ADMIN && history && history.replaceState) history.replaceState(null, "", adminPath(state.routeProfile));
+    // Strip any query string (e.g. a legacy ?debugAdmin=1) from slug admin URLs.
+    if (state.routeProfile && location.search && history && history.replaceState) history.replaceState(null, "", adminPath(state.routeProfile));
     if (state.routeProfile && $("login-account")) {
       $("login-account").value = state.routeProfile;
       $("login-account").disabled = true;
-      updateDebug({});
     }
     var loginForm = $("login-form");
     if (loginForm) loginForm.addEventListener("submit", function (event) {

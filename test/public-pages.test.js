@@ -83,17 +83,28 @@ test("admin renders the required signed-in identity wording", () => {
   assert.match(js, /Login timed out\. Please try again\./);
   assert.match(js, /\.finally\(function \(\) \{\s*setLoginBusy\(false\);/);
   assert.match(js, /api\("\/me", \{ method: "GET", timeoutMs: timeoutMs \|\| 0 \}\)/);
-  assert.match(js, /debugAdmin=1/);
-  assert.match(js, /Admin diagnostics/);
-  assert.match(js, /ADMIN_BUILD_VERSION/);
   assert.match(js, /Login session was not accepted\. Please try again\./);
   assert.doesNotMatch(js, /document\.cookie\s*\+\s*|cookie value|passwordHash|ALWAFER_COOKIE_SECRET/);
 });
 
+test("admin diagnostics panel is fully removed from the production UI", () => {
+  const js = fs.readFileSync(path.join(root, "admin.js"), "utf8");
+  const css = fs.readFileSync(path.join(root, "admin.css"), "utf8");
+  assert.doesNotMatch(js, /Admin diagnostics/i);
+  assert.doesNotMatch(js, /admin-debug-panel/);
+  assert.doesNotMatch(js, /function renderDebug|function updateDebug|function debugRow/);
+  assert.doesNotMatch(js, /ADMIN_BUILD_VERSION/);
+  // No diagnostic row labels may remain.
+  for (const label of ["UI state", "login request URL", "/api/admin/me status", "session cookie", "editor visible", "login visible", "selector count"]) {
+    assert.doesNotMatch(js, new RegExp(label.replace(/[/]/g, "\\/")), `diagnostic label leaked: ${label}`);
+  }
+  assert.doesNotMatch(css, /admin-debug/);
+});
+
 test("admin assets are content-versioned for normal-browser cache busting", () => {
   const html = fs.readFileSync(path.join(root, "admin.html"), "utf8");
-  assert.match(html, /\/admin\.css\?v=owner-debug-20260624v2/);
-  assert.match(html, /\/admin\.js\?v=owner-debug-20260624v2/);
+  assert.match(html, /\/admin\.css\?v=20260624-clean/);
+  assert.match(html, /\/admin\.js\?v=20260624-clean/);
 });
 
 test("admin shell and admin assets are no-store to avoid stale login bundles", () => {
