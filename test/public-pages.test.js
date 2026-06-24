@@ -67,6 +67,21 @@ test("admin renders the required signed-in identity wording", () => {
   const js = fs.readFileSync(path.join(root, "admin.js"), "utf8");
   assert.match(js, /Signed in as /);
   assert.match(js, /state\.user\.role === "owner" \? " owner" : ""/);
+  assert.match(js, /function adminApiPath/);
+  assert.match(js, /Signing in…/);
+  assert.match(js, /Login failed\. Please try again\./);
+  assert.match(js, /api\("\/me", \{ method: "GET" \}\)/);
+});
+
+test("admin shell and admin assets are no-store to avoid stale login bundles", () => {
+  const config = JSON.parse(fs.readFileSync(path.join(root, "vercel.json"), "utf8"));
+  const headerMap = new Map(config.headers.map((rule) => [rule.source, rule.headers]));
+  assert.deepEqual(headerMap.get("/admin/(.*)"), [
+    { key: "Cache-Control", value: "no-store, must-revalidate" }
+  ]);
+  assert.deepEqual(headerMap.get("/admin.(js|css)"), [
+    { key: "Cache-Control", value: "no-store, must-revalidate" }
+  ]);
 });
 
 test("repository text has no forbidden ALWAFER misspellings", () => {

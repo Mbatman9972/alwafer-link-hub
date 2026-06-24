@@ -59,6 +59,18 @@
     box.appendChild(item);
     setTimeout(function () { if (item.parentNode) item.parentNode.removeChild(item); }, 3600);
   }
+  function adminApiPath(path) {
+    path = String(path || "");
+    if (path.charAt(0) !== "/") path = "/" + path;
+    return API + path + (path.slice(-1) === "/" ? "" : "/");
+  }
+  function setLoginBusy(on) {
+    var btn = $("login-btn");
+    if (!btn) return;
+    btn.disabled = !!on;
+    btn.textContent = on ? "Signing in…" : "Sign in";
+    btn.setAttribute("aria-busy", on ? "true" : "false");
+  }
 
   function isAllowedUrl(value) {
     if (typeof value !== "string") return false;
@@ -155,7 +167,7 @@
     opts = opts || {};
     opts.credentials = "same-origin";
     opts.headers = Object.assign({ "Content-Type": "application/json" }, opts.headers || {});
-    return fetch(API + path, opts).then(function (res) {
+    return fetch(adminApiPath(path), opts).then(function (res) {
       return res.json().catch(function () { return {}; }).then(function (body) {
         return { status: res.status, body: body };
       });
@@ -165,11 +177,19 @@
   function showLogin(message, cls) {
     $("login-view").hidden = false;
     $("editor-view").hidden = true;
+    setLoginBusy(false);
     var msg = $("login-msg");
     msg.textContent = message || "";
     msg.className = "form-msg" + (cls ? " " + cls : "");
   }
+  function setLoginMessage(message, cls) {
+    var msg = $("login-msg");
+    if (!msg) return;
+    msg.textContent = message || "";
+    msg.className = "form-msg" + (cls ? " " + cls : "");
+  }
   function showEditor() {
+    setLoginBusy(false);
     $("login-view").hidden = true;
     $("editor-view").hidden = false;
     renderEditor();
@@ -458,14 +478,36 @@
       return false;
     });
   }
+  function checkSession() {
+    return api("/me", { method: "GET" }).then(function (res) {
+      if (res.status === 200 && res.body && res.body.authenticated && res.body.user) {
+        return loadSettings();
+      }
+      return false;
+    }).catch(function () { return false; });
+  }
   function doLogin(account, password) {
+    setLoginBusy(true);
+    $("login-view").hidden = false;
+    $("editor-view").hidden = true;
+    setLoginMessage("Signing in…", "info");
     return api("/login", { method: "POST", body: JSON.stringify({ account: account, password: password }) }).then(function (res) {
       if (res.status === 200 && res.body.user) {
         applyUser(res.body.user);
-        return loadSettings().then(function () { showEditor(); return true; });
+        return loadSettings().then(function (ok) {
+          if (ok) { showEditor(); return true; }
+          showLogin("Login failed. Please try again.", "error");
+          return false;
+        }).catch(function () {
+          showLogin("Login failed. Please try again.", "error");
+          return false;
+        });
       }
       if (res.status === 503) { showLogin("Admin sign-in is not configured.", "error"); return false; }
       showLogin("Incorrect account or password.", "error");
+      return false;
+    }).catch(function () {
+      showLogin("Login failed. Please try again.", "error");
       return false;
     });
   }
@@ -507,7 +549,7 @@
       if (this.files && this.files[0]) onImportFile(this.files[0]);
       this.value = "";
     });
-    loadSettings().then(function (ok) { if (ok) showEditor(); else showLogin(""); });
+    checkSession().then(function (ok) { if (ok) showEditor(); else showLogin(""); });
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
