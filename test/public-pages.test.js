@@ -68,8 +68,12 @@ test("admin renders the required signed-in identity wording", () => {
   assert.match(js, /Signed in as /);
   assert.match(js, /state\.user\.role === "owner" \? " owner" : ""/);
   assert.match(js, /function adminApiPath/);
+  assert.match(js, /LOGIN_TIMEOUT_MS = 8000/);
+  assert.match(js, /AbortController/);
   assert.match(js, /Signing in…/);
   assert.match(js, /Login failed\. Please try again\./);
+  assert.match(js, /Login timed out\. Please try again\./);
+  assert.match(js, /\.finally\(function \(\) \{\s*setLoginBusy\(false\);/);
   assert.match(js, /api\("\/me", \{ method: "GET" \}\)/);
 });
 

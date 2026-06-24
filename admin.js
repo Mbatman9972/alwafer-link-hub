@@ -5,6 +5,7 @@
   "use strict";
 
   var API = "/api/admin";
+  var LOGIN_TIMEOUT_MS = 8000;
   var NAMES = { mustafa: "ALWAFER", ahmed: "Team Ahmed Ramadan", hala: "Hala Al-Saghir" };
   var SLUGS = { mustafa: "alwafer", ahmed: "ahmed", hala: "hala" };
   var LINK_KEYS = ["apply", "youtube", "tiktok", "telegram", "instagram", "whatsapp", "website"];
@@ -164,14 +165,27 @@
   }
 
   function api(path, opts) {
-    opts = opts || {};
+    opts = Object.assign({}, opts || {});
+    var timeoutMs = Number(opts.timeoutMs) || 0;
+    var timeoutId = null;
+    if (Object.prototype.hasOwnProperty.call(opts, "timeoutMs")) delete opts.timeoutMs;
+    if (timeoutMs > 0 && typeof AbortController === "function" && !opts.signal) {
+      var controller = new AbortController();
+      opts.signal = controller.signal;
+      timeoutId = setTimeout(function () { controller.abort(); }, timeoutMs);
+    }
     opts.credentials = "same-origin";
     opts.headers = Object.assign({ "Content-Type": "application/json" }, opts.headers || {});
     return fetch(adminApiPath(path), opts).then(function (res) {
       return res.json().catch(function () { return {}; }).then(function (body) {
         return { status: res.status, body: body };
       });
+    }).finally(function () {
+      if (timeoutId) clearTimeout(timeoutId);
     });
+  }
+  function isAbortError(error) {
+    return !!error && (error.name === "AbortError" || /abort/i.test(String(error.message || error)));
   }
 
   function showLogin(message, cls) {
@@ -190,6 +204,7 @@
   }
   function showEditor() {
     setLoginBusy(false);
+    setLoginMessage("");
     $("login-view").hidden = true;
     $("editor-view").hidden = false;
     renderEditor();
@@ -467,8 +482,8 @@
       state.profile = state.perms.profiles[0] || "mustafa";
     }
   }
-  function loadSettings() {
-    return api("/settings", { method: "GET" }).then(function (res) {
+  function loadSettings(timeoutMs) {
+    return api("/settings", { method: "GET", timeoutMs: timeoutMs || 0 }).then(function (res) {
       if (res.status === 200 && res.body) {
         if (res.body.user) applyUser(res.body.user);
         if (res.body.perms) state.serverPerms = { profiles: res.body.perms.profiles.slice(), regions: !!res.body.perms.regions };
@@ -491,10 +506,10 @@
     $("login-view").hidden = false;
     $("editor-view").hidden = true;
     setLoginMessage("Signing in…", "info");
-    return api("/login", { method: "POST", body: JSON.stringify({ account: account, password: password }) }).then(function (res) {
+    return api("/login", { method: "POST", body: JSON.stringify({ account: account, password: password }), timeoutMs: LOGIN_TIMEOUT_MS }).then(function (res) {
       if (res.status === 200 && res.body.user) {
         applyUser(res.body.user);
-        return loadSettings().then(function (ok) {
+        return loadSettings(LOGIN_TIMEOUT_MS).then(function (ok) {
           if (ok) { showEditor(); return true; }
           showLogin("Login failed. Please try again.", "error");
           return false;
@@ -506,9 +521,11 @@
       if (res.status === 503) { showLogin("Admin sign-in is not configured.", "error"); return false; }
       showLogin("Incorrect account or password.", "error");
       return false;
-    }).catch(function () {
-      showLogin("Login failed. Please try again.", "error");
+    }).catch(function (error) {
+      showLogin(isAbortError(error) ? "Login timed out. Please try again." : "Login failed. Please try again.", "error");
       return false;
+    }).finally(function () {
+      setLoginBusy(false);
     });
   }
   function doLogout() {
