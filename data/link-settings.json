@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-24T20:12:35.560Z",
+  "updatedAt": "2026-06-24T20:13:25.889Z",
   "profiles": {
     "mustafa": {
       "title": "ALWAFER",
@@ -14,8 +14,8 @@
           "label": "Apply to Join the Agency"
         },
         "youtube": {
-          "enabled": false,
-          "url": "",
+          "enabled": true,
+          "url": "https://tr.ee/yPCI6KMgGl",
           "label": "YouTube"
         },
         "tiktok": {
@@ -24,8 +24,8 @@
           "label": "TikTok"
         },
         "telegram": {
-          "enabled": false,
-          "url": "",
+          "enabled": true,
+          "url": "https://tr.ee/sQON9alEmk",
           "label": "Telegram"
         },
         "instagram": {
