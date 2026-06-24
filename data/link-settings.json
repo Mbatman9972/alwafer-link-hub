@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-24T17:43:42.992Z",
+  "updatedAt": "2026-06-24T17:44:11.149Z",
   "profiles": {
     "mustafa": {
       "title": "ALWAFER",
@@ -167,12 +167,6 @@
       "id": "cca",
       "label": "CCA",
       "url": "https://www.tiktok.com/t/ZSxECjfqx/",
-      "enabled": true
-    },
-    {
-      "id": "xbn",
-      "label": "xbn",
-      "url": "https://example.com/alwaf-region-test",
       "enabled": true
     }
   ]
