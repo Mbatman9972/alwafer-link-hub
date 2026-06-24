@@ -29,15 +29,33 @@ test("public renderer exposes the required real dashboard primitives", () => {
   const js = fs.readFileSync(path.join(root, "app.js"), "utf8");
   assert.match(js, /className: "dash-button"/);
   assert.match(js, /className: "region-chip"/);
-  assert.match(js, /className: "profile-switcher"/);
   assert.doesNotMatch(js, /className: "profile-subtitle"/);
   assert.doesNotMatch(js, /profile\.subtitle/);
-  assert.match(js, /href: "\/" \+ SLUGS\[key\] \+ "\/"/);
-  assert.match(js, /"\/admin\/" \+ SLUGS\[activeKey\] \+ "\/"/);
-  assert.match(js, /data-admin-edit/);
   assert.match(js, /target = "_blank"/);
   assert.match(js, /rel = "noopener noreferrer"/);
-  assert.match(js, /aria-disabled/);
+});
+
+test("public dashboard pages are independent: no profile switcher / three-dot / edit shortcut", () => {
+  const js = fs.readFileSync(path.join(root, "app.js"), "utf8");
+  const css = fs.readFileSync(path.join(root, "styles.css"), "utf8");
+  // Renderer must not build the switcher, three-dot menu, or edit-this-profile link.
+  assert.doesNotMatch(js, /profileSwitcher/);
+  assert.doesNotMatch(js, /profile-switcher|switcher-button|switcher-menu|switcher-item/);
+  assert.doesNotMatch(js, /Edit this profile/i);
+  assert.doesNotMatch(js, /data-admin-edit|data-profile-switch/);
+  // No public navigation to other profiles from a dashboard.
+  assert.doesNotMatch(js, /"\/admin\/" \+ SLUGS\[activeKey\]/);
+  // Dead switcher CSS removed; the shared focus-visible rule is preserved.
+  assert.doesNotMatch(css, /\.switcher-|\.profile-switcher/);
+  assert.match(css, /\.dash-button:focus-visible/);
+});
+
+test("public dashboard renders ONLY enabled + valid personal links", () => {
+  const js = fs.readFileSync(path.join(root, "app.js"), "utf8");
+  // The render loop must gate each button on enabled === true AND a navigable URL.
+  assert.match(js, /link\.enabled === true && isNavigable\(url\)/);
+  // It must not unconditionally append a button for every LINK_KEY.
+  assert.doesNotMatch(js, /links\.appendChild\(dashboardButton\(linkKey, profile\.links\[linkKey\]\)\);/);
 });
 
 test("settings model includes profile content, profile image, links, and shared regions", () => {

@@ -241,45 +241,6 @@
     return a;
   }
 
-  function profileSwitcher(activeKey) {
-    var wrap = el("div", { className: "profile-switcher" });
-    var button = el("button", {
-      className: "switcher-button",
-      text: "•••",
-      attrs: { type: "button", "aria-haspopup": "true", "aria-expanded": "false", "aria-label": "Switch profile" }
-    });
-    var menu = el("div", { className: "switcher-menu", attrs: { hidden: "hidden" } });
-    PROFILE_ORDER.forEach(function (key) {
-      var item = el("a", {
-        className: "switcher-item" + (key === activeKey ? " is-active" : ""),
-        text: DEFAULT_PROFILES[key].title,
-        attrs: { href: "/" + SLUGS[key] + "/", "data-profile-switch": key }
-      });
-      menu.appendChild(item);
-    });
-    var edit = el("a", {
-      className: "switcher-item switcher-edit",
-      text: "Edit this profile",
-      attrs: { href: "/admin/" + SLUGS[activeKey] + "/", "data-admin-edit": activeKey }
-    });
-    menu.appendChild(edit);
-    button.addEventListener("click", function () {
-      var open = menu.hasAttribute("hidden");
-      if (open) menu.removeAttribute("hidden");
-      else menu.setAttribute("hidden", "hidden");
-      button.setAttribute("aria-expanded", open ? "true" : "false");
-    });
-    document.addEventListener("click", function (event) {
-      if (!wrap.contains(event.target)) {
-        menu.setAttribute("hidden", "hidden");
-        button.setAttribute("aria-expanded", "false");
-      }
-    });
-    wrap.appendChild(button);
-    wrap.appendChild(menu);
-    return wrap;
-  }
-
   function renderDashboard(container, key, settings) {
     var profile = settings.profiles[key];
     var defaults = DEFAULT_PROFILES[key];
@@ -289,7 +250,7 @@
 
     var main = el("main", { className: "public-dashboard", attrs: { "data-profile": key } });
     var card = el("section", { className: "dashboard-card" });
-    card.appendChild(profileSwitcher(key));
+    // Public pages are independent: no profile switcher / three-dot menu / edit shortcut.
 
     var lang = el("div", { className: "language-pill", attrs: { "aria-label": "Language" } });
     lang.appendChild(el("span", { text: "EN" }));
@@ -318,7 +279,12 @@
 
     var links = el("nav", { className: "dashboard-links", attrs: { "aria-label": "Profile links" } });
     LINK_KEYS.forEach(function (linkKey) {
-      links.appendChild(dashboardButton(linkKey, profile.links[linkKey]));
+      var link = profile.links[linkKey];
+      var url = link && typeof link.url === "string" ? link.url.trim() : "";
+      // Public shows ONLY selected links: enabled + present + valid URL. Others are omitted entirely.
+      if (link && link.enabled === true && isNavigable(url)) {
+        links.appendChild(dashboardButton(linkKey, link));
+      }
     });
     card.appendChild(links);
 
