@@ -129,8 +129,14 @@ const ownerUser = {
 };
 
 test("successful login stops spinner and renders the editor immediately", async () => {
+  let meCalls = 0;
   const h = makeHarness((url, opts) => {
-    if (url.endsWith("/me/")) return Promise.resolve(response(200, { authenticated: false, configured: true, canSave: false }));
+    if (url.endsWith("/me/")) {
+      meCalls += 1;
+      return Promise.resolve(response(200, meCalls === 1
+        ? { authenticated: false, configured: true, canSave: false }
+        : { authenticated: true, configured: true, canSave: true, user: ownerUser }));
+    }
     if (url.endsWith("/login/")) return Promise.resolve(response(200, { ok: true, user: ownerUser }));
     if (url.endsWith("/settings/")) return Promise.resolve(response(200, {
       settings: null,
@@ -140,11 +146,11 @@ test("successful login stops spinner and renders the editor immediately", async 
     }));
     throw new Error(`unexpected ${url}`);
   });
-  await flush(20);
+  await flush(60);
 
   h.$("login-password").value = "correct";
   h.submit();
-  await flush(20);
+  await flush(60);
 
   assert.equal(h.$("editor-view").hidden, false);
   assert.equal(h.$("login-view").hidden, true);

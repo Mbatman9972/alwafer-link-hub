@@ -74,7 +74,18 @@ test("admin renders the required signed-in identity wording", () => {
   assert.match(js, /Login failed\. Please try again\./);
   assert.match(js, /Login timed out\. Please try again\./);
   assert.match(js, /\.finally\(function \(\) \{\s*setLoginBusy\(false\);/);
-  assert.match(js, /api\("\/me", \{ method: "GET" \}\)/);
+  assert.match(js, /api\("\/me", \{ method: "GET", timeoutMs: timeoutMs \|\| 0 \}\)/);
+  assert.match(js, /debugAdmin=1/);
+  assert.match(js, /Admin diagnostics/);
+  assert.match(js, /ADMIN_BUILD_VERSION/);
+  assert.match(js, /Login session was not accepted\. Please try again\./);
+  assert.doesNotMatch(js, /document\.cookie\s*\+\s*|cookie value|passwordHash|ALWAFER_COOKIE_SECRET/);
+});
+
+test("admin assets are content-versioned for normal-browser cache busting", () => {
+  const html = fs.readFileSync(path.join(root, "admin.html"), "utf8");
+  assert.match(html, /\/admin\.css\?v=owner-debug-20260624v1/);
+  assert.match(html, /\/admin\.js\?v=owner-debug-20260624v1/);
 });
 
 test("admin shell and admin assets are no-store to avoid stale login bundles", () => {

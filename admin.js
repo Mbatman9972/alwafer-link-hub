@@ -6,6 +6,8 @@
 
   var API = "/api/admin";
   var LOGIN_TIMEOUT_MS = 8000;
+  var ADMIN_BUILD_VERSION = "owner-debug-2026-06-24-v1";
+  var DEBUG_ADMIN = /(?:^\?|&)debugAdmin=1(?:&|$)/.test(String(location.search || ""));
   var NAMES = { mustafa: "ALWAFER", ahmed: "Team Ahmed Ramadan", hala: "Hala Al-Saghir" };
   var SLUGS = { mustafa: "alwafer", ahmed: "ahmed", hala: "hala" };
   var LINK_KEYS = ["apply", "youtube", "tiktok", "telegram", "instagram", "whatsapp", "website"];
@@ -42,6 +44,16 @@
     perms: { profiles: [], regions: false },
     profile: "mustafa",
     routeProfile: null
+  };
+  var debugState = {
+    uiState: "loading",
+    loginRequestUrl: "",
+    lastLoginStatus: "not attempted",
+    sessionCookie: "not checked",
+    meStatus: "not checked",
+    authenticatedUserKey: "none",
+    canSave: "unknown",
+    lastVisibleError: ""
   };
 
   function $(id) { return document.getElementById(id); }
@@ -107,6 +119,52 @@
     return match[1].toLowerCase() === "alwafer" ? "mustafa" : match[1].toLowerCase();
   }
   function adminPath(profile) { return "/admin/" + (profile === "mustafa" ? "alwafer" : profile) + "/"; }
+  function userKey(user) {
+    if (!user || typeof user !== "object") return "none";
+    return user.key || (user.role === "owner" ? "mustafa" : (user.profile || "none"));
+  }
+  function sessionCookieState(authenticated) {
+    var visible = typeof document.cookie === "string" && document.cookie.indexOf("alwafer_admin=") >= 0;
+    if (visible) return "yes (JS-visible)";
+    if (authenticated) return "yes (HttpOnly, inferred by /me)";
+    return "no";
+  }
+  function updateDebug(extra) {
+    if (extra) {
+      Object.keys(extra).forEach(function (key) { debugState[key] = extra[key]; });
+    }
+    renderDebug();
+  }
+  function debugRow(label, value) {
+    var row = el("div", "admin-debug-row");
+    row.appendChild(el("span", "admin-debug-label", label));
+    row.appendChild(el("span", "admin-debug-value", value == null ? "" : String(value)));
+    return row;
+  }
+  function renderDebug() {
+    if (!DEBUG_ADMIN || !document.body) return;
+    var panel = $("admin-debug-panel");
+    if (!panel) {
+      panel = el("aside", "admin-debug-panel");
+      panel.id = "admin-debug-panel";
+      panel.setAttribute("aria-label", "Admin diagnostics");
+      document.body.appendChild(panel);
+    }
+    var selected = $("login-account") ? $("login-account").value : "";
+    clear(panel);
+    panel.appendChild(el("h2", null, "Admin diagnostics"));
+    panel.appendChild(debugRow("admin build", ADMIN_BUILD_VERSION));
+    panel.appendChild(debugRow("route profile", state.routeProfile || routeProfile() || "none"));
+    panel.appendChild(debugRow("selected account key", selected || "none"));
+    panel.appendChild(debugRow("login request URL", debugState.loginRequestUrl || adminApiPath("/login")));
+    panel.appendChild(debugRow("last login response", debugState.lastLoginStatus));
+    panel.appendChild(debugRow("session cookie", debugState.sessionCookie));
+    panel.appendChild(debugRow("/api/admin/me status", debugState.meStatus));
+    panel.appendChild(debugRow("authenticated user key", debugState.authenticatedUserKey));
+    panel.appendChild(debugRow("canSave", debugState.canSave));
+    panel.appendChild(debugRow("UI state", debugState.uiState));
+    panel.appendChild(debugRow("last visible error", debugState.lastVisibleError || "none"));
+  }
 
   function defaults() {
     var settings = { version: 1, updatedAt: "", profiles: {}, sharedRegions: {} };
@@ -195,12 +253,20 @@
     var msg = $("login-msg");
     msg.textContent = message || "";
     msg.className = "form-msg" + (cls ? " " + cls : "");
+    updateDebug({
+      uiState: cls === "error" ? "error" : "login",
+      lastVisibleError: cls === "error" ? (message || "") : debugState.lastVisibleError
+    });
   }
   function setLoginMessage(message, cls) {
     var msg = $("login-msg");
     if (!msg) return;
     msg.textContent = message || "";
     msg.className = "form-msg" + (cls ? " " + cls : "");
+    updateDebug({
+      uiState: cls === "error" ? "error" : (message ? "loading" : debugState.uiState),
+      lastVisibleError: cls === "error" ? (message || "") : debugState.lastVisibleError
+    });
   }
   function showEditor() {
     setLoginBusy(false);
@@ -208,6 +274,7 @@
     $("login-view").hidden = true;
     $("editor-view").hidden = false;
     renderEditor();
+    updateDebug({ uiState: "editor", lastVisibleError: "" });
   }
 
   function renderHeader() {
@@ -487,14 +554,32 @@
       if (res.status === 200 && res.body) {
         if (res.body.user) applyUser(res.body.user);
         if (res.body.perms) state.serverPerms = { profiles: res.body.perms.profiles.slice(), regions: !!res.body.perms.regions };
+        updateDebug({
+          authenticatedUserKey: userKey(res.body.user || state.user),
+          canSave: String(!!res.body.canSave)
+        });
         state.settings = normalize(res.body.settings);
         return true;
       }
       return false;
     });
   }
+  function recordMe(res) {
+    var body = res && res.body ? res.body : {};
+    var authenticated = !!body.authenticated;
+    updateDebug({
+      meStatus: res ? String(res.status) : "not checked",
+      sessionCookie: sessionCookieState(authenticated),
+      authenticatedUserKey: authenticated ? userKey(body.user) : "none",
+      canSave: Object.prototype.hasOwnProperty.call(body, "canSave") ? String(!!body.canSave) : debugState.canSave
+    });
+    return res;
+  }
+  function readMe(timeoutMs) {
+    return api("/me", { method: "GET", timeoutMs: timeoutMs || 0 }).then(recordMe);
+  }
   function checkSession() {
-    return api("/me", { method: "GET" }).then(function (res) {
+    return readMe().then(function (res) {
       if (res.status === 200 && res.body && res.body.authenticated && res.body.user) {
         return loadSettings();
       }
@@ -505,14 +590,28 @@
     setLoginBusy(true);
     $("login-view").hidden = false;
     $("editor-view").hidden = true;
+    updateDebug({
+      uiState: "loading",
+      loginRequestUrl: adminApiPath("/login"),
+      lastLoginStatus: "pending",
+      selectedAccount: account,
+      lastVisibleError: ""
+    });
     setLoginMessage("Signing in…", "info");
     return api("/login", { method: "POST", body: JSON.stringify({ account: account, password: password }), timeoutMs: LOGIN_TIMEOUT_MS }).then(function (res) {
+      updateDebug({ lastLoginStatus: String(res.status) });
       if (res.status === 200 && res.body.user) {
-        applyUser(res.body.user);
-        return loadSettings(LOGIN_TIMEOUT_MS).then(function (ok) {
-          if (ok) { showEditor(); return true; }
-          showLogin("Login failed. Please try again.", "error");
-          return false;
+        return readMe(LOGIN_TIMEOUT_MS).then(function (me) {
+          if (!(me.status === 200 && me.body && me.body.authenticated && me.body.user)) {
+            showLogin("Login session was not accepted. Please try again.", "error");
+            return false;
+          }
+          applyUser(me.body.user);
+          return loadSettings(LOGIN_TIMEOUT_MS).then(function (ok) {
+            if (ok) { showEditor(); return true; }
+            showLogin("Login failed. Please try again.", "error");
+            return false;
+          });
         }).catch(function () {
           showLogin("Login failed. Please try again.", "error");
           return false;
@@ -547,10 +646,12 @@
 
   function init() {
     state.routeProfile = routeProfile() || null;
-    if (state.routeProfile && location.search && history && history.replaceState) history.replaceState(null, "", adminPath(state.routeProfile));
+    updateDebug({ uiState: "loading", loginRequestUrl: adminApiPath("/login") });
+    if (state.routeProfile && location.search && !DEBUG_ADMIN && history && history.replaceState) history.replaceState(null, "", adminPath(state.routeProfile));
     if (state.routeProfile && $("login-account")) {
       $("login-account").value = state.routeProfile;
       $("login-account").disabled = true;
+      updateDebug({});
     }
     var loginForm = $("login-form");
     if (loginForm) loginForm.addEventListener("submit", function (event) {
