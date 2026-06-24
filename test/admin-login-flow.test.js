@@ -154,6 +154,10 @@ test("successful login stops spinner and renders the editor immediately", async 
 
   assert.equal(h.$("editor-view").hidden, false);
   assert.equal(h.$("login-view").hidden, true);
+  // Both the attribute AND the class must agree so per-view CSS (display:grid on
+  // .login-view) can never keep the login card on screen behind the editor.
+  assert.ok(/(^|\s)hidden(\s|$)/.test(h.$("login-view").className), "login-view must carry .hidden class");
+  assert.ok(!/(^|\s)hidden(\s|$)/.test(h.$("editor-view").className), "editor-view must not carry .hidden class");
   assert.equal(h.$("login-btn").disabled, false);
   assert.equal(h.$("login-btn").textContent, "Sign in");
   assert.equal(h.$("login-msg").textContent, "");
@@ -172,6 +176,7 @@ test("wrong password stops spinner and shows visible error", async () => {
   await flush(20);
 
   assert.equal(h.$("editor-view").hidden, true);
+  assert.ok(/(^|\s)hidden(\s|$)/.test(h.$("editor-view").className), "editor-view must carry .hidden class after a failed login");
   assert.equal(h.$("login-btn").disabled, false);
   assert.equal(h.$("login-btn").textContent, "Sign in");
   assert.equal(h.$("login-msg").textContent, "Incorrect account or password.");

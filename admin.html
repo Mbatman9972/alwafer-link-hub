@@ -8,13 +8,13 @@
   <meta name="robots" content="noindex, nofollow" />
   <title>ALWAFER · Link Manager</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230a0a0c'/%3E%3Ctext x='50%25' y='54%25' font-size='34' font-family='Georgia,serif' fill='%23d4af37' text-anchor='middle' dominant-baseline='middle'%3EA%3C/text%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="/admin.css?v=owner-debug-20260624v1" />
+  <link rel="stylesheet" href="/admin.css?v=owner-debug-20260624v2" />
 </head>
 <body>
   <div class="admin-aura" aria-hidden="true"></div>
 
   <!-- ===================== LOGIN ===================== -->
-  <section id="login-view" class="view login-view">
+  <section id="login-view" class="view login-view" data-admin-login="true">
     <form id="login-form" class="login-card" autocomplete="on">
       <div class="logo-mark">A</div>
       <h1 class="brand-title">ALWAFER</h1>
@@ -37,7 +37,7 @@
   </section>
 
   <!-- ===================== EDITOR ===================== -->
-  <section id="editor-view" class="view editor-view" hidden>
+  <section id="editor-view" class="view editor-view" data-admin-editor="true" hidden>
     <header class="admin-header">
       <div class="brand-row">
         <span class="logo-mark sm">A</span>
@@ -83,6 +83,6 @@
 
   <div id="toasts" class="toasts" aria-live="polite"></div>
 
-  <script src="/admin.js?v=owner-debug-20260624v1"></script>
+  <script src="/admin.js?v=owner-debug-20260624v2"></script>
 </body>
 </html>

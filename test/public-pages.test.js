@@ -84,8 +84,8 @@ test("admin renders the required signed-in identity wording", () => {
 
 test("admin assets are content-versioned for normal-browser cache busting", () => {
   const html = fs.readFileSync(path.join(root, "admin.html"), "utf8");
-  assert.match(html, /\/admin\.css\?v=owner-debug-20260624v1/);
-  assert.match(html, /\/admin\.js\?v=owner-debug-20260624v1/);
+  assert.match(html, /\/admin\.css\?v=owner-debug-20260624v2/);
+  assert.match(html, /\/admin\.js\?v=owner-debug-20260624v2/);
 });
 
 test("admin shell and admin assets are no-store to avoid stale login bundles", () => {

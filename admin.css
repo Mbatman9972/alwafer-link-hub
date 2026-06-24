@@ -22,6 +22,11 @@ body {
 .admin-aura { position: fixed; inset: 0; z-index: 0; pointer-events: none;
   background: radial-gradient(520px 300px at 50% 0%, rgba(212,175,55,.12), transparent 70%); }
 .view { position: relative; z-index: 1; }
+/* The hidden attribute MUST win over per-view display rules (e.g. .login-view
+   sets display:grid, which would otherwise keep a [hidden] login view on screen
+   after a successful sign-in). This is the root-cause fix for the editor not
+   appearing while diagnostics reported UI state = editor. */
+.view[hidden] { display: none !important; }
 
 /* logo */
 .logo-mark { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center;

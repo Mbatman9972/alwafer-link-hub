@@ -6,7 +6,7 @@
 
   var API = "/api/admin";
   var LOGIN_TIMEOUT_MS = 8000;
-  var ADMIN_BUILD_VERSION = "owner-debug-2026-06-24-v1";
+  var ADMIN_BUILD_VERSION = "owner-debug-2026-06-24-v2";
   var DEBUG_ADMIN = /(?:^\?|&)debugAdmin=1(?:&|$)/.test(String(location.search || ""));
   var NAMES = { mustafa: "ALWAFER", ahmed: "Team Ahmed Ramadan", hala: "Hala Al-Saghir" };
   var SLUGS = { mustafa: "alwafer", ahmed: "ahmed", hala: "hala" };
@@ -65,6 +65,26 @@
   }
   function clear(node) { while (node && node.firstChild) node.removeChild(node.firstChild); }
   function show(node, on) { if (node) node.classList.toggle("hidden", !on); }
+  function isElementVisible(node) {
+    if (!node || node.hidden) return false;
+    if (typeof window !== "undefined" && typeof window.getComputedStyle === "function") {
+      var style = window.getComputedStyle(node);
+      if (style && (style.display === "none" || style.visibility === "hidden")) return false;
+      if (style && style.position === "fixed") return true;
+    }
+    return node.offsetParent != null;
+  }
+  /* Single source of truth for which top-level view is on screen. Toggles BOTH
+     the semantic `hidden` attribute (also fixed in admin.css via .view[hidden])
+     and the `.hidden` class (display:none !important), so the editor and login
+     card can never be visible at the same time regardless of per-view CSS. */
+  function setView(view) {
+    var login = $("login-view");
+    var editor = $("editor-view");
+    var editorActive = view === "editor";
+    if (login) { login.hidden = editorActive; login.classList.toggle("hidden", editorActive); }
+    if (editor) { editor.hidden = !editorActive; editor.classList.toggle("hidden", !editorActive); }
+  }
   function toast(message, type) {
     var box = $("toasts");
     if (!box) return;
@@ -163,6 +183,16 @@
     panel.appendChild(debugRow("authenticated user key", debugState.authenticatedUserKey));
     panel.appendChild(debugRow("canSave", debugState.canSave));
     panel.appendChild(debugRow("UI state", debugState.uiState));
+    // Live DOM truth — computed from the actual elements, not from debugState,
+    // so the panel can never disagree with what is on screen.
+    var loginVisible = isElementVisible($("login-view"));
+    var editorVisible = isElementVisible($("editor-view"));
+    var editorCount = document.querySelectorAll('[data-admin-editor="true"]').length;
+    var loginCount = document.querySelectorAll('[data-admin-login="true"]').length;
+    panel.appendChild(debugRow("login visible", String(loginVisible)));
+    panel.appendChild(debugRow("editor visible", String(editorVisible)));
+    panel.appendChild(debugRow("editor selector count", String(editorCount)));
+    panel.appendChild(debugRow("login selector count", String(loginCount)));
     panel.appendChild(debugRow("last visible error", debugState.lastVisibleError || "none"));
   }
 
@@ -247,8 +277,7 @@
   }
 
   function showLogin(message, cls) {
-    $("login-view").hidden = false;
-    $("editor-view").hidden = true;
+    setView("login");
     setLoginBusy(false);
     var msg = $("login-msg");
     msg.textContent = message || "";
@@ -271,9 +300,11 @@
   function showEditor() {
     setLoginBusy(false);
     setLoginMessage("");
-    $("login-view").hidden = true;
-    $("editor-view").hidden = false;
+    setView("editor");
     renderEditor();
+    if (typeof window !== "undefined" && typeof window.scrollTo === "function") {
+      try { window.scrollTo(0, 0); } catch (e) { /* non-fatal */ }
+    }
     updateDebug({ uiState: "editor", lastVisibleError: "" });
   }
 
@@ -588,8 +619,7 @@
   }
   function doLogin(account, password) {
     setLoginBusy(true);
-    $("login-view").hidden = false;
-    $("editor-view").hidden = true;
+    setView("login");
     updateDebug({
       uiState: "loading",
       loginRequestUrl: adminApiPath("/login"),
