@@ -27,6 +27,12 @@ const DEFAULT_TAGLINE = "Empowering creators. Building influence. Elevating bran
 const REGION_DEFAULT_URLS = { mena: "https://www.tiktok.com/t/ZMAN6Bu2W/", uk: "https://www.tiktok.com/t/ZSxoyPd4W/",
   fr: "https://www.tiktok.com/t/ZSxoAQrsm/", de: "https://www.tiktok.com/t/ZSQ1b63XY/",
   tr: "https://www.tiktok.com/t/ZSxoUt6A7/", cca: "https://www.tiktok.com/t/ZSxECjfqx/" };
+const MAX_REGIONS = 50;
+const REGION_LABEL_MAX = 40;
+// Canonical shared-regions model is an ordered ARRAY of { id, label, url, enabled }.
+function defaultRegions() {
+  return REGION_KEYS.map((key) => ({ id: key, label: REGION_LABELS[key], url: REGION_DEFAULT_URLS[key], enabled: true }));
+}
 
 function normalizeUser(key, input) {
   const role = input.role === "owner" ? "owner" : "profile";
@@ -175,6 +181,32 @@ function isImageUrl(value) {
   }
   return /^\/assets\/[A-Za-z0-9._~!$&'()*+,;=:@/%-]+\.(png|jpe?g|webp)$/i.test(s);
 }
+// Region links are strict: http/https only. Rejects javascript:/data:/vbscript:/
+// file:/mailto:/tel:, relative paths, anchors, and malformed URLs.
+function isRegionUrl(value) {
+  if (typeof value !== "string") return false;
+  const s = value.trim();
+  if (!s) return false;
+  try { const u = new URL(s); return u.protocol === "http:" || u.protocol === "https:"; }
+  catch (e) { return false; }
+}
+function regionSlug(value, index) {
+  const base = String(value || "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  return base || ("region-" + (index + 1));
+}
+// Accept the canonical array OR the legacy keyed object; return a plain array.
+function toRegionArray(input) {
+  if (Array.isArray(input)) return input.slice();
+  if (input && typeof input === "object") {
+    const keys = Object.keys(input);
+    const ordered = REGION_KEYS.filter((k) => keys.indexOf(k) > -1).concat(keys.filter((k) => REGION_KEYS.indexOf(k) < 0));
+    return ordered.map((k) => {
+      const v = input[k] && typeof input[k] === "object" ? input[k] : {};
+      return { id: k, label: typeof v.label === "string" ? v.label : (REGION_LABELS[k] || k), url: v.url, enabled: v.enabled };
+    });
+  }
+  return null;
+}
 function cleanText(value, fallback, max) {
   const out = typeof value === "string" && value.trim() ? value.trim() : fallback;
   return String(out).slice(0, max);
@@ -213,18 +245,31 @@ function cleanProfile(key, input) {
   } };
 }
 function cleanRegions(input) {
-  const src = input || {};
-  const out = {};
-  for (const key of REGION_KEYS) {
-    const cleaned = cleanLink(src[key], REGION_LABELS[key]);
-    if (cleaned.error) return { error: cleaned.error };
-    out[key] = cleaned.ok;
+  const arr = toRegionArray(input);
+  if (!arr) return { ok: defaultRegions() };
+  if (arr.length > MAX_REGIONS) return { error: "Too many regions (max " + MAX_REGIONS + ")." };
+  const used = {};
+  const out = [];
+  for (let i = 0; i < arr.length; i++) {
+    const raw = arr[i] && typeof arr[i] === "object" ? arr[i] : {};
+    const rawLabel = typeof raw.label === "string" ? raw.label.trim() : "";
+    const url = typeof raw.url === "string" ? raw.url.trim() : "";
+    if (!rawLabel && !url) continue; // drop fully-blank rows (e.g. an unused "Add region")
+    const label = rawLabel ? rawLabel.slice(0, REGION_LABEL_MAX) : "Region";
+    const enabled = raw.enabled === true;
+    if (url && !isRegionUrl(url)) return { error: "Invalid URL for region “" + label + "” (use http/https)." };
+    if (enabled && !isRegionUrl(url)) return { error: "Region “" + label + "” is enabled but has no valid http/https link." };
+    const slug = regionSlug(raw.id || label, i);
+    let id = slug, n = 2;
+    while (used[id]) { id = slug + "-" + n; n += 1; }
+    used[id] = true;
+    out.push({ id: id, label: label, url: url, enabled: enabled });
   }
   return { ok: out };
 }
 
 function buildDefaults() {
-  const settings = { version: 1, updatedAt: new Date().toISOString(), profiles: {}, sharedRegions: {} };
+  const settings = { version: 1, updatedAt: new Date().toISOString(), profiles: {}, sharedRegions: [] };
   PROFILE_KEYS.forEach((key) => {
     settings.profiles[key] = {
       title: PROFILE_DEFAULTS[key].title,
@@ -235,7 +280,7 @@ function buildDefaults() {
     };
     LINK_KEYS.forEach((linkKey) => { settings.profiles[key].links[linkKey] = { enabled: false, url: "", label: LINK_LABELS[linkKey] }; });
   });
-  REGION_KEYS.forEach((key) => { settings.sharedRegions[key] = { enabled: true, url: REGION_DEFAULT_URLS[key], label: REGION_LABELS[key] }; });
+  settings.sharedRegions = defaultRegions();
   return settings;
 }
 function normalizeBaseline(current) {
@@ -245,8 +290,10 @@ function normalizeBaseline(current) {
       const cleaned = cleanProfile(key, (current.profiles || {})[key]);
       if (cleaned.ok) base.profiles[key] = cleaned.ok;
     });
-    const regions = cleanRegions(current.sharedRegions);
-    if (regions.ok) base.sharedRegions = regions.ok;
+    if (current.sharedRegions !== undefined) {
+      const regions = cleanRegions(current.sharedRegions);
+      if (regions.ok) base.sharedRegions = regions.ok;
+    }
   }
   return base;
 }
@@ -285,7 +332,7 @@ function applyAllowedEdits(current, input, perms) {
 function filterForUser(settings, perms) {
   const base = normalizeBaseline(settings);
   if (perms.regions && perms.profiles.length === PROFILE_KEYS.length) return base;
-  const out = { version: base.version, updatedAt: base.updatedAt, profiles: {}, sharedRegions: {} };
+  const out = { version: base.version, updatedAt: base.updatedAt, profiles: {}, sharedRegions: [] };
   perms.profiles.forEach((key) => { out.profiles[key] = base.profiles[key]; });
   if (perms.regions) out.sharedRegions = base.sharedRegions;
   return out;
@@ -395,6 +442,9 @@ module.exports = handler;
 module.exports.isAllowedUrl = isAllowedUrl;
 module.exports.isNavigableUrl = isNavigableUrl;
 module.exports.isImageUrl = isImageUrl;
+module.exports.isRegionUrl = isRegionUrl;
+module.exports.cleanRegions = cleanRegions;
+module.exports.defaultRegions = defaultRegions;
 module.exports.makeToken = makeToken;
 module.exports.verifyToken = verifyToken;
 module.exports.checkHash = checkHash;

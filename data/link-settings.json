@@ -132,36 +132,42 @@
       }
     }
   },
-  "sharedRegions": {
-    "mena": {
-      "enabled": true,
+  "sharedRegions": [
+    {
+      "id": "mena",
+      "label": "MENA",
       "url": "https://www.tiktok.com/t/ZMAN6Bu2W/",
-      "label": "MENA"
+      "enabled": true
     },
-    "uk": {
-      "enabled": true,
+    {
+      "id": "uk",
+      "label": "UK",
       "url": "https://www.tiktok.com/t/ZSxoyPd4W/",
-      "label": "UK"
+      "enabled": true
     },
-    "fr": {
-      "enabled": true,
+    {
+      "id": "fr",
+      "label": "FR",
       "url": "https://www.tiktok.com/t/ZSxoAQrsm/",
-      "label": "FR"
+      "enabled": true
     },
-    "de": {
-      "enabled": true,
+    {
+      "id": "de",
+      "label": "DE",
       "url": "https://www.tiktok.com/t/ZSQ1b63XY/",
-      "label": "DE"
+      "enabled": true
     },
-    "tr": {
-      "enabled": true,
+    {
+      "id": "tr",
+      "label": "TR",
       "url": "https://www.tiktok.com/t/ZSxoUt6A7/",
-      "label": "TR"
+      "enabled": true
     },
-    "cca": {
-      "enabled": true,
+    {
+      "id": "cca",
+      "label": "CCA",
       "url": "https://www.tiktok.com/t/ZSxECjfqx/",
-      "label": "CCA"
+      "enabled": true
     }
-  }
+  ]
 }

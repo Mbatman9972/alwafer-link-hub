@@ -197,7 +197,7 @@
   }
 
   function defaults() {
-    var settings = { version: 1, updatedAt: "", profiles: {}, sharedRegions: {} };
+    var settings = { version: 1, updatedAt: "", profiles: {}, sharedRegions: [] };
     ["mustafa", "ahmed", "hala"].forEach(function (profile) {
       settings.profiles[profile] = {
         title: PROFILE_DEFAULTS[profile].title,
@@ -210,13 +210,63 @@
         settings.profiles[profile].links[key] = { enabled: false, url: "", label: LINK_LABELS[key] };
       });
     });
-    REGION_KEYS.forEach(function (key) {
-      settings.sharedRegions[key] = { enabled: true, url: REGION_DEFAULTS[key], label: REGION_LABELS[key] };
-    });
+    settings.sharedRegions = defaultRegions();
     return settings;
   }
   function cleanText(value, fallback) {
     return typeof value === "string" && value.trim() ? value.trim() : fallback;
+  }
+  // ----- shared agency regions: flexible, owner-managed array -----
+  function isRegionUrl(value) {
+    if (typeof value !== "string") return false;
+    var s = value.trim();
+    if (!s) return false;
+    try { var u = new URL(s); return u.protocol === "http:" || u.protocol === "https:"; }
+    catch (e) { return false; }
+  }
+  function regionSlug(value, index) {
+    var base = String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    return base || ("region-" + (index + 1));
+  }
+  function defaultRegions() {
+    return REGION_KEYS.map(function (key) {
+      return { id: key, label: REGION_LABELS[key], url: REGION_DEFAULTS[key], enabled: true };
+    });
+  }
+  function normalizeRegions(raw) {
+    var arr = null;
+    if (Array.isArray(raw)) arr = raw;
+    else if (raw && typeof raw === "object") {
+      var keys = Object.keys(raw);
+      var ordered = REGION_KEYS.filter(function (k) { return keys.indexOf(k) > -1; })
+        .concat(keys.filter(function (k) { return REGION_KEYS.indexOf(k) < 0; }));
+      arr = ordered.map(function (k) {
+        var v = raw[k] && typeof raw[k] === "object" ? raw[k] : {};
+        return { id: k, label: v.label, url: v.url, enabled: v.enabled };
+      });
+    }
+    if (!arr) return defaultRegions();
+    var used = {};
+    var out = [];
+    for (var i = 0; i < arr.length; i++) {
+      var item = arr[i] && typeof arr[i] === "object" ? arr[i] : {};
+      var label = typeof item.label === "string" ? item.label : "";
+      var url = typeof item.url === "string" ? item.url : "";
+      var enabled = item.enabled === true;
+      var slug = regionSlug(item.id || label, i);
+      var id = slug, n = 2;
+      while (used[id]) { id = slug + "-" + n; n += 1; }
+      used[id] = true;
+      out.push({ id: id, label: label, url: url, enabled: enabled });
+    }
+    return out;
+  }
+  function regionStatusFor(region) {
+    if (!region || region.enabled !== true) return { cls: "disabled", text: "Disabled" };
+    var url = (region.url || "").trim();
+    if (!url) return { cls: "missing", text: "Missing URL" };
+    if (!isRegionUrl(url)) return { cls: "invalid", text: "Invalid URL" };
+    return { cls: "active", text: "Active" };
   }
   function normalize(raw) {
     var settings = defaults();
@@ -239,16 +289,7 @@
         }
       });
     });
-    REGION_KEYS.forEach(function (key) {
-      var link = (raw.sharedRegions || {})[key];
-      if (link && typeof link === "object") {
-        settings.sharedRegions[key] = {
-          enabled: link.enabled === true,
-          url: typeof link.url === "string" ? link.url : "",
-          label: cleanText(link.label, REGION_LABELS[key])
-        };
-      }
-    });
+    settings.sharedRegions = normalizeRegions(raw.sharedRegions);
     return settings;
   }
 
@@ -475,14 +516,115 @@
     LINK_KEYS.forEach(function (key) {
       links.appendChild(buildRow(state.profile, key, LINK_LABELS[key], state.settings.profiles[state.profile].links[key]));
     });
-    if (state.perms.regions) {
-      var regions = $("regions-editor");
-      clear(regions);
-      REGION_KEYS.forEach(function (key) {
-        regions.appendChild(buildRow("region", key, REGION_LABELS[key], state.settings.sharedRegions[key]));
-      });
-    }
+    if (state.perms.regions) renderRegions();
     renderPreviews();
+  }
+
+  /* ----- agency regions manager (owner only) ----- */
+  function focusRegionName(index) {
+    var box = $("regions-editor");
+    if (!box || !box.querySelectorAll) return;
+    var rows = box.querySelectorAll("[data-region-row]");
+    var row = rows[index];
+    var input = row && row.querySelector ? row.querySelector(".region-name") : null;
+    if (input && input.focus) input.focus();
+  }
+  function buildRegionRow(region, index, total) {
+    var row = el("div", "row region-row");
+    row.setAttribute("data-region-row", region.id || ("region-" + index));
+
+    var main = el("div", "row-main");
+    var name = document.createElement("input");
+    name.type = "text";
+    name.className = "region-name";
+    name.maxLength = 40;
+    name.placeholder = "Region name (e.g. MENA, USA, GCC)";
+    name.value = region.label || "";
+    name.setAttribute("aria-label", "Region name");
+    main.appendChild(name);
+
+    var st = regionStatusFor(region);
+    var badge = el("span", "status " + st.cls, st.text);
+    main.appendChild(badge);
+
+    var tools = el("div", "region-tools");
+    var up = el("button", "icon-btn", "▲"); up.type = "button"; up.title = "Move up"; up.setAttribute("aria-label", "Move region up"); up.disabled = index === 0;
+    var down = el("button", "icon-btn", "▼"); down.type = "button"; down.title = "Move down"; down.setAttribute("aria-label", "Move region down"); down.disabled = index === total - 1;
+    var del = el("button", "icon-btn danger", "✕"); del.type = "button"; del.title = "Delete region"; del.setAttribute("aria-label", "Delete region");
+    tools.appendChild(up); tools.appendChild(down); tools.appendChild(del);
+    main.appendChild(tools);
+    row.appendChild(main);
+
+    var controls = el("div", "row-controls");
+    var switchLabel = el("label", "switch");
+    var toggle = document.createElement("input");
+    toggle.type = "checkbox";
+    toggle.className = "toggle";
+    toggle.checked = region.enabled === true;
+    toggle.setAttribute("aria-label", "Enable region");
+    switchLabel.appendChild(toggle);
+    switchLabel.appendChild(el("span", "slider"));
+
+    var url = document.createElement("input");
+    url.type = "url";
+    url.className = "url";
+    url.placeholder = "https://… region link";
+    url.value = region.url || "";
+
+    controls.appendChild(switchLabel);
+    controls.appendChild(url);
+    row.appendChild(controls);
+
+    function sync() {
+      region.label = name.value;
+      region.url = url.value;
+      region.enabled = toggle.checked;
+      var next = regionStatusFor(region);
+      badge.className = "status " + next.cls;
+      badge.textContent = next.text;
+      row.classList.toggle("invalid", next.cls === "missing" || next.cls === "invalid");
+    }
+    name.addEventListener("input", sync);
+    url.addEventListener("input", sync);
+    toggle.addEventListener("change", sync);
+    up.addEventListener("click", function () { moveRegion(index, -1); });
+    down.addEventListener("click", function () { moveRegion(index, 1); });
+    del.addEventListener("click", function () { deleteRegion(index); });
+    return row;
+  }
+  function renderRegions() {
+    var box = $("regions-editor");
+    if (!box) return;
+    clear(box);
+    if (!Array.isArray(state.settings.sharedRegions)) state.settings.sharedRegions = normalizeRegions(state.settings.sharedRegions);
+    var list = state.settings.sharedRegions;
+    list.forEach(function (region, index) { box.appendChild(buildRegionRow(region, index, list.length)); });
+    var addWrap = el("div", "region-add");
+    var add = el("button", "btn btn-ghost", "+ Add region");
+    add.type = "button";
+    add.setAttribute("data-add-region", "true");
+    add.addEventListener("click", addRegion);
+    addWrap.appendChild(add);
+    box.appendChild(addWrap);
+  }
+  function addRegion() {
+    if (!Array.isArray(state.settings.sharedRegions)) state.settings.sharedRegions = normalizeRegions(state.settings.sharedRegions);
+    state.settings.sharedRegions.push({ id: "", label: "", url: "", enabled: false });
+    renderRegions();
+    focusRegionName(state.settings.sharedRegions.length - 1);
+  }
+  function deleteRegion(index) {
+    if (!Array.isArray(state.settings.sharedRegions)) return;
+    state.settings.sharedRegions.splice(index, 1);
+    renderRegions();
+  }
+  function moveRegion(index, delta) {
+    var list = state.settings.sharedRegions;
+    if (!Array.isArray(list)) return;
+    var target = index + delta;
+    if (target < 0 || target >= list.length) return;
+    var tmp = list[index]; list[index] = list[target]; list[target] = tmp;
+    renderRegions();
   }
 
   function validateAll() {
@@ -498,10 +640,11 @@
         if (link.enabled && !isNavigableUrl((link.url || "").trim())) problems.push(NAMES[profile] + " · " + LINK_LABELS[key]);
       });
     });
-    if (state.perms.regions) {
-      REGION_KEYS.forEach(function (key) {
-        var link = state.settings.sharedRegions[key];
-        if (link.enabled && !isNavigableUrl((link.url || "").trim())) problems.push("Region · " + REGION_LABELS[key]);
+    if (state.perms.regions && Array.isArray(state.settings.sharedRegions)) {
+      state.settings.sharedRegions.forEach(function (region) {
+        if (region.enabled && !isRegionUrl((region.url || "").trim())) {
+          problems.push("Region · " + (cleanText(region.label, "") || "(unnamed)"));
+        }
       });
     }
     return problems;

@@ -263,7 +263,7 @@ button, input, textarea { font: inherit; }
 }
 .regions-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
   gap: 10px;
 }
 .region-chip {

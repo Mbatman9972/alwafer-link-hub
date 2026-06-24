@@ -51,7 +51,15 @@ test("settings model includes profile content, profile image, links, and shared 
     assert.doesNotMatch(data.profiles[profile].profileImage, /^\/assets\/page-/);
     assert.deepEqual(Object.keys(data.profiles[profile].links), app.LINK_KEYS);
   }
-  assert.deepEqual(Object.keys(data.sharedRegions), app.REGION_KEYS);
+  // sharedRegions is now a flexible, owner-managed ARRAY (add/edit/delete/reorder).
+  assert.ok(Array.isArray(data.sharedRegions));
+  assert.deepEqual(data.sharedRegions.map((region) => region.id), app.REGION_KEYS);
+  for (const region of data.sharedRegions) {
+    assert.equal(typeof region.label, "string");
+    assert.equal(typeof region.url, "string");
+    assert.equal(typeof region.enabled, "boolean");
+    assert.match(region.url, /^https?:\/\//);
+  }
 });
 
 test("canonical URLs retain trailing slashes and admin profile routes", () => {

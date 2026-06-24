@@ -109,6 +109,23 @@ body {
 .textarea { min-height: 92px; resize: vertical; line-height: 1.45; }
 .field-hint { margin: -6px 2px 4px; color: var(--text-faint); font-size: 13px; line-height: 1.45; }
 
+/* ----- agency regions manager (owner) ----- */
+.region-row .row-main { gap: 8px; flex-wrap: wrap; }
+.region-name { flex: 1 1 160px; min-width: 140px; padding: 10px 12px; border-radius: 10px; font: inherit;
+  color: var(--text); background: rgba(0,0,0,.35); border: 1px solid var(--border); }
+.region-name:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,.22); }
+.region-tools { display: inline-flex; gap: 6px; align-items: center; }
+.icon-btn { appearance: none; cursor: pointer; font: inherit; line-height: 1; width: 34px; height: 34px;
+  display: grid; place-items: center; border-radius: 9px; border: 1px solid var(--border);
+  background: var(--surface-2); color: var(--text); transition: all .15s var(--ease); -webkit-tap-highlight-color: transparent; }
+.icon-btn:hover:not(:disabled) { border-color: var(--gold-line); transform: translateY(-1px); }
+.icon-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.icon-btn:disabled { opacity: .4; cursor: default; }
+.icon-btn.danger { color: var(--red); }
+.icon-btn.danger:hover:not(:disabled) { border-color: rgba(248,114,114,.6); }
+.region-add { margin-top: 4px; }
+.region-add .btn { width: 100%; }
+
 /* status badge */
 .status { font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
   padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); white-space: nowrap; }

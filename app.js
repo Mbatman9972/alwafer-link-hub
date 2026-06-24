@@ -64,6 +64,40 @@
   function text(value, fallback) {
     return typeof value === "string" && value.trim() ? value.trim() : (fallback || "");
   }
+  // Canonical shared-regions model is an ordered ARRAY of { id, label, url, enabled }.
+  function defaultRegions() {
+    return REGION_KEYS.map(function (key) {
+      return { id: key, label: REGION_LABELS[key], url: DEFAULT_REGION_URLS[key], enabled: true };
+    });
+  }
+  function normalizeRegions(raw) {
+    var arr = null;
+    if (Array.isArray(raw)) arr = raw;
+    else if (raw && typeof raw === "object") {
+      var keys = Object.keys(raw);
+      var ordered = REGION_KEYS.filter(function (k) { return keys.indexOf(k) > -1; })
+        .concat(keys.filter(function (k) { return REGION_KEYS.indexOf(k) < 0; }));
+      arr = ordered.map(function (k) {
+        var v = raw[k] && typeof raw[k] === "object" ? raw[k] : {};
+        return { id: k, label: v.label, url: v.url, enabled: v.enabled };
+      });
+    }
+    if (!arr) return defaultRegions();
+    var used = {};
+    var out = [];
+    for (var i = 0; i < arr.length; i++) {
+      var item = arr[i] && typeof arr[i] === "object" ? arr[i] : {};
+      var label = text(item.label, "");
+      var url = typeof item.url === "string" ? item.url : "";
+      var enabled = item.enabled === true;
+      var base = String(item.id || label || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || ("region-" + (i + 1));
+      var id = base, n = 2;
+      while (used[id]) { id = base + "-" + n; n += 1; }
+      used[id] = true;
+      out.push({ id: id, label: label, url: url, enabled: enabled });
+    }
+    return out;
+  }
   function isExternal(url) {
     return typeof url === "string" && /^https?:\/\//i.test(url.trim());
   }
@@ -99,7 +133,7 @@
   function clear(node) { while (node && node.firstChild) node.removeChild(node.firstChild); }
 
   function defaultSettings() {
-    var settings = { version: 1, updatedAt: "", profiles: {}, sharedRegions: {} };
+    var settings = { version: 1, updatedAt: "", profiles: {}, sharedRegions: [] };
     PROFILE_ORDER.forEach(function (key) {
       var base = DEFAULT_PROFILES[key];
       settings.profiles[key] = {
@@ -113,9 +147,7 @@
         settings.profiles[key].links[linkKey] = { enabled: false, url: "", label: LINK_LABELS[linkKey] };
       });
     });
-    REGION_KEYS.forEach(function (key) {
-      settings.sharedRegions[key] = { enabled: true, url: DEFAULT_REGION_URLS[key], label: REGION_LABELS[key] };
-    });
+    settings.sharedRegions = defaultRegions();
     return settings;
   }
 
@@ -140,16 +172,7 @@
         }
       });
     });
-    REGION_KEYS.forEach(function (key) {
-      var link = (raw.sharedRegions || {})[key];
-      if (link && typeof link === "object") {
-        out.sharedRegions[key] = {
-          enabled: link.enabled === true,
-          url: typeof link.url === "string" ? link.url : "",
-          label: text(link.label, REGION_LABELS[key])
-        };
-      }
-    });
+    out.sharedRegions = normalizeRegions(raw.sharedRegions);
     out.version = raw.version || 1;
     out.updatedAt = typeof raw.updatedAt === "string" ? raw.updatedAt : "";
     return out;
@@ -212,9 +235,9 @@
     return a;
   }
 
-  function regionChip(key, link) {
-    var a = el("a", { className: "region-chip", text: text(link && link.label, REGION_LABELS[key]), attrs: { "data-region": key } });
-    applyAnchorState(a, link);
+  function regionChip(region) {
+    var a = el("a", { className: "region-chip", text: text(region && region.label, "Region"), attrs: { "data-region": region && region.id } });
+    applyAnchorState(a, region);
     return a;
   }
 
@@ -302,8 +325,11 @@
     card.appendChild(el("div", { className: "section-divider", attrs: { "aria-hidden": "true" } }));
     card.appendChild(el("h2", { className: "regions-title", text: "Agency Regions / مناطق الوكالة" }));
     var regions = el("nav", { className: "regions-grid", attrs: { "aria-label": "Agency regions" } });
-    REGION_KEYS.forEach(function (regionKey) {
-      regions.appendChild(regionChip(regionKey, settings.sharedRegions[regionKey]));
+    var regionList = Array.isArray(settings.sharedRegions) ? settings.sharedRegions : normalizeRegions(settings.sharedRegions);
+    regionList.forEach(function (region) {
+      // Skip truly blank rows; enabled+valid chips navigate, the rest render disabled.
+      if (!region || !text(region.label, "")) return;
+      regions.appendChild(regionChip(region));
     });
     card.appendChild(regions);
     card.appendChild(el("p", { className: "powered", text: "POWERED BY ALWAFER AGENCY" }));
