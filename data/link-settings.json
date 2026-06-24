@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-24T20:54:43.820Z",
+  "updatedAt": "2026-06-24T22:28:53.248Z",
   "profiles": {
     "mustafa": {
       "title": "ALWAFER",
@@ -48,7 +48,7 @@
     "ahmed": {
       "title": "TEAM AHMED RAMADAN",
       "subtitle": "Official Agency Network",
-      "tagline": "Empowering creators. Building influence. Elevating brands.\nتمكّن المبدعين، نبني التأثير، نرتقي بالعلامات التجارية.",
+      "tagline": "مؤسس مؤسسة PROMA لخدمات الإستشارات الإدارية والدعاية والإعلام وصاحب وكالة\nTeam Ahmed Ramadan على TikTok\nندمج قوة الإدارة بفن الدعاية والتأثير.لأجلك.",
       "profileImage": "/assets/profiles/ahmed-profile.png",
       "links": {
         "apply": {
@@ -63,7 +63,7 @@
         },
         "tiktok": {
           "enabled": false,
-          "url": "",
+          "url": "https://www.tiktok.com/@ahmedramadanofficial_?_r=1&_t=ZS-97UP2CGb0i7",
           "label": "TikTok"
         },
         "telegram": {
