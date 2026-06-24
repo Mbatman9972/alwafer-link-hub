@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-24T17:44:11.149Z",
+  "updatedAt": "2026-06-24T20:12:35.560Z",
   "profiles": {
     "mustafa": {
       "title": "ALWAFER",
@@ -19,8 +19,8 @@
           "label": "YouTube"
         },
         "tiktok": {
-          "enabled": false,
-          "url": "",
+          "enabled": true,
+          "url": "https://www.tiktok.com/@alwaferr?is_from_webapp=1&sender_device=pc",
           "label": "TikTok"
         },
         "telegram": {
