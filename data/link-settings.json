@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-26T19:43:55.853Z",
+  "updatedAt": "2026-06-26T19:44:59.997Z",
   "profiles": {
     "mustafa": {
       "title": "ALWAFER",
@@ -54,7 +54,7 @@
         "apply": {
           "enabled": false,
           "url": "",
-          "label": "Apply to Join the Agency"
+          "label": "Apply to Agency"
         },
         "youtube": {
           "enabled": false,
