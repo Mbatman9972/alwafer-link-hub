@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-24T22:28:53.248Z",
+  "updatedAt": "2026-06-26T19:42:04.166Z",
   "profiles": {
     "mustafa": {
       "title": "ALWAFER",
@@ -63,7 +63,7 @@
         },
         "tiktok": {
           "enabled": false,
-          "url": "https://www.tiktok.com/@ahmedramadanofficial_?_r=1&_t=ZS-97UP2CGb0i7",
+          "url": "https://www.tiktok.com/@ahmedramadanofficial_?_r=1&_t=ZS-97XbblNaTI7",
           "label": "TikTok"
         },
         "telegram": {
@@ -73,7 +73,7 @@
         },
         "instagram": {
           "enabled": false,
-          "url": "",
+          "url": "https://www.instagram.com/_ahmedramadanofficial?igsh=ZmdiM2VteTJ4cnRp",
           "label": "Instagram"
         },
         "whatsapp": {
@@ -83,7 +83,7 @@
         },
         "website": {
           "enabled": false,
-          "url": "",
+          "url": "https://promaesta.com/",
           "label": "Website"
         }
       }
