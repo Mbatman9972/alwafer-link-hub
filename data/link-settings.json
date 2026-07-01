@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-26T19:52:42.605Z",
+  "updatedAt": "2026-07-01T19:21:41.975Z",
   "profiles": {
     "mustafa": {
       "title": "ALWAFER",
@@ -95,8 +95,8 @@
       "profileImage": "/assets/profiles/hala-profile.jpg",
       "links": {
         "apply": {
-          "enabled": false,
-          "url": "",
+          "enabled": true,
+          "url": "https://www.tiktok.com/t/ZS97eV6UG/",
           "label": "Apply to Join the Agency"
         },
         "youtube": {
