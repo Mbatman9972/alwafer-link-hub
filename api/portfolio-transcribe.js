@@ -1,25 +1,31 @@
 "use strict";
 
+const { guardJsonPost, hardenResponse } = require("../lib/request-security.js");
+
 function send(res,status,body){
   res.statusCode=status;
   res.setHeader("Content-Type","application/json; charset=utf-8");
-  res.setHeader("Cache-Control","no-store");
-  res.setHeader("X-Content-Type-Options","nosniff");
+  hardenResponse(res);
   res.end(JSON.stringify(body));
 }
 function clean(v,max){return String(v==null?"":v).trim().slice(0,max)}
 module.exports=async function handler(req,res){
   if(req.method==="GET")return send(res,200,{ok:true,configured:!!process.env.OPENAI_API_KEY});
   if(req.method!=="POST")return send(res,405,{error:"method_not_allowed"});
+  const guard=guardJsonPost(req,{scope:"portfolio-transcribe",limit:20,windowMs:10*60*1000,maxBytes:5_500_000});
+  if(guard){if(guard.retryAfter)res.setHeader("Retry-After",String(guard.retryAfter));return send(res,guard.status,guard.body)}
   if(!process.env.OPENAI_API_KEY)return send(res,503,{error:"ai_not_configured"});
   let body=req.body;
   if(typeof body==="string"){try{body=JSON.parse(body)}catch(e){return send(res,400,{error:"invalid_json"})}}
   body=body||{};
-  const b64=clean(body.audio,9_000_000);
-  const mime=clean(body.mime_type||"audio/webm",80);
+  const b64=clean(body.audio,4_800_000);
+  const mime=clean(body.mime_type||"audio/webm",80).toLowerCase();
+  const allowedMime=["audio/webm","audio/webm;codecs=opus","audio/mp4","audio/ogg","audio/wav","audio/mpeg"];
+  if(!allowedMime.includes(mime))return send(res,415,{error:"unsupported_audio_type"});
   if(!b64)return send(res,400,{error:"audio_required"});
+  if(!/^[A-Za-z0-9+/]*={0,2}$/.test(b64)||b64.length%4===1)return send(res,400,{error:"invalid_audio"});
   let buf;try{buf=Buffer.from(b64,"base64")}catch(e){return send(res,400,{error:"invalid_audio"})}
-  if(!buf.length||buf.length>6_500_000)return send(res,413,{error:"audio_too_large"});
+  if(!buf.length||buf.length>3_500_000)return send(res,413,{error:"audio_too_large"});
   try{
     const ext=mime.includes("mp4")?"m4a":mime.includes("ogg")?"ogg":mime.includes("wav")?"wav":"webm";
     const form=new FormData();
@@ -27,11 +33,14 @@ module.exports=async function handler(req,res){
     form.append("model",process.env.ALWEFER_TRANSCRIBE_MODEL||"gpt-4o-mini-transcribe");
     form.append("response_format","json");
     form.append("prompt","Portfolio conversation. Project names may include Alwafer, ReelsCheck, COVAT, Projact, AquaGuard, Securia, TikVibe, and Cento. Preserve the speaker's language exactly.");
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),25000);
     const r=await fetch("https://api.openai.com/v1/audio/transcriptions",{
       method:"POST",
       headers:{"Authorization":"Bearer "+process.env.OPENAI_API_KEY},
-      body:form
-    });
+      body:form,
+      signal:controller.signal
+    }).finally(()=>clearTimeout(timeout));
     const data=await r.json().catch(()=>({}));
     if(!r.ok){
       console.error("portfolio-transcribe openai error",r.status,data&&data.error&&data.error.message);
