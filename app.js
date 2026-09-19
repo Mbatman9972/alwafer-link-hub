@@ -39,8 +39,8 @@
   };
   var DEFAULT_PROFILES = {
     mustafa: {
-      title: "ALWAFER",
-      subtitle: "Alwafer Agency",
+      title: "Alwefer",
+      subtitle: "Alwefer",
       tagline: "Empowering creators. Building influence. Elevating brands.\nتمكّن المبدعين، نبني التأثير، نرتقي بالعلامات التجارية.",
       profileImage: "/assets/profiles/alwafer-profile.png",
       artwork: "/assets/page-alwafer.png"
