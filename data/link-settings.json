@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-19T09:34:31.525Z",
+  "updatedAt": "2026-09-19T09:57:25.575Z",
   "profiles": {
     "mustafa": {
       "title": "ALWAFER",
@@ -41,7 +41,7 @@
         "website": {
           "enabled": true,
           "url": "/portfolio/",
-          "label": "Venture Portfolio / محفظة المشاريع"
+          "label": "Mustafa Venture Portfolio / محفظة مصطفى"
         }
       }
     },
