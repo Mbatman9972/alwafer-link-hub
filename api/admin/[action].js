@@ -10,6 +10,14 @@ const BRANCH = process.env.GITHUB_BRANCH || "main";
 const FILE_PATH = "data/link-settings.json";
 const COOKIE_NAME = "alwafer_admin";
 const SESSION_TTL = 60 * 60 * 8;
+const LOGIN_WINDOW_MS = 15 * 60 * 1000;
+const LOGIN_BLOCK_MS = 15 * 60 * 1000;
+const LOGIN_ACCOUNT_MAX_FAILURES = 5;
+const LOGIN_IP_MAX_FAILURES = 12;
+const PBKDF2_MIN_ITERATIONS = 150000;
+const PBKDF2_DEFAULT_ITERATIONS = 210000;
+const loginAttempts = globalThis.__alwaferLoginAttempts || new Map();
+globalThis.__alwaferLoginAttempts = loginAttempts;
 
 const PROFILE_KEYS = ["mustafa", "ahmed", "hala"];
 const LINK_KEYS = ["apply", "youtube", "tiktok", "telegram", "instagram", "whatsapp", "website"];
@@ -83,8 +91,10 @@ function publicUser(user) {
 function send(res, status, body) {
   res.statusCode = status;
   res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.setHeader("Cache-Control", "no-store");
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+  res.setHeader("Pragma", "no-cache");
   res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Referrer-Policy", "no-referrer");
   res.end(JSON.stringify(body));
 }
 async function readBody(req) {
@@ -141,8 +151,28 @@ function verifyToken(token, secret) {
   return parsed;
 }
 function checkHash(input, hash) {
-  if (typeof input !== "string" || !input || !hash) return false;
-  return safeEq(crypto.createHash("sha256").update(input).digest("hex"), String(hash).trim().toLowerCase());
+  if (typeof input !== "string" || !input || input.length > 512 || !hash) return false;
+  const stored = String(hash).trim().toLowerCase();
+  const match = stored.match(/^pbkdf2\$(\d+)\$([0-9a-f]{32,})\$([0-9a-f]{64,})$/);
+  if (match) {
+    const iterations = Number(match[1]);
+    if (!Number.isInteger(iterations) || iterations < PBKDF2_MIN_ITERATIONS || iterations > 1000000) return false;
+    const salt = Buffer.from(match[2], "hex");
+    const expected = Buffer.from(match[3], "hex");
+    if (salt.length < 16 || expected.length < 32) return false;
+    const actual = crypto.pbkdf2Sync(input, salt, iterations, expected.length, "sha256");
+    return actual.length === expected.length && crypto.timingSafeEqual(actual, expected);
+  }
+  if (!/^[0-9a-f]{64}$/.test(stored)) return false;
+  return safeEq(crypto.createHash("sha256").update(input).digest("hex"), stored);
+}
+function makePbkdf2Hash(input, iterations) {
+  if (typeof input !== "string" || input.length < 12 || input.length > 512) throw new Error("Password must be 12-512 characters.");
+  const rounds = Number(iterations) || PBKDF2_DEFAULT_ITERATIONS;
+  if (!Number.isInteger(rounds) || rounds < PBKDF2_MIN_ITERATIONS || rounds > 1000000) throw new Error("Invalid PBKDF2 iteration count.");
+  const salt = crypto.randomBytes(16);
+  const derived = crypto.pbkdf2Sync(input, salt, rounds, 32, "sha256");
+  return "pbkdf2$" + rounds + "$" + salt.toString("hex") + "$" + derived.toString("hex");
 }
 function currentUser(req) {
   const token = parseCookies(req)[COOKIE_NAME];
@@ -151,10 +181,64 @@ function currentUser(req) {
   return loadUsers()[parsed.u] || null;
 }
 function setSessionCookie(res, token) {
-  res.setHeader("Set-Cookie", COOKIE_NAME + "=" + token + "; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=" + SESSION_TTL);
+  res.setHeader("Set-Cookie", COOKIE_NAME + "=" + token + "; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=" + SESSION_TTL + "; Priority=High");
 }
 function clearSessionCookie(res) {
   res.setHeader("Set-Cookie", COOKIE_NAME + "=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0");
+}
+
+function requestHost(req) {
+  return String((req.headers && (req.headers["x-forwarded-host"] || req.headers.host)) || "").trim().toLowerCase();
+}
+function sameOriginRequest(req) {
+  const origin = String((req.headers && req.headers.origin) || "").trim();
+  if (!origin) return true;
+  const host = requestHost(req);
+  if (!host) return true;
+  try { return new URL(origin).host.toLowerCase() === host; } catch (e) { return false; }
+}
+function clientIp(req) {
+  const h = (req.headers || {});
+  const raw = String(h["x-forwarded-for"] || h["x-real-ip"] || "").split(",")[0].trim();
+  return raw.slice(0, 96);
+}
+function pruneLoginAttempts(now) {
+  if (loginAttempts.size < 200) return;
+  for (const [key, value] of loginAttempts) {
+    if (!value || (value.blockedUntil || value.windowStarted || 0) + LOGIN_BLOCK_MS < now) loginAttempts.delete(key);
+  }
+}
+function rateRecord(key, now, maxFailures) {
+  let rec = loginAttempts.get(key);
+  if (!rec || now - rec.windowStarted > LOGIN_WINDOW_MS) rec = { failures: 0, windowStarted: now, blockedUntil: 0 };
+  rec.failures += 1;
+  if (rec.failures >= maxFailures) rec.blockedUntil = Math.max(rec.blockedUntil || 0, now + LOGIN_BLOCK_MS);
+  loginAttempts.set(key, rec);
+}
+function loginRateStatus(req, account) {
+  const ip = clientIp(req);
+  if (!ip) return { blocked: false, retryAfter: 0, ip: "" };
+  const now = Date.now();
+  pruneLoginAttempts(now);
+  const keys = ["ip:" + ip, "account:" + ip + ":" + String(account || "").slice(0, 40)];
+  let retry = 0;
+  keys.forEach((key) => {
+    const rec = loginAttempts.get(key);
+    if (rec && rec.blockedUntil > now) retry = Math.max(retry, Math.ceil((rec.blockedUntil - now) / 1000));
+  });
+  return { blocked: retry > 0, retryAfter: retry, ip };
+}
+function recordLoginFailure(req, account) {
+  const ip = clientIp(req);
+  if (!ip) return;
+  const now = Date.now();
+  rateRecord("ip:" + ip, now, LOGIN_IP_MAX_FAILURES);
+  rateRecord("account:" + ip + ":" + String(account || "").slice(0, 40), now, LOGIN_ACCOUNT_MAX_FAILURES);
+}
+function clearLoginFailure(req, account) {
+  const ip = clientIp(req);
+  if (!ip) return;
+  loginAttempts.delete("account:" + ip + ":" + String(account || "").slice(0, 40));
 }
 
 function isAllowedUrl(value) {
@@ -379,16 +463,36 @@ async function handler(req, res) {
   try {
     if (action === "login") {
       if (method !== "POST") return send(res, 405, { error: "method_not_allowed" });
+      if (!sameOriginRequest(req)) return send(res, 403, { error: "origin_not_allowed" });
       if (!adminConfigured()) return send(res, 503, { error: "not_configured", missing: missingAuthEnv() });
       const body = await readBody(req);
-      const user = loadUsers()[body && body.account];
-      if (!user || !checkHash(body && body.password, user.passwordHash)) return send(res, 401, { error: "invalid_credentials" });
+      const account = String((body && body.account) || "").trim().toLowerCase().slice(0, 40);
+      const password = typeof (body && body.password) === "string" ? body.password : "";
+      const rate = loginRateStatus(req, account);
+      if (rate.blocked) {
+        res.setHeader("Retry-After", String(rate.retryAfter));
+        return send(res, 429, { error: "too_many_attempts", retryAfter: rate.retryAfter });
+      }
+      const user = loadUsers()[account];
+      const dummyHash = "4f9f2cab9f9161b5c6e0a12248a8d8c79ce3bbf3cc88e80d6869a9a04c06a5f4";
+      const valid = user ? checkHash(password, user.passwordHash) : checkHash(password || "x", dummyHash);
+      if (!user || !valid) {
+        recordLoginFailure(req, account);
+        const after = loginRateStatus(req, account);
+        if (after.blocked) {
+          res.setHeader("Retry-After", String(after.retryAfter));
+          return send(res, 429, { error: "too_many_attempts", retryAfter: after.retryAfter });
+        }
+        return send(res, 401, { error: "invalid_credentials" });
+      }
+      clearLoginFailure(req, account);
       setSessionCookie(res, makeToken(user, cookieSecret()));
       return send(res, 200, { ok: true, user: publicUser(user) });
     }
 
     if (action === "logout") {
       if (method !== "POST") return send(res, 405, { error: "method_not_allowed" });
+      if (!sameOriginRequest(req)) return send(res, 403, { error: "origin_not_allowed" });
       clearSessionCookie(res);
       return send(res, 200, { ok: true });
     }
@@ -414,6 +518,7 @@ async function handler(req, res) {
       }
 
       if (method === "POST") {
+        if (!sameOriginRequest(req)) return send(res, 403, { error: "origin_not_allowed" });
         const payload = await readBody(req);
         const denied = forbiddenScope(payload && payload.settings, perms);
         if (denied) return send(res, 403, { error: "forbidden_scope", message: denied });
@@ -434,7 +539,8 @@ async function handler(req, res) {
 
     return send(res, 404, { error: "not_found" });
   } catch (error) {
-    return send(res, 500, { error: "server_error", message: String(error && error.message || error).slice(0, 200) });
+    console.error("admin api error", String(error && error.message || error).slice(0, 300));
+    return send(res, 500, { error: "server_error" });
   }
 }
 
@@ -448,6 +554,9 @@ module.exports.defaultRegions = defaultRegions;
 module.exports.makeToken = makeToken;
 module.exports.verifyToken = verifyToken;
 module.exports.checkHash = checkHash;
+module.exports.makePbkdf2Hash = makePbkdf2Hash;
+module.exports.sameOriginRequest = sameOriginRequest;
+module.exports.loginRateStatus = loginRateStatus;
 module.exports.permsFor = permsFor;
 module.exports.applyAllowedEdits = applyAllowedEdits;
 module.exports.forbiddenScope = forbiddenScope;
