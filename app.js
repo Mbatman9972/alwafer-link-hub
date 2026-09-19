@@ -39,8 +39,8 @@
   };
   var DEFAULT_PROFILES = {
     mustafa: {
-      title: "Al Wafer",
-      subtitle: "Al Wafer",
+      title: "Alwafer",
+      subtitle: "Alwafer",
       tagline: "Empowering creators. Building influence. Elevating brands.\nتمكّن المبدعين، نبني التأثير، نرتقي بالعلامات التجارية.",
       profileImage: "/assets/alwefer-mark.svg",
       artwork: "/assets/page-alwafer.png"
@@ -245,7 +245,7 @@
     var profile = settings.profiles[key];
     var defaults = DEFAULT_PROFILES[key];
     document.documentElement.setAttribute("data-view", "dashboard");
-    document.title = profile.title + " — Al Wafer";
+    document.title = profile.title + " — Alwafer";
     clear(container);
 
     var main = el("main", { className: "public-dashboard", attrs: { "data-profile": key } });
@@ -306,10 +306,10 @@
 
   function renderSelector(container) {
     document.documentElement.setAttribute("data-view", "selector");
-    document.title = "Al Wafer";
+    document.title = "Alwafer";
     clear(container);
     var main = el("main", { className: "selector-shell" });
-    main.appendChild(el("h1", { className: "selector-title", text: "Al Wafer" }));
+    main.appendChild(el("h1", { className: "selector-title", text: "Alwafer" }));
     main.appendChild(el("p", { className: "selector-subtitle", text: "Choose a profile" }));
     var grid = el("div", { className: "selector-grid" });
     PROFILE_ORDER.forEach(function (key) {
