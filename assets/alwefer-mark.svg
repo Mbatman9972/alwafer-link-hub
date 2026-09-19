@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="t d">
+<title id="t">Alwefer</title><desc id="d">Alwefer A W orbit monogram</desc>
+<defs>
+  <linearGradient id="g" x1="18" y1="18" x2="108" y2="108" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#7cf7ff"/>
+    <stop offset=".35" stop-color="#20dff3"/>
+    <stop offset=".72" stop-color="#087fa8"/>
+    <stop offset="1" stop-color="#063653"/>
+  </linearGradient>
+  <linearGradient id="g2" x1="28" y1="104" x2="102" y2="40" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#0d5272"/>
+    <stop offset=".45" stop-color="#14d4e8"/>
+    <stop offset="1" stop-color="#9dffff"/>
+  </linearGradient>
+  <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+    <feGaussianBlur stdDeviation="1.35" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <ellipse cx="64" cy="67" rx="54" ry="27" transform="rotate(-16 64 67)" stroke="#29dfee" stroke-opacity=".42" stroke-width="2"/>
+  <path d="M24 101 61 25c1.5-3 4.5-3 6 0l37 76" stroke="url(#g)" stroke-width="13"/>
+  <path d="M34 78 52 103 65 80 81 103 101 78" stroke="url(#g2)" stroke-width="12"/>
+  <path d="M21 87c26 8 56-4 86-31" stroke="#57ecf8" stroke-opacity=".5" stroke-width="1.8"/>
+</g>
+<circle cx="106" cy="48" r="6.5" fill="#071a28" stroke="#72f6ff" stroke-width="2.8" filter="url(#soft)"/>
+<circle cx="106" cy="48" r="2.2" fill="#b9ffff"/>
+</svg>
