@@ -942,6 +942,13 @@ function agentWelcome(){
 }
 agentLaunch.onclick=function(){agentPanel.classList.add("open");agentPanel.setAttribute("aria-hidden","false");agentWelcome();updateVoiceUiLanguage();setTimeout(function(){agentInput.focus()},50)};
 agentClose.onclick=function(){agentPanel.classList.remove("open");agentPanel.setAttribute("aria-hidden","true");stopSpeaking()};
+document.addEventListener("pointerdown",function(e){
+  if(!agentPanel.classList.contains("open"))return;
+  if(agentPanel.contains(e.target)||agentLaunch.contains(e.target))return;
+  agentPanel.classList.remove("open");
+  agentPanel.setAttribute("aria-hidden","true");
+  stopSpeaking();
+});
 agentVoiceToggle.onclick=function(){autoVoice=!autoVoice;if(!autoVoice)stopSpeaking();updateVoiceUiLanguage()};
 agentForm.onsubmit=async function(e){
  e.preventDefault();var v=agentInput.value.trim();if(!v)return;
