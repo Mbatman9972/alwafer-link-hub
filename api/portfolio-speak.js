@@ -1,10 +1,11 @@
 "use strict";
 
+const { guardJsonPost, hardenResponse } = require("../lib/request-security.js");
+
 function sendJson(res,status,body){
   res.statusCode=status;
   res.setHeader("Content-Type","application/json; charset=utf-8");
-  res.setHeader("Cache-Control","no-store, no-cache, must-revalidate, max-age=0");
-  res.setHeader("Pragma","no-cache");
+  hardenResponse(res);
   res.end(JSON.stringify(body));
 }
 function clean(v,max){return String(v==null?"":v).trim().slice(0,max)}
@@ -20,18 +21,23 @@ const INSTRUCTIONS={
 module.exports=async function handler(req,res){
   if(req.method==="GET")return sendJson(res,200,{ok:true,configured:!!process.env.OPENAI_API_KEY});
   if(req.method!=="POST")return sendJson(res,405,{error:"method_not_allowed"});
+  const guard=guardJsonPost(req,{scope:"portfolio-speak",limit:30,windowMs:10*60*1000,maxBytes:60000});
+  if(guard){if(guard.retryAfter)res.setHeader("Retry-After",String(guard.retryAfter));return sendJson(res,guard.status,guard.body)}
   if(!process.env.OPENAI_API_KEY)return sendJson(res,503,{error:"ai_not_configured"});
 
   let body=req.body;
   if(typeof body==="string"){try{body=JSON.parse(body)}catch(e){return sendJson(res,400,{error:"invalid_json"})}}
   body=body||{};
-  const text=clean(body.text,3900);
+  const text=clean(body.text,1800);
   const lang=["ar","en","fr","de"].includes(body.lang)?body.lang:"en";
   if(!text)return sendJson(res,400,{error:"text_required"});
 
   try{
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),25000);
     const r=await fetch("https://api.openai.com/v1/audio/speech",{
       method:"POST",
+      signal:controller.signal,
       headers:{
         "Authorization":"Bearer "+process.env.OPENAI_API_KEY,
         "Content-Type":"application/json"
@@ -44,7 +50,7 @@ module.exports=async function handler(req,res){
         response_format:"mp3",
         speed:lang==="ar"?0.96:0.98
       })
-    });
+    }).finally(()=>clearTimeout(timeout));
     if(!r.ok){
       const err=await r.text().catch(()=>"");
       console.error("portfolio-speak openai error",r.status,err.slice(0,300));
@@ -54,9 +60,7 @@ module.exports=async function handler(req,res){
     res.statusCode=200;
     res.setHeader("Content-Type","audio/mpeg");
     res.setHeader("Content-Length",String(buf.length));
-    res.setHeader("Cache-Control","no-store, no-cache, must-revalidate, max-age=0");
-    res.setHeader("Pragma","no-cache");
-    res.setHeader("X-Content-Type-Options","nosniff");
+    hardenResponse(res);
     return res.end(buf);
   }catch(error){
     console.error("portfolio-speak error",String(error&&error.message||error));
