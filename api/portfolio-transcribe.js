@@ -26,7 +26,7 @@ module.exports=async function handler(req,res){
     form.append("file",new Blob([buf],{type:mime}),"speech."+ext);
     form.append("model",process.env.ALWEFER_TRANSCRIBE_MODEL||"gpt-4o-mini-transcribe");
     form.append("response_format","json");
-    form.append("prompt","Portfolio conversation. Project names may include Alwefer, ReelsCheck, COVAT, Projact, AquaGuard, Securia, TikVibe, and Cento. Preserve the speaker's language exactly.");
+    form.append("prompt","Portfolio conversation. Project names may include Al Wafer, ReelsCheck, COVAT, Projact, AquaGuard, Securia, TikVibe, and Cento. Preserve the speaker's language exactly.");
     const r=await fetch("https://api.openai.com/v1/audio/transcriptions",{
       method:"POST",
       headers:{"Authorization":"Bearer "+process.env.OPENAI_API_KEY},
