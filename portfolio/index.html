@@ -189,12 +189,21 @@ html[dir="rtl"] .panel .orb{right:auto;left:-100px}
   .langtoggle button{padding:8px 8px}
 }
 
+
+/* === contact center + portfolio agent === */
+button.cta{color:#a8b3bf;font:inherit;cursor:pointer}.nav .cta{border:1px solid var(--line);padding:10px 15px;border-radius:99px;background:rgba(255,255,255,.03)}
+.email-copy{border:0;background:none;color:#8ba0b4;font:inherit;padding:0;cursor:pointer}.email-copy:hover{color:#dce8ef}
+.contact-modal{position:fixed;inset:0;z-index:140;display:none;place-items:center;padding:20px;background:rgba(2,4,7,.82);backdrop-filter:blur(14px)}.contact-modal.open{display:grid}.contact-panel{width:min(720px,100%);max-height:92vh;overflow:auto;border:1px solid rgba(255,255,255,.13);border-radius:28px;background:linear-gradient(145deg,#0c121b,#070a10);padding:30px;box-shadow:0 30px 100px rgba(0,0,0,.4)}.contact-head{display:flex;justify-content:space-between;gap:30px}.contact-head h2{font-size:38px;letter-spacing:-.035em;margin:9px 0 8px}.contact-head p{color:#8796a6;line-height:1.6;margin:0}.contact-close{flex:0 0 auto;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:none;color:white;font-size:21px;cursor:pointer}.contact-form{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:26px}.contact-form label{font-size:10px;color:#758698;letter-spacing:.05em}.contact-form label:last-child{grid-column:1/-1}.contact-form input,.contact-form textarea{width:100%;margin-top:7px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:#060a10;color:#eef6fa;padding:12px 13px;outline:none}.contact-form input:focus,.contact-form textarea:focus{border-color:rgba(93,230,255,.48);box-shadow:0 0 0 3px rgba(93,230,255,.06)}.contact-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:18px}.mail-provider{border:1px solid var(--line);background:rgba(255,255,255,.025);color:#dbe6ed;border-radius:12px;padding:12px 10px;cursor:pointer}.mail-provider:hover{border-color:rgba(93,230,255,.45);background:rgba(93,230,255,.04)}.contact-note{font-size:10px;color:#637283;margin:13px 0 0}
+.agent-launch{position:fixed;right:22px;bottom:22px;z-index:115;display:flex;align-items:center;gap:9px;border:1px solid rgba(93,230,255,.25);background:rgba(7,12,18,.90);color:#e5f7fb;border-radius:999px;padding:8px 14px 8px 8px;backdrop-filter:blur(12px);box-shadow:0 18px 50px rgba(0,0,0,.30);cursor:pointer}.agent-launch img{width:32px;height:32px}.agent-launch span{font-size:11px}.agent-panel{position:fixed;right:22px;bottom:78px;z-index:116;width:min(390px,calc(100vw - 28px));height:min(570px,calc(100vh - 120px));display:none;grid-template-rows:auto 1fr auto auto;border:1px solid rgba(255,255,255,.13);border-radius:22px;background:rgba(6,10,15,.97);box-shadow:0 28px 90px rgba(0,0,0,.46);overflow:hidden;backdrop-filter:blur(18px)}.agent-panel.open{display:grid}.agent-head{display:flex;align-items:center;justify-content:space-between;padding:14px 15px;border-bottom:1px solid var(--line)}.agent-identity{display:flex;align-items:center;gap:10px}.agent-identity img{width:35px;height:35px}.agent-identity strong{display:block;font-size:12px}.agent-identity small{display:block;margin-top:3px;color:#68798a;font-size:9px}.agent-head>button{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:none;color:white;cursor:pointer}.agent-feed{padding:15px;overflow:auto;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin}.agent-msg{max-width:88%;font-size:12px;line-height:1.55;padding:10px 12px;border-radius:14px;white-space:pre-wrap}.agent-msg.bot{align-self:flex-start;background:#0d151f;border:1px solid rgba(93,230,255,.11);color:#c8d7e2}.agent-msg.user{align-self:flex-end;background:#dff8ff;color:#071017}.agent-msg .agent-contact{display:inline-flex;margin-top:9px;border:1px solid rgba(93,230,255,.25);background:none;color:#9fefff;border-radius:9px;padding:7px 9px;cursor:pointer;font-size:10px}.agent-suggestions{display:flex;gap:6px;overflow-x:auto;padding:0 12px 10px}.agent-suggestions button{white-space:nowrap;border:1px solid var(--line);background:#090e15;color:#8090a1;border-radius:999px;padding:7px 9px;font-size:9px;cursor:pointer}.agent-form{display:grid;grid-template-columns:1fr auto;gap:8px;padding:12px;border-top:1px solid var(--line)}.agent-form input{border:1px solid rgba(255,255,255,.10);border-radius:11px;background:#05080c;color:white;padding:10px 11px;outline:none}.agent-form button{border:0;border-radius:10px;background:#dff8ff;color:#071017;font-weight:700;padding:0 13px;cursor:pointer}
+html[dir="rtl"] .agent-launch{right:auto;left:22px}.agent-panel[dir="rtl"],html[dir="rtl"] .agent-panel{right:auto;left:22px}.agent-panel[dir="rtl"] .agent-msg.bot,html[dir="rtl"] .agent-msg.bot{align-self:flex-start;text-align:right}.agent-panel[dir="rtl"] .agent-msg.user,html[dir="rtl"] .agent-msg.user{align-self:flex-end;text-align:right}
+@media(max-width:720px){.contact-form{grid-template-columns:1fr}.contact-form label:last-child{grid-column:auto}.contact-actions{grid-template-columns:1fr 1fr}.contact-panel{padding:22px}.contact-head h2{font-size:30px}.agent-launch{right:12px;bottom:12px}.agent-panel{right:10px;bottom:64px;height:calc(100vh - 82px)}html[dir="rtl"] .agent-launch{left:12px}html[dir="rtl"] .agent-panel{left:10px}}
+
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.glow{display:none}}
 </style>
 </head>
 <body>
 <div class="progress" id="progress"></div><div class="cursorDot" id="cursorDot"></div><div class="noise"></div><div class="glow"></div>
-<header class="top"><div class="wrap" style="width:100%;display:flex;justify-content:space-between;align-items:center"><a class="brand" href="#top"><span class="mark"><img src="/assets/alwefer-mark.svg" alt=""></span><span><strong>Alwefer</strong><small>VENTURE BUILDER</small></span></a><div class="langtoggle mobilelang" aria-label="Language"><button data-lang="en" class="active">EN</button><button data-lang="ar">AR</button><button data-lang="fr">FR</button><button data-lang="de">DE</button></div><nav class="nav"><a href="#ventures">Ventures</a><a href="#method">Method</a><a class="localized-page" href="/portfolio/cv.html">CV</a><a href="#work">Work with me</a><a href="/alwafer/">Link Hub</a><div class="langtoggle" aria-label="Language"><button data-lang="en" class="active">EN</button><button data-lang="ar">AR</button><button data-lang="fr">FR</button><button data-lang="de">DE</button></div><a class="cta" href="mailto:alwafer89@gmail.com">Start a conversation</a></nav></div></header>
+<header class="top"><div class="wrap" style="width:100%;display:flex;justify-content:space-between;align-items:center"><a class="brand" href="#top"><span class="mark"><img src="/assets/alwefer-mark.svg" alt=""></span><span><strong>Alwefer</strong><small>VENTURE BUILDER</small></span></a><div class="langtoggle mobilelang" aria-label="Language"><button data-lang="en" class="active">EN</button><button data-lang="ar">AR</button><button data-lang="fr">FR</button><button data-lang="de">DE</button></div><nav class="nav"><a href="#ventures">Ventures</a><a href="#method">Method</a><a class="localized-page" href="/portfolio/cv.html">CV</a><a href="#work">Work with me</a><a href="/alwafer/">Link Hub</a><div class="langtoggle" aria-label="Language"><button data-lang="en" class="active">EN</button><button data-lang="ar">AR</button><button data-lang="fr">FR</button><button data-lang="de">DE</button></div><button class="cta contact-launch" type="button">Start a conversation</button></nav></div></header>
 <main id="top">
 <section class="wrap hero">
 <div class="reveal"><div class="hero-id"><img src="/assets/alwefer-mark.svg" alt="Alwefer logo"><div><strong>Alwefer</strong><span>VENTURE BUILDER · AI PRODUCT LEAD · 0→1</span></div></div><div class="eyebrow"><span class="dot"></span>Qatar-based · Remote globally · GCC · Switzerland</div><h1>I build products where the brief is still <span class="grad">incomplete.</span></h1><p class="lede">Venture builder, AI product lead and 0→1 product architect. I turn ambiguous business problems into credible products — from software and AI systems to IoT and emerging interfaces.</p><div class="actions"><a class="btn primary" href="#ventures">Explore the portfolio ↘</a><a class="btn localized-page" href="/portfolio/cv.html">Open CV ↗</a></div><div class="metrics"><div><strong>7+</strong><span>selected ventures</span></div><div><strong>6+</strong><span>product domains</span></div><div><strong>0→1</strong><span>core operating zone</span></div></div></div>
@@ -264,9 +273,56 @@ html[dir="rtl"] .panel .orb{right:auto;left:-100px}
 </div></section>
 <section class="wrap block reveal"><div class="kicker">03 / PROOF OF RANGE</div><div class="range"><div><h2>Software to hardware.<br>Strategy to release.</h2><p>The point is not that these ventures look alike. The point is that the same operating discipline survives radically different product constraints.</p></div><div class="rail"><div class="ri"><span>AI / MEDIA</span><strong>ReelsCheck</strong><small>multimodal intelligence</small></div><div class="ri"><span>ERP / FINTECH</span><strong>COVAT</strong><small>finance-led operations</small></div><div class="ri"><span>PROJECT ECONOMICS</span><strong>Projact</strong><small>delivery-business accounting</small></div><div class="ri"><span>IOT / EDGE</span><strong>AquaGuard</strong><small>wearables + RTLS + cloud</small></div><div class="ri"><span>CYBER</span><strong>Securia</strong><small>security workflows</small></div><div class="ri"><span>EMERGING INTERFACE</span><strong>Cento</strong><small>digital → scent</small></div></div></div></section>
 <section class="wrap block" id="method"><div class="head reveal"><div><div class="kicker">04 / HOW I BUILD</div><h2>Ownership over ceremony.</h2></div><p>Clarify the goal. Expose the hard constraints. Build evidence. Resolve blockers. Move the product forward.</p></div><div class="method"><div class="mr reveal"><span>01</span><h3>FRAME</h3><p>Start with user pain, commercial reality and the smallest credible experiment that could prove value.</p><b>→</b></div><div class="mr reveal"><span>02</span><h3>ARCHITECT</h3><p>Translate intent into product flows, system behavior, integration requirements and decision logic.</p><b>→</b></div><div class="mr reveal"><span>03</span><h3>BUILD</h3><p>Use AI, engineering, APIs, cloud services, hardware and suppliers as execution leverage — without outsourcing judgment.</p><b>→</b></div><div class="mr reveal"><span>04</span><h3>VALIDATE</h3><p>Test workflows, edge cases, user journeys, reliability, release criteria and commercial assumptions.</p><b>→</b></div><div class="mr reveal"><span>05</span><h3>SHIP</h3><p>Move from interesting concept to something another person can actually use, evaluate, pilot or buy.</p><b>↗</b></div></div></section>
-<section class="wrap block engage" id="work"><div class="panel reveal"><div class="orb"></div><div class="kicker">05 / ENGAGEMENT</div><h2>Put me where the problem is still messy.</h2><p>I am open to roles and mandates where product judgment, venture logic and execution need to live in the same room.</p><p style="font:10px DM Mono;color:#67798a;letter-spacing:.08em;text-transform:uppercase;margin-top:14px">Remote · Fractional · Venture Studio · Founding Product · EIR</p><div class="modes"><div><span>01</span><strong>Full-time product leadership</strong><small>Founding / AI / product / innovation roles</small></div><div><span>02</span><strong>Fractional product leadership</strong><small>Senior ownership without a full-time hire</small></div><div><span>03</span><strong>0→1 venture building</strong><small>Turn internal concepts into testable MVPs</small></div><div><span>04</span><strong>Venture studio / EIR</strong><small>Build and validate across a portfolio</small></div></div><div class="actions"><a class="btn primary" href="mailto:alwafer89@gmail.com?subject=Venture%20%2F%20Product%20Conversation">Start a conversation ↗</a><a class="btn localized-page" href="/portfolio/selected-ventures.html">Selected Work ↗</a><a class="btn localized-page" href="/portfolio/cv.html">CV ↗</a></div></div></section>
+<section class="wrap block engage" id="work"><div class="panel reveal"><div class="orb"></div><div class="kicker">05 / ENGAGEMENT</div><h2>Put me where the problem is still messy.</h2><p>I am open to roles and mandates where product judgment, venture logic and execution need to live in the same room.</p><p style="font:10px DM Mono;color:#67798a;letter-spacing:.08em;text-transform:uppercase;margin-top:14px">Remote · Fractional · Venture Studio · Founding Product · EIR</p><div class="modes"><div><span>01</span><strong>Full-time product leadership</strong><small>Founding / AI / product / innovation roles</small></div><div><span>02</span><strong>Fractional product leadership</strong><small>Senior ownership without a full-time hire</small></div><div><span>03</span><strong>0→1 venture building</strong><small>Turn internal concepts into testable MVPs</small></div><div><span>04</span><strong>Venture studio / EIR</strong><small>Build and validate across a portfolio</small></div></div><div class="actions"><button class="btn primary contact-launch" type="button">Start a conversation ↗</button><a class="btn localized-page" href="/portfolio/selected-ventures.html">Selected Work ↗</a><a class="btn localized-page" href="/portfolio/cv.html">CV ↗</a></div></div></section>
 </main>
-<footer class="wrap"><div><strong>Alwefer</strong><span>Venture Builder · AI Product Lead · Product Architect</span></div><div><span>Qatar · Remote globally · </span><a href="mailto:alwafer89@gmail.com">alwafer89@gmail.com</a></div></footer>
+<footer class="wrap"><div><strong>Alwefer</strong><span>Venture Builder · AI Product Lead · Product Architect</span></div><div><span>Qatar · Remote globally · </span><button class="email-copy" type="button" data-copy-email>alwafer89@gmail.com</button></div></footer>
+
+<div class="contact-modal" id="contactModal" aria-hidden="true">
+  <div class="contact-panel" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
+    <div class="contact-head">
+      <div>
+        <div class="kicker">CONTACT ALWEFER</div>
+        <h2 id="contactTitle">Start a conversation</h2>
+        <p>Your message will come from your own email account and go to <strong>alwafer89@gmail.com</strong>.</p>
+      </div>
+      <button class="contact-close" type="button" aria-label="Close">×</button>
+    </div>
+    <div class="contact-form">
+      <label>Your name<input id="contactName" type="text" autocomplete="name" placeholder="Name"></label>
+      <label>Your email<input id="contactFrom" type="email" autocomplete="email" placeholder="you@example.com"></label>
+      <label>Subject<input id="contactSubject" type="text" value="Portfolio conversation"></label>
+      <label>Message<textarea id="contactMessage" rows="5" placeholder="Tell me what you'd like to discuss."></textarea></label>
+    </div>
+    <div class="contact-actions">
+      <button class="mail-provider gmail" type="button" data-provider="gmail">Open Gmail</button>
+      <button class="mail-provider outlook" type="button" data-provider="outlook">Open Outlook</button>
+      <button class="mail-provider yahoo" type="button" data-provider="yahoo">Open Yahoo Mail</button>
+      <button class="mail-provider copy" type="button" data-provider="copy">Copy email</button>
+    </div>
+    <p class="contact-note">No message is sent automatically. You review it in your own email account first.</p>
+  </div>
+</div>
+
+<button class="agent-launch" id="agentLaunch" type="button" aria-label="Open Alwefer Agent">
+  <img src="/assets/alwefer-mark.svg" alt=""><span>Ask Alwefer</span>
+</button>
+<div class="agent-panel" id="agentPanel" aria-hidden="true">
+  <div class="agent-head">
+    <div class="agent-identity"><img src="/assets/alwefer-mark.svg" alt=""><div><strong>Alwefer Agent</strong><small>Portfolio concierge</small></div></div>
+    <button id="agentClose" type="button" aria-label="Close">×</button>
+  </div>
+  <div class="agent-feed" id="agentFeed"></div>
+  <div class="agent-suggestions" id="agentSuggestions">
+    <button type="button">What does Alwefer build?</button>
+    <button type="button">Tell me about ReelsCheck</button>
+    <button type="button">How can we work together?</button>
+  </div>
+  <form class="agent-form" id="agentForm">
+    <input id="agentInput" type="text" autocomplete="off" placeholder="Ask about the portfolio, projects or services…">
+    <button type="submit">Send</button>
+  </form>
+</div>
+
 <div class="modal" id="modal"><div class="box"><div class="modal-nav"><button class="case-back" type="button"><span aria-hidden="true">←</span><span>Back</span></button><button class="close" type="button" aria-label="Close">×</button></div><div class="kicker">SELECTED CASE STUDY</div><h2 id="mt"></h2><p class="sub" id="ms"></p><div class="casegrid"><section><span>THE PROBLEM</span><p id="mp"></p></section><section><span>THE PRODUCT</span><p id="mprod"></p></section><section><span>MY ROLE</span><p id="mr"></p></section><section><span>WHAT IT PROVES</span><p id="mproof"></p></section></div></div></div>
 <script>
 var q=function(s,c){return (c||document).querySelector(s)},qa=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
@@ -473,7 +529,7 @@ function translateTree(lang){
 }
 function setLanguage(lang,persist){
  if(["en","ar","fr","de"].indexOf(lang)<0)lang="en";currentLang=lang;
- document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";
+ document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";if(q("#agentPanel"))q("#agentPanel").setAttribute("dir",lang==="ar"?"rtl":"ltr");
  translateTree(lang);
  qa(".langtoggle button").forEach(function(b){b.classList.toggle("active",b.dataset.lang===lang)});
  document.title=META[lang].title;
@@ -625,6 +681,130 @@ Object.assign(I18N.de,{
 });
 buildI18nIndex();
 var modal=q("#modal");qa("[data-case]").forEach(function(b){b.onclick=function(){var d=cases[b.dataset.case];q("#mt").textContent=translateString(d[0],currentLang);q("#ms").textContent=translateString(d[1],currentLang);q("#mp").textContent=translateString(d[2],currentLang);q("#mprod").textContent=translateString(d[3],currentLang);q("#mr").textContent=translateString(d[4],currentLang);q("#mproof").textContent=translateString(d[5],currentLang);modal.classList.add("open")}});q(".close").onclick=function(){modal.classList.remove("open")};q(".case-back").onclick=function(){modal.classList.remove("open")};modal.onclick=function(e){if(e.target===modal)modal.classList.remove("open")};
+
+
+/* Contact center: opens the visitor's chosen webmail, never Alwefer's mailbox. */
+var CONTACT_EMAIL="alwafer89@gmail.com";
+var contactModal=q("#contactModal"),contactClose=q(".contact-close");
+function openContact(prefill){
+  if(prefill&&q("#contactMessage"))q("#contactMessage").value=prefill;
+  contactModal.classList.add("open");contactModal.setAttribute("aria-hidden","false");
+}
+function closeContact(){contactModal.classList.remove("open");contactModal.setAttribute("aria-hidden","true")}
+qa(".contact-launch").forEach(function(b){b.addEventListener("click",function(){openContact("")})});
+contactClose.addEventListener("click",closeContact);
+contactModal.addEventListener("click",function(e){if(e.target===contactModal)closeContact()});
+qa("[data-copy-email]").forEach(function(b){b.onclick=function(){navigator.clipboard&&navigator.clipboard.writeText(CONTACT_EMAIL);b.textContent=CONTACT_EMAIL+" ✓";setTimeout(function(){b.textContent=CONTACT_EMAIL},1300)}});
+function contactPayload(){
+  var name=q("#contactName").value.trim(),from=q("#contactFrom").value.trim(),sub=q("#contactSubject").value.trim()||"Portfolio conversation",msg=q("#contactMessage").value.trim();
+  var body=(name?"Name: "+name+"\n":"")+(from?"Reply email: "+from+"\n":"")+(name||from?"\n":"")+msg;
+  return {subject:sub,body:body};
+}
+qa(".mail-provider").forEach(function(b){b.onclick=function(){
+  var provider=b.dataset.provider,p=contactPayload(),to=encodeURIComponent(CONTACT_EMAIL),su=encodeURIComponent(p.subject),bo=encodeURIComponent(p.body);
+  if(provider==="copy"){navigator.clipboard&&navigator.clipboard.writeText(CONTACT_EMAIL);b.textContent="Copied ✓";setTimeout(function(){b.textContent=translateString("Copy email",currentLang)},1300);return}
+  var url="";
+  if(provider==="gmail")url="https://mail.google.com/mail/?view=cm&fs=1&to="+to+"&su="+su+"&body="+bo;
+  if(provider==="outlook")url="https://outlook.live.com/mail/0/deeplink/compose?to="+to+"&subject="+su+"&body="+bo;
+  if(provider==="yahoo")url="https://compose.mail.yahoo.com/?to="+to+"&subject="+su+"&body="+bo;
+  if(url)window.open(url,"_blank","noopener,noreferrer");
+}});
+
+/* Alwefer portfolio agent: deterministic knowledge concierge with escalation. */
+var AGENT_KB=[
+ {keys:["alwefer","who are you","what do you do","venture builder","الوافر","مين","من هو","ماذا تعمل","que fait","wer ist"],answers:{
+  en:"Alwefer is a 0→1 venture builder and product lead who turns ambiguous business problems into working products across AI, SaaS, ERP/FinTech, IoT, cybersecurity and emerging interfaces.",
+  ar:"الوافر هو باني مشاريع وقائد منتجات من 0→1، يحوّل مشكلات الأعمال غير الواضحة إلى منتجات تعمل عبر الذكاء الاصطناعي وSaaS وERP/التقنية المالية وإنترنت الأشياء والأمن السيبراني والواجهات الناشئة.",
+  fr:"Alwefer est un venture builder et responsable produit 0→1 qui transforme des problèmes métier ambigus en produits opérationnels dans l’IA, le SaaS, l’ERP/FinTech, l’IoT, la cybersécurité et les interfaces émergentes.",
+  de:"Alwefer ist ein 0→1 Venture Builder und Product Lead, der unklare Geschäftsprobleme in funktionierende Produkte überführt – in KI, SaaS, ERP/FinTech, IoT, Cybersecurity und neuen Interfaces."}},
+ {keys:["reelscheck","reels check","video","content risk","moderation","ريلز"],answers:{
+  en:"ReelsCheck is an AI-native video intelligence and pre-publication risk platform. It combines frame analysis, OCR, speech-to-text, LLM reasoning, policy intelligence, copyright signals and tiered expert reporting.",
+  ar:"ReelsCheck منصة ذكاء فيديو ومخاطر ما قبل النشر تعتمد على الذكاء الاصطناعي، وتجمع تحليل الإطارات وOCR وتحويل الكلام إلى نص واستدلال النماذج وذكاء السياسات وإشارات حقوق النشر والتقارير المتخصصة.",
+  fr:"ReelsCheck est une plateforme d’intelligence vidéo native IA et de risque avant publication combinant analyse d’images, OCR, speech-to-text, raisonnement LLM, politiques, copyright et reporting expert.",
+  de:"ReelsCheck ist eine KI-native Video-Intelligence- und Pre-Publication-Risk-Plattform mit Frame-Analyse, OCR, Speech-to-Text, LLM-Reasoning, Policy Intelligence, Copyright-Signalen und Expertenreporting."}},
+ {keys:["covat","erp","finance","accounting","محاسبة","مالية","buchhaltung","comptabilité"],answers:{
+  en:"COVAT is a finance-led cloud ERP and operating system spanning accounting, sales, procurement, inventory/WMS, banking and reconciliation, reporting, tax, fixed assets, projects, HR and consolidation.",
+  ar:"COVAT هو ERP سحابي ونظام تشغيل تقوده المالية، ويشمل المحاسبة والمبيعات والمشتريات والمخزون/WMS والبنوك والتسويات والتقارير والضرائب والأصول والمشاريع والموارد البشرية والتوحيد.",
+  fr:"COVAT est un ERP cloud piloté par la finance couvrant comptabilité, ventes, achats, stocks/WMS, banque, rapprochement, reporting, fiscalité, immobilisations, projets, RH et consolidation.",
+  de:"COVAT ist ein finanzgeführtes Cloud-ERP und Betriebssystem für Buchhaltung, Vertrieb, Einkauf, Lager/WMS, Banking, Abstimmung, Reporting, Steuern, Anlagen, Projekte, HR und Konsolidierung."}},
+ {keys:["projact","project accounting","construction","fit-out","مشاريع","احتجاز","wip"],answers:{
+  en:"Projact is a project-accounting system for complex delivery businesses. It centers on budgets, commitments, WIP, retention, cost codes, site inventory, payroll allocation, ETC/EAC and controlled close/reopen behavior.",
+  ar:"Projact نظام محاسبة مشاريع لأعمال التنفيذ المعقدة، ويرتكز على الميزانيات والالتزامات والعمل قيد التنفيذ والاحتجاز ورموز التكلفة ومخزون الموقع وتوزيع الرواتب وETC/EAC والإقفال المنضبط.",
+  fr:"Projact est un système de comptabilité de projet pour activités d’exécution complexes, centré sur budgets, engagements, WIP, retenues, codes coûts, stocks chantier, paie et ETC/EAC.",
+  de:"Projact ist ein Projektbuchhaltungssystem für komplexe Ausführungsunternehmen mit Budgets, Commitments, WIP, Retention, Kostencodes, Baustellenbestand, Payroll-Allokation und ETC/EAC."}},
+ {keys:["aquaguard","water","aquatic","uwb","ble","rtls","pool","سباحة","مائي"],answers:{
+  en:"AquaGuard is a pre-pilot connected aquatic-safety infrastructure concept combining wearable sensing, UWB/BLE positioning, local edge computing, gateways, cloud services and facility alert workflows. It complements rather than replaces qualified supervision.",
+  ar:"AquaGuard مفهوم قبل التجربة لبنية سلامة مائية متصلة تجمع الاستشعار القابل للارتداء وتموضع UWB/BLE والحوسبة الطرفية والبوابات والسحابة وتنبيهات المنشأة، وهي تكمل الإشراف المؤهل ولا تستبدله.",
+  fr:"AquaGuard est un concept pré-pilote de sécurité aquatique connectée combinant capteurs portables, positionnement UWB/BLE, edge computing, passerelles, cloud et alertes. Il complète la supervision qualifiée sans la remplacer.",
+  de:"AquaGuard ist ein Pre-Pilot-Konzept für vernetzte Wassersicherheit mit Wearable-Sensorik, UWB/BLE-Positionierung, Edge Computing, Gateways, Cloud und Alarm-Workflows. Es ergänzt qualifizierte Aufsicht."}},
+ {keys:["securia","cyber","security","امن","سيبراني","cybersécurité","sicherheit"],answers:{
+  en:"Securia is a cybersecurity-focused venture in development, centered on practical risk reduction, automation, intelligent monitoring and usable security workflows. Public details are intentionally limited.",
+  ar:"Securia مشروع أمن سيبراني قيد التطوير يركز على تقليل المخاطر عمليًا والأتمتة والمراقبة الذكية وسير عمل أمني قابل للاستخدام. التفاصيل العامة محدودة عمدًا.",
+  fr:"Securia est une venture cybersécurité en développement, axée sur réduction pratique des risques, automatisation, monitoring intelligent et workflows utilisables. Les détails publics sont volontairement limités.",
+  de:"Securia ist ein Cybersecurity-Venture in Entwicklung mit Fokus auf praktische Risikoreduktion, Automatisierung, intelligentes Monitoring und nutzbare Security-Workflows."}},
+ {keys:["tikvibe","creator","content ecosystem","مبدعين","créateur"],answers:{
+  en:"TikVibe is a creator-tech and digital-product venture exploring engagement, workflow and digital-service opportunities around modern content ecosystems.",
+  ar:"TikVibe مشروع في تقنيات المبدعين والمنتجات الرقمية يستكشف فرص التفاعل وسير العمل والخدمات الرقمية حول منظومات المحتوى الحديثة.",
+  fr:"TikVibe est une venture creator-tech explorant engagement, workflows et opportunités de services numériques autour des écosystèmes de contenu modernes.",
+  de:"TikVibe ist ein Creator-Tech- und Digitalprodukt-Venture für Engagement-, Workflow- und Servicechancen in modernen Content-Ökosystemen."}},
+ {keys:["cento","scent","smell","رائحة","odor","duft"],answers:{
+  en:"Cento is a concept/validation-stage digital scent layer for immersive experiences, matching digital content with compatible scent-delivery hardware across commerce, hospitality, entertainment, museums and training.",
+  ar:"Cento مفهوم في مرحلة التحقق لطبقة رائحة رقمية للتجارب الغامرة، تربط المحتوى الرقمي بأجهزة متوافقة لإطلاق الروائح في التجارة والضيافة والترفيه والمتاحف والتدريب.",
+  fr:"Cento est un concept en phase de validation pour une couche olfactive numérique destinée aux expériences immersives dans le commerce, l’hospitalité, le divertissement, les musées et la formation.",
+  de:"Cento ist ein Konzept in der Validierungsphase für eine digitale Duftschicht, die digitale Inhalte mit kompatibler Duft-Hardware in Handel, Hospitality, Entertainment, Museen und Training verbindet."}},
+ {keys:["work together","hire","engage","services","fractional","eir","role","تعاون","وظيفة","نعمل","collaborer","zusammenarbeiten"],answers:{
+  en:"Alwefer is open to full-time product leadership, fractional product leadership, 0→1 venture building, venture-studio/EIR mandates and special product assignments. The strongest fit is where product judgment, venture logic and execution need to sit together.",
+  ar:"الوافر منفتح على قيادة المنتجات بدوام كامل أو جزئي، وبناء المشاريع من 0→1، ومهام Venture Studio/EIR، ومهام المنتجات الخاصة. أفضل ملاءمة هي عندما يجب أن يجتمع حكم المنتج ومنطق المشروع والتنفيذ معًا.",
+  fr:"Alwefer est ouvert au leadership produit à temps plein ou fractionnel, au venture building 0→1, aux mandats Venture Studio/EIR et aux missions produit spéciales.",
+  de:"Alwefer ist offen für Vollzeit- oder Fractional-Product-Leadership, 0→1 Venture Building, Venture-Studio/EIR-Mandate und besondere Produktaufträge."}},
+ {keys:["method","process","frame","architect","validate","ship","منهج","كيف تبني","méthode","prozess"],answers:{
+  en:"The operating method is FRAME → ARCHITECT → BUILD → VALIDATE → SHIP: clarify the problem and proof of value, define product/system behavior, orchestrate execution, pressure-test assumptions and workflows, then move toward pilot or launch.",
+  ar:"المنهج هو: صياغة → هندسة → بناء → تحقق → إطلاق. يبدأ بتوضيح المشكلة ودليل القيمة، ثم تعريف سلوك المنتج والنظام، وتنفيذ الحل، واختبار الافتراضات وسير العمل، ثم التحرك نحو التجربة أو الإطلاق.",
+  fr:"La méthode est CADRER → ARCHITECTURER → CONSTRUIRE → VALIDER → LIVRER.",
+  de:"Die Methode lautet RAHMEN → ARCHITEKTUR → BAUEN → VALIDIEREN → AUSLIEFERN."}},
+ {keys:["what is erp","define erp","ما هو erp","qu'est-ce qu'un erp","was ist erp"],answers:{
+  en:"ERP means Enterprise Resource Planning: software that connects core business functions—such as finance, purchasing, sales, inventory, projects and HR—into one controlled operating system.",
+  ar:"ERP يعني تخطيط موارد المؤسسة: نظام برمجي يربط وظائف الأعمال الأساسية مثل المالية والمشتريات والمبيعات والمخزون والمشاريع والموارد البشرية ضمن نظام تشغيل موحّد.",
+  fr:"ERP signifie Enterprise Resource Planning : un système reliant les fonctions clés de l’entreprise dans une plateforme cohérente.",
+  de:"ERP steht für Enterprise Resource Planning: ein System, das zentrale Unternehmensfunktionen in einer kontrollierten Plattform verbindet."}},
+ {keys:["what is 0→1","0 to 1","zero to one","0→1","من صفر","0 الى 1"],answers:{
+  en:"0→1 product building means taking something from an undefined opportunity or problem to the first credible working product—before optimization and scale become the main challenge.",
+  ar:"بناء المنتج من 0→1 يعني الانتقال من فرصة أو مشكلة غير محددة إلى أول منتج عملي وموثوق، قبل أن يصبح التحسين والتوسع هما التحدي الأساسي.",
+  fr:"Le 0→1 consiste à passer d’une opportunité encore floue au premier produit crédible et fonctionnel.",
+  de:"0→1 bedeutet, von einer unklaren Chance zum ersten glaubwürdigen, funktionierenden Produkt zu gelangen."}}
+];
+function agentNormalize(s){return String(s||"").toLowerCase().normalize("NFKD").replace(/[؟?.,!;:()\-_/]/g," ").replace(/\s+/g," ").trim()}
+function agentAnswer(input){
+  var s=agentNormalize(input),best=null,bestScore=0;
+  AGENT_KB.forEach(function(item){var score=0;item.keys.forEach(function(k){var nk=agentNormalize(k);if(s.indexOf(nk)>-1)score+=Math.max(2,nk.split(" ").length*2);else nk.split(" ").forEach(function(w){if(w.length>3&&s.indexOf(w)>-1)score+=1})});if(score>bestScore){bestScore=score;best=item}});
+  if(best&&bestScore>=2)return {text:best.answers[currentLang]||best.answers.en,known:true};
+  var fallback={
+    en:"I don’t have enough verified portfolio information to answer that confidently. I can still help you contact Alwefer directly.",
+    ar:"لا أملك معلومات موثقة كافية في البورتفوليو للإجابة بثقة على هذا السؤال. يمكنني مساعدتك بالتواصل مباشرة مع الوافر.",
+    fr:"Je n’ai pas assez d’informations vérifiées dans ce portfolio pour répondre avec certitude. Je peux vous aider à contacter Alwefer directement.",
+    de:"Ich habe nicht genug verifizierte Portfolio-Informationen, um das sicher zu beantworten. Ich kann Ihnen helfen, Alwefer direkt zu kontaktieren."
+  };
+  return {text:fallback[currentLang]||fallback.en,known:false};
+}
+var agentLaunch=q("#agentLaunch"),agentPanel=q("#agentPanel"),agentClose=q("#agentClose"),agentFeed=q("#agentFeed"),agentForm=q("#agentForm"),agentInput=q("#agentInput");
+function addAgentMessage(text,who,contact){
+  var d=document.createElement("div");d.className="agent-msg "+who;d.textContent=text;
+  if(contact){var b=document.createElement("button");b.className="agent-contact";b.type="button";b.textContent=translateString("Start a conversation",currentLang);b.onclick=function(){openContact(text+"\n\n")};d.appendChild(b)}
+  agentFeed.appendChild(d);agentFeed.scrollTop=agentFeed.scrollHeight;
+}
+function agentWelcome(){
+  var welcome={
+    en:"Ask me about Alwefer, the ventures, the 0→1 method, engagement models, or product concepts shown in this portfolio.",
+    ar:"اسألني عن الوافر، المشاريع، منهج 0→1، طرق التعاون، أو مفاهيم المنتجات الموجودة في هذا البورتفوليو.",
+    fr:"Posez-moi des questions sur Alwefer, les ventures, la méthode 0→1, les modes de collaboration ou les concepts de ce portfolio.",
+    de:"Frag mich zu Alwefer, den Ventures, der 0→1-Methode, Zusammenarbeitsmodellen oder den Produktkonzepten in diesem Portfolio."
+  };
+  if(!agentFeed.children.length)addAgentMessage(welcome[currentLang]||welcome.en,"bot",false);
+}
+agentLaunch.onclick=function(){agentPanel.classList.add("open");agentPanel.setAttribute("aria-hidden","false");agentWelcome();setTimeout(function(){agentInput.focus()},50)};
+agentClose.onclick=function(){agentPanel.classList.remove("open");agentPanel.setAttribute("aria-hidden","true")};
+agentForm.onsubmit=function(e){e.preventDefault();var v=agentInput.value.trim();if(!v)return;addAgentMessage(v,"user",false);agentInput.value="";setTimeout(function(){var a=agentAnswer(v);addAgentMessage(a.text,"bot",!a.known)},180)};
+qa("#agentSuggestions button").forEach(function(b){b.onclick=function(){agentInput.value=b.textContent;agentForm.requestSubmit()}});
 
 function startProjectMotion(){
   var bars=qa(".covat-bars i");
