@@ -67,7 +67,7 @@
   };
 
   var CONFIG = {
-    brand: { en: "Alwefer", ar: "الوافر" },
+    brand: { en: "Al Wafer", ar: "الوافر" },
     applyLink: APPLY_LINK,
     regionUrls: REGION_URLS,
     platformUrls: PLATFORM_URLS,
@@ -77,8 +77,8 @@
     profiles: {
       mustafa: {
         artwork:  "assets/page-alwafer.png",
-        title:    { en: "Alwefer",        ar: "الوافر" },
-        subtitle: { en: "Alwefer", ar: "الوافر" },
+        title:    { en: "Al Wafer",        ar: "الوافر" },
+        subtitle: { en: "Al Wafer", ar: "الوافر" },
         overlay:  buildOverlay(LAYOUT.mustafa)
       },
       ahmed: {
