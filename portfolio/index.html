@@ -807,10 +807,10 @@ function agentAnswer(input,responseLang){
 
 var VOICE_LANG={en:"en-US",ar:"ar-SA",fr:"fr-FR",de:"de-DE"};
 var VOICE_UI={
- en:{mic:"Use microphone — language auto-detect",listening:"Listening — auto-detecting language…",processing:"Understanding your language…",loading:"Preparing multilingual voice…",listen:"Listen",stop:"Stop",voiceOn:"Voice replies on",voiceOff:"Voice replies off",unsupported:"Voice input is not supported in this browser.",placeholder:"Ask about the portfolio, projects or services…"},
- ar:{mic:"استخدم المايك — كشف اللغة تلقائي",listening:"أستمع — وأتعرف على اللغة تلقائيًا…",processing:"أفهم لغتك الآن…",loading:"أجهّز التعرف متعدد اللغات…",listen:"استمع",stop:"إيقاف",voiceOn:"الردود الصوتية مفعلة",voiceOff:"الردود الصوتية متوقفة",unsupported:"الإدخال الصوتي غير مدعوم في هذا المتصفح.",placeholder:"اسأل عن البورتفوليو أو المشاريع أو الخدمات…"},
- fr:{mic:"Utiliser le micro — détection automatique",listening:"Écoute — détection de la langue…",processing:"Compréhension de votre langue…",loading:"Préparation de la voix multilingue…",listen:"Écouter",stop:"Arrêter",voiceOn:"Réponses vocales activées",voiceOff:"Réponses vocales désactivées",unsupported:"La saisie vocale n’est pas prise en charge par ce navigateur.",placeholder:"Posez une question sur le portfolio, les projets ou les services…"},
- de:{mic:"Mikrofon verwenden — Sprache automatisch erkennen",listening:"Ich höre zu — Sprache wird erkannt…",processing:"Ich erkenne deine Sprache…",loading:"Mehrsprachige Spracherkennung wird vorbereitet…",listen:"Anhören",stop:"Stopp",voiceOn:"Sprachantworten aktiviert",voiceOff:"Sprachantworten deaktiviert",unsupported:"Spracheingabe wird in diesem Browser nicht unterstützt.",placeholder:"Frag nach Portfolio, Projekten oder Leistungen…"}
+ en:{mic:"Use microphone — language auto-detect",listening:"Listening — auto-detecting language…",processing:"Understanding your language…",loading:"Detecting language…",listen:"Listen",stop:"Stop",voiceOn:"Voice replies on",voiceOff:"Voice replies off",unsupported:"Voice input is not supported in this browser.",placeholder:"Ask about the portfolio, projects or services…"},
+ ar:{mic:"استخدم المايك — كشف اللغة تلقائي",listening:"أستمع — وأتعرف على اللغة تلقائيًا…",processing:"أفهم لغتك الآن…",loading:"أتعرف على اللغة…",listen:"استمع",stop:"إيقاف",voiceOn:"الردود الصوتية مفعلة",voiceOff:"الردود الصوتية متوقفة",unsupported:"الإدخال الصوتي غير مدعوم في هذا المتصفح.",placeholder:"اسأل عن البورتفوليو أو المشاريع أو الخدمات…"},
+ fr:{mic:"Utiliser le micro — détection automatique",listening:"Écoute — détection de la langue…",processing:"Compréhension de votre langue…",loading:"Détection de la langue…",listen:"Écouter",stop:"Arrêter",voiceOn:"Réponses vocales activées",voiceOff:"Réponses vocales désactivées",unsupported:"La saisie vocale n’est pas prise en charge par ce navigateur.",placeholder:"Posez une question sur le portfolio, les projets ou les services…"},
+ de:{mic:"Mikrofon verwenden — Sprache automatisch erkennen",listening:"Ich höre zu — Sprache wird erkannt…",processing:"Ich erkenne deine Sprache…",loading:"Sprache wird erkannt…",listen:"Anhören",stop:"Stopp",voiceOn:"Sprachantworten aktiviert",voiceOff:"Sprachantworten deaktiviert",unsupported:"Spracheingabe wird in diesem Browser nicht unterstützt.",placeholder:"Frag nach Portfolio, Projekten oder Leistungen…"}
 };
 var autoVoice=false,speakNextReply=false,currentUtterances=[],speechGeneration=0;
 function speechLocale(lang){return VOICE_LANG[lang||currentLang]||"en-US"}
@@ -900,7 +900,8 @@ agentForm.onsubmit=function(e){e.preventDefault();var v=agentInput.value.trim();
 qa("#agentSuggestions button").forEach(function(b){b.onclick=function(){agentInput.value=b.textContent;agentForm.requestSubmit()}});
 
 var SpeechRecognitionCtor=window.SpeechRecognition||window.webkitSpeechRecognition||null,recognition=null;
-var adaptiveRecorder=null,adaptiveStream=null,adaptiveCtx=null,adaptiveTimer=null,adaptiveChunks=[],adaptiveWhisperPromise=null,adaptiveBusy=false;
+var adaptiveRecorder=null,adaptiveStream=null,adaptiveCtx=null,adaptiveTimer=null,adaptiveChunks=[],adaptiveBusy=false,lastSpokenLang="";
+try{lastSpokenLang=localStorage.getItem("alweferSpokenLang")||""}catch(e){}
 
 function setAdaptiveMicState(state){
  var ui=VOICE_UI[currentLang]||VOICE_UI.en;
@@ -917,94 +918,123 @@ function adaptiveStatus(text){
  if(!existing){existing=document.createElement("div");existing.className="agent-msg bot agent-voice-status";agentFeed.appendChild(existing)}
  existing.textContent=text;agentFeed.scrollTop=agentFeed.scrollHeight;
 }
-function downsampleTo16k(buffer){
- var rate=buffer.sampleRate,channels=buffer.numberOfChannels,length=Math.max(1,Math.round(buffer.duration*16000)),out=new Float32Array(length),ratio=rate/16000;
- for(var i=0;i<length;i++){var pos=i*ratio,i0=Math.floor(pos),i1=Math.min(i0+1,buffer.length-1),frac=pos-i0,sum=0;for(var ch=0;ch<channels;ch++){var data=buffer.getChannelData(ch);sum+=(data[i0]*(1-frac)+data[i1]*frac)}out[i]=sum/channels}
- return out;
-}
-async function audioBlobTo16k(blob){
- var AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw new Error("AudioContext unavailable");
- var ctx=new AC(),ab=await blob.arrayBuffer(),decoded=await ctx.decodeAudioData(ab.slice(0)),samples=downsampleTo16k(decoded);try{await ctx.close()}catch(e){}return samples;
-}
-async function ensureAdaptiveWhisper(){
- if(adaptiveWhisperPromise)return adaptiveWhisperPromise;
- adaptiveWhisperPromise=(async function(){
-   var mod=await import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0");
-   if(mod.env){mod.env.allowLocalModels=false;mod.env.useBrowserCache=true}
-   var options={};if(navigator.gpu)options.device="webgpu";
-   try{return await mod.pipeline("automatic-speech-recognition","onnx-community/whisper-tiny",options)}
-   catch(e){if(options.device){return await mod.pipeline("automatic-speech-recognition","onnx-community/whisper-tiny",{})}throw e}
- })();
- return adaptiveWhisperPromise;
-}
-async function transcribeAdaptive(blob){
- var ui=VOICE_UI[currentLang]||VOICE_UI.en;setAdaptiveMicState("loading");adaptiveStatus(ui.loading);
- var samples=await audioBlobTo16k(blob),pipe=await ensureAdaptiveWhisper();
- setAdaptiveMicState("processing");adaptiveStatus(ui.processing);
- var result=await pipe(samples,{task:"transcribe"});
- var text=result&&result.text?String(result.text).trim():"";
- if(!text)throw new Error("No speech recognized");
- return text;
-}
 function cleanupAdaptiveCapture(){
  clearTimeout(adaptiveTimer);adaptiveTimer=null;
  if(adaptiveCtx){try{adaptiveCtx.close()}catch(e){}adaptiveCtx=null}
  if(adaptiveStream){adaptiveStream.getTracks().forEach(function(t){t.stop()});adaptiveStream=null}
  adaptiveRecorder=null;
 }
-function stopAdaptiveCapture(){
- if(adaptiveRecorder&&adaptiveRecorder.state!=="inactive"){try{adaptiveRecorder.stop()}catch(e){}}
+function stopAdaptiveCapture(){if(adaptiveRecorder&&adaptiveRecorder.state!=="inactive"){try{adaptiveRecorder.stop()}catch(e){}}}
+function supportedLangFromTag(tag){var b=String(tag||"").toLowerCase().split("-")[0];return {ar:"ar",en:"en",fr:"fr",de:"de"}[b]||""}
+function recognitionCandidateOrder(){
+ var out=[];function add(x){if(x&&["ar","en","fr","de"].indexOf(x)>-1&&out.indexOf(x)<0)out.push(x)}
+ add(lastSpokenLang);add(currentLang);
+ (navigator.languages||[navigator.language]).forEach(function(x){add(supportedLangFromTag(x))});
+ ["ar","en","fr","de"].forEach(add);return out;
+}
+function transcriptSignal(text,lang){
+ var s=" "+String(text||"").toLowerCase()+" ",score=0;
+ if(lang==="ar"){var ar=(s.match(/[\u0600-\u06ff]/g)||[]).length,letters=(s.match(/[a-z\u0600-\u06ff]/gi)||[]).length;score+=letters?Math.round(ar/letters*70):0;if(ar>3)score+=24;return score}
+ var groups={
+   en:[" the "," and "," what "," how "," can "," tell "," about "," with "," is "," are "," do "," does "," work "," product "," project "],
+   fr:[" le "," la "," les "," des "," et "," est "," comment "," avec "," pour "," projet "," produit "," peux "," pouvez "," quoi "],
+   de:[" der "," die "," das "," und "," ist "," wie "," was "," mit "," für "," projekt "," produkt "," kannst "," kann "," über "]
+ };
+ (groups[lang]||[]).forEach(function(w){if(s.indexOf(w)>-1)score+=7});
+ if(lang==="fr"&&/[éèêëàâçùûüîïôœ]/i.test(s))score+=22;
+ if(lang==="de"&&/[äöüß]/i.test(s))score+=22;
+ if(/[\u0600-\u06ff]/.test(s))score-=55;
+ return score;
+}
+function scoreRecognitionResult(r,lang){
+ if(!r||!r.text)return -999;
+ var conf=isFinite(r.confidence)?r.confidence:0,signal=transcriptSignal(r.text,lang),semantic=false;
+ try{semantic=agentAnswer(r.text,lang).known}catch(e){}
+ return conf*72+signal+(semantic?30:0)+(detectAgentLanguage(r.text,lang)===lang?8:0);
+}
+async function decodeRecordedBlob(blob){
+ var AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw new Error("AudioContext unavailable");
+ var ctx=new AC();if(ctx.state==="suspended")try{await ctx.resume()}catch(e){}
+ var ab=await blob.arrayBuffer(),buffer=await ctx.decodeAudioData(ab.slice(0));try{await ctx.close()}catch(e){}return buffer;
+}
+function recognizeBufferLanguage(buffer,lang){
+ return new Promise(async function(resolve){
+  if(!SpeechRecognitionCtor){resolve(null);return}
+  var AC=window.AudioContext||window.webkitAudioContext,ctx=null,rec=null,timer=null,finished=false,best=null;
+  function done(val){if(finished)return;finished=true;clearTimeout(timer);try{if(rec)rec.abort()}catch(e){}try{if(ctx)ctx.close()}catch(e){}resolve(val)}
+  try{
+   ctx=new AC();if(ctx.state==="suspended")await ctx.resume();
+   var src=ctx.createBufferSource(),dest=ctx.createMediaStreamDestination();src.buffer=buffer;src.connect(dest);
+   var track=dest.stream.getAudioTracks()[0];rec=new SpeechRecognitionCtor();rec.lang=VOICE_LANG[lang];rec.continuous=false;rec.interimResults=false;rec.maxAlternatives=5;
+   rec.onresult=function(e){for(var i=0;i<e.results.length;i++){for(var j=0;j<e.results[i].length;j++){var a=e.results[i][j],candidate={text:(a.transcript||"").trim(),confidence:Number(a.confidence)||0,lang:lang};if(candidate.text&&(!best||scoreRecognitionResult(candidate,lang)>scoreRecognitionResult(best,lang)))best=candidate}}};
+   rec.onerror=function(){done(best)};rec.onnomatch=function(){done(best)};rec.onend=function(){done(best)};
+   src.onended=function(){setTimeout(function(){try{rec.stop()}catch(e){}},120)};
+   rec.start(track);setTimeout(function(){try{src.start()}catch(e){done(null)}},90);
+   timer=setTimeout(function(){done(best)},Math.min(12000,Math.max(3500,buffer.duration*1000+3200)));
+  }catch(e){done(null)}
+ });
+}
+async function transcribeAdaptiveNative(blob){
+ if(!SpeechRecognitionCtor)throw new Error("Speech recognition unavailable");
+ setAdaptiveMicState("processing");
+ var ui=VOICE_UI[currentLang]||VOICE_UI.en;adaptiveStatus(ui.processing);
+ var buffer=await decodeRecordedBlob(blob),order=recognitionCandidateOrder(),results=[];
+ for(var i=0;i<order.length;i++){
+   var lang=order[i];adaptiveStatus((VOICE_UI[currentLang]||VOICE_UI.en).processing+" "+lang.toUpperCase());
+   var r=await recognizeBufferLanguage(buffer,lang);
+   if(r&&r.text){results.push(r);var score=scoreRecognitionResult(r,lang),semantic=false;try{semantic=agentAnswer(r.text,lang).known}catch(e){}
+     var strongArabic=lang==="ar"&&/[\u0600-\u06ff]{3,}/.test(r.text)&&r.confidence>.45;
+     var strongKnown=semantic&&r.confidence>.42&&transcriptSignal(r.text,lang)>0;
+     var veryStrong=r.confidence>.90&&transcriptSignal(r.text,lang)>=18;
+     if(strongArabic||strongKnown||veryStrong)break;
+   }
+ }
+ if(!results.length)throw new Error("No speech recognized");
+ results.sort(function(a,b){return scoreRecognitionResult(b,b.lang)-scoreRecognitionResult(a,a.lang)});
+ var best=results[0];lastSpokenLang=best.lang;try{localStorage.setItem("alweferSpokenLang",best.lang)}catch(e){}
+ return best;
+}
+function startLiveFallback(){
+ if(!SpeechRecognitionCtor)return;
+ recognition=new SpeechRecognitionCtor();recognition.continuous=false;recognition.interimResults=true;recognition.maxAlternatives=3;recognition.lang=VOICE_LANG[lastSpokenLang||currentLang]||speechLocale(currentLang);
+ recognition.onstart=function(){setAdaptiveMicState("listening")};
+ recognition.onresult=function(e){var finalText="",interim="";for(var i=e.resultIndex;i<e.results.length;i++){var t=e.results[i][0].transcript;if(e.results[i].isFinal)finalText+=t;else interim+=t}agentInput.value=finalText||interim;if(finalText.trim()){var lang=detectAgentLanguage(finalText,lastSpokenLang||currentLang);agentInput.dataset.detectedLang=lang;speakNextReply=true;setTimeout(function(){agentForm.requestSubmit()},100)}};
+ recognition.onerror=function(){setAdaptiveMicState("idle")};recognition.onend=function(){setAdaptiveMicState("idle")};try{recognition.start()}catch(e){setAdaptiveMicState("idle")}
 }
 async function startAdaptiveCapture(){
  if(adaptiveBusy)return;
  if(adaptiveRecorder&&adaptiveRecorder.state==="recording"){stopAdaptiveCapture();return}
  stopSpeaking();adaptiveChunks=[];
  try{
-   adaptiveStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
-   var mime=["audio/webm;codecs=opus","audio/webm","audio/mp4"].find(function(x){return window.MediaRecorder&&MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(x)});
-   adaptiveRecorder=mime?new MediaRecorder(adaptiveStream,{mimeType:mime}):new MediaRecorder(adaptiveStream);
-   adaptiveRecorder.ondataavailable=function(e){if(e.data&&e.data.size)adaptiveChunks.push(e.data)};
-   adaptiveRecorder.onstop=async function(){
-     var blob=new Blob(adaptiveChunks,{type:adaptiveRecorder&&adaptiveRecorder.mimeType?adaptiveRecorder.mimeType:"audio/webm"});cleanupAdaptiveCapture();adaptiveBusy=true;
-     try{
-       var text=await transcribeAdaptive(blob),lang=detectAgentLanguage(text,currentLang);
-       adaptiveStatus("");setAdaptiveMicState("idle");agentInput.value=text;agentInput.dataset.detectedLang=lang;speakNextReply=true;agentForm.requestSubmit();
-     }catch(err){
-       adaptiveStatus("");setAdaptiveMicState("idle");
-       if(SpeechRecognitionCtor){startNativeFallbackRecognition()}else addAgentMessage((VOICE_UI[currentLang]||VOICE_UI.en).unsupported,"bot",false,currentLang);
-     }finally{adaptiveBusy=false}
-   };
-   adaptiveRecorder.start(180);setAdaptiveMicState("listening");
-   var ui=VOICE_UI[currentLang]||VOICE_UI.en;adaptiveStatus(ui.listening);
-   var AC=window.AudioContext||window.webkitAudioContext;
-   if(AC){
-     adaptiveCtx=new AC();var src=adaptiveCtx.createMediaStreamSource(adaptiveStream),an=adaptiveCtx.createAnalyser();an.fftSize=1024;src.connect(an);
-     var buf=new Float32Array(an.fftSize),started=performance.now(),heard=false,lastVoice=started,baseline=.006,baselineN=0;
-     (function monitor(){
-       if(!adaptiveRecorder||adaptiveRecorder.state!=="recording")return;
-       an.getFloatTimeDomainData(buf);var sum=0;for(var i=0;i<buf.length;i++)sum+=buf[i]*buf[i];var rms=Math.sqrt(sum/buf.length),now=performance.now();
-       if(now-started<450){baseline=(baseline*baselineN+rms)/(baselineN+1);baselineN++}
-       var threshold=Math.max(.012,baseline*2.3+.003);
-       if(rms>threshold){heard=true;lastVoice=now}
-       if((heard&&now-lastVoice>950&&now-started>900)||(now-started>14000)||(!heard&&now-started>6500)){stopAdaptiveCapture();return}
-       adaptiveTimer=setTimeout(monitor,80);
-     })();
-   }else adaptiveTimer=setTimeout(stopAdaptiveCapture,10000);
- }catch(e){cleanupAdaptiveCapture();setAdaptiveMicState("idle");if(SpeechRecognitionCtor)startNativeFallbackRecognition();else addAgentMessage((VOICE_UI[currentLang]||VOICE_UI.en).unsupported,"bot",false,currentLang)}
+  adaptiveStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+  var mime=["audio/webm;codecs=opus","audio/webm","audio/mp4"].find(function(x){return window.MediaRecorder&&MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(x)});
+  adaptiveRecorder=mime?new MediaRecorder(adaptiveStream,{mimeType:mime}):new MediaRecorder(adaptiveStream);
+  adaptiveRecorder.ondataavailable=function(e){if(e.data&&e.data.size)adaptiveChunks.push(e.data)};
+  adaptiveRecorder.onstop=async function(){
+   var type=adaptiveRecorder&&adaptiveRecorder.mimeType?adaptiveRecorder.mimeType:"audio/webm",blob=new Blob(adaptiveChunks,{type:type});cleanupAdaptiveCapture();adaptiveBusy=true;
+   try{
+    var result=await transcribeAdaptiveNative(blob);adaptiveStatus("");setAdaptiveMicState("idle");agentInput.value=result.text;agentInput.dataset.detectedLang=result.lang;speakNextReply=true;agentForm.requestSubmit();
+   }catch(err){adaptiveStatus("");setAdaptiveMicState("idle");startLiveFallback()}
+   finally{adaptiveBusy=false}
+  };
+  adaptiveRecorder.start(160);setAdaptiveMicState("listening");adaptiveStatus((VOICE_UI[currentLang]||VOICE_UI.en).listening);
+  var AC=window.AudioContext||window.webkitAudioContext;
+  if(AC){
+   adaptiveCtx=new AC();var src=adaptiveCtx.createMediaStreamSource(adaptiveStream),an=adaptiveCtx.createAnalyser();an.fftSize=1024;src.connect(an);
+   var buf=new Float32Array(an.fftSize),started=performance.now(),heard=false,lastVoice=started,baseline=.006,baselineN=0;
+   (function monitor(){
+    if(!adaptiveRecorder||adaptiveRecorder.state!=="recording")return;
+    an.getFloatTimeDomainData(buf);var sum=0;for(var i=0;i<buf.length;i++)sum+=buf[i]*buf[i];var rms=Math.sqrt(sum/buf.length),now=performance.now();
+    if(now-started<420){baseline=(baseline*baselineN+rms)/(baselineN+1);baselineN++}
+    var threshold=Math.max(.011,baseline*2.15+.0025);if(rms>threshold){heard=true;lastVoice=now}
+    if((heard&&now-lastVoice>850&&now-started>850)||(now-started>11000)||(!heard&&now-started>5500)){stopAdaptiveCapture();return}
+    adaptiveTimer=setTimeout(monitor,70);
+   })();
+  }else adaptiveTimer=setTimeout(stopAdaptiveCapture,9000);
+ }catch(e){cleanupAdaptiveCapture();setAdaptiveMicState("idle");startLiveFallback()}
 }
-function startNativeFallbackRecognition(){
- if(!SpeechRecognitionCtor)return;
- recognition=new SpeechRecognitionCtor();recognition.continuous=false;recognition.interimResults=true;recognition.maxAlternatives=1;
- // Fallback only. Main path uses multilingual Whisper auto-detection.
- recognition.lang=speechLocale(currentLang);
- recognition.onstart=function(){setAdaptiveMicState("listening")};
- recognition.onresult=function(e){var finalText="",interim="";for(var i=e.resultIndex;i<e.results.length;i++){var t=e.results[i][0].transcript;if(e.results[i].isFinal)finalText+=t;else interim+=t}agentInput.value=finalText||interim;if(finalText.trim()){var lang=detectAgentLanguage(finalText,currentLang);agentInput.dataset.detectedLang=lang;speakNextReply=true;setTimeout(function(){agentForm.requestSubmit()},120)}};
- recognition.onerror=function(){setAdaptiveMicState("idle")};recognition.onend=function(){setAdaptiveMicState("idle")};recognition.start();
-}
-if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder)){
- if(!SpeechRecognitionCtor){agentMic.classList.add("unsupported");agentMic.disabled=true;agentMic.title=(VOICE_UI[currentLang]||VOICE_UI.en).unsupported}
-}
-agentMic.onclick=function(){if(adaptiveRecorder&&adaptiveRecorder.state==="recording"){stopAdaptiveCapture()}else if(!adaptiveBusy){startAdaptiveCapture()}};
+if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder)){if(!SpeechRecognitionCtor){agentMic.classList.add("unsupported");agentMic.disabled=true;agentMic.title=(VOICE_UI[currentLang]||VOICE_UI.en).unsupported}}
+agentMic.onclick=function(){if(adaptiveRecorder&&adaptiveRecorder.state==="recording")stopAdaptiveCapture();else if(!adaptiveBusy)startAdaptiveCapture()};
 setAdaptiveMicState("idle");updateVoiceUiLanguage();
 
 function startProjectMotion(){
