@@ -42,7 +42,7 @@
       title: "Alwefer",
       subtitle: "Alwefer",
       tagline: "Empowering creators. Building influence. Elevating brands.\nتمكّن المبدعين، نبني التأثير، نرتقي بالعلامات التجارية.",
-      profileImage: "/assets/profiles/alwafer-profile.png",
+      profileImage: "/assets/alwefer-mark.svg",
       artwork: "/assets/page-alwafer.png"
     },
     ahmed: {
