@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-08T11:11:09.365Z",
+  "updatedAt": "2026-09-19T09:20:52.144Z",
   "profiles": {
     "mustafa": {
       "title": "ALWAFER",
@@ -39,9 +39,9 @@
           "label": "WhatsApp"
         },
         "website": {
-          "enabled": false,
-          "url": "",
-          "label": "Website"
+          "enabled": true,
+          "url": "/portfolio/",
+          "label": "Venture Portfolio"
         }
       }
     },
