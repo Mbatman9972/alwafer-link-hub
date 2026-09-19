@@ -23,12 +23,12 @@ test("slash-compatible admin API entrypoint reuses the same handler", () => {
   assert.equal(apiSlash, api);
 });
 
-function request(action, method, body, cookie) {
+function request(action, method, body, cookie, extraHeaders) {
   const req = {
     query: { action },
     method,
     body,
-    headers: cookie ? { cookie } : {}
+    headers: Object.assign({}, cookie ? { cookie } : {}, extraHeaders || {})
   };
   return new Promise((resolve, reject) => {
     const headers = {};
@@ -141,4 +141,44 @@ test("logout clears the signed session cookie", async () => {
   assert.equal(response.status, 200);
   assert.match(String(response.headers["set-cookie"]), /alwafer_admin=;/);
   assert.match(String(response.headers["set-cookie"]), /Max-Age=0/);
+});
+
+
+test("PBKDF2 hashes are supported and reject the wrong password", () => {
+  const hashValue = api.makePbkdf2Hash("a-strong-local-test-password");
+  assert.match(hashValue, /^pbkdf2\$\d+\$[0-9a-f]+\$[0-9a-f]+$/);
+  assert.equal(api.checkHash("a-strong-local-test-password", hashValue), true);
+  assert.equal(api.checkHash("wrong-password", hashValue), false);
+});
+
+test("cross-origin admin POST is rejected", async () => {
+  const response = await request("login", "POST", { account: "ahmed", password: "ahmed-test" }, "", {
+    host: "alwafer.vercel.app",
+    origin: "https://evil.example.com"
+  });
+  assert.equal(response.status, 403);
+  assert.equal(response.body.error, "origin_not_allowed");
+});
+
+test("same-origin admin POST is accepted", async () => {
+  const response = await request("login", "POST", { account: "ahmed", password: "ahmed-test" }, "", {
+    host: "alwafer.vercel.app",
+    origin: "https://alwafer.vercel.app"
+  });
+  assert.equal(response.status, 200);
+});
+
+test("repeated failed login attempts are temporarily rate limited", async () => {
+  const headers = {
+    host: "alwafer.vercel.app",
+    origin: "https://alwafer.vercel.app",
+    "x-forwarded-for": "203.0.113.77"
+  };
+  let response;
+  for (let i = 0; i < 5; i += 1) {
+    response = await request("login", "POST", { account: "ahmed", password: "definitely-wrong" }, "", headers);
+  }
+  assert.equal(response.status, 429);
+  assert.equal(response.body.error, "too_many_attempts");
+  assert.ok(Number(response.headers["retry-after"]) > 0);
 });
