@@ -1,5 +1,6 @@
 "use strict";
 
+const { guardJsonPost, hardenResponse } = require("../lib/request-security.js");
 const CONTACT_EMAIL = "alwafer89@gmail.com";
 const MODEL = process.env.ALWEFER_AGENT_MODEL || "gpt-5.6-luna";
 
@@ -78,8 +79,7 @@ Tone:
 function send(res, status, body) {
   res.statusCode = status;
   res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.setHeader("Cache-Control", "no-store");
-  res.setHeader("X-Content-Type-Options", "nosniff");
+  hardenResponse(res);
   res.end(JSON.stringify(body));
 }
 
@@ -89,9 +89,9 @@ function cleanText(v, max) {
 
 function cleanHistory(raw) {
   if (!Array.isArray(raw)) return [];
-  return raw.slice(-10).map((m) => ({
+  return raw.slice(-8).map((m) => ({
     role: m && m.role === "assistant" ? "assistant" : "user",
-    content: cleanText(m && m.content, 2000),
+    content: cleanText(m && m.content, 1400),
   })).filter((m) => m.content);
 }
 
@@ -114,6 +114,12 @@ module.exports = async function handler(req, res) {
   }
   if (req.method !== "POST") return send(res, 405, { error: "method_not_allowed" });
 
+  const guard = guardJsonPost(req, { scope: "portfolio-agent", limit: 30, windowMs: 10 * 60 * 1000, maxBytes: 100000 });
+  if (guard) {
+    if (guard.retryAfter) res.setHeader("Retry-After", String(guard.retryAfter));
+    return send(res, guard.status, guard.body);
+  }
+
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return send(res, 503, { error: "ai_not_configured" });
 
@@ -122,15 +128,18 @@ module.exports = async function handler(req, res) {
     try { body = JSON.parse(body); } catch (_) { return send(res, 400, { error: "invalid_json" }); }
   }
   body = body || {};
-  const message = cleanText(body.message, 3000);
+  const message = cleanText(body.message, 2200);
   const history = cleanHistory(body.history);
   if (!message) return send(res, 400, { error: "message_required" });
 
   const input = history.concat([{ role: "user", content: message }]);
 
   try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 25000);
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
+      signal: controller.signal,
       headers: {
         "Authorization": "Bearer " + apiKey,
         "Content-Type": "application/json",
@@ -139,10 +148,10 @@ module.exports = async function handler(req, res) {
         model: MODEL,
         instructions: SYSTEM_PROMPT,
         input,
-        max_output_tokens: 600,
+        max_output_tokens: 450,
         store: false,
       }),
-    });
+    }).finally(() => clearTimeout(timeout));
 
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
