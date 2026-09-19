@@ -13,9 +13,9 @@ top — the visible page is the artwork, not a CSS recreation.
 
 | Page | URL |
 | --- | --- |
-| **ALWAFER** | `https://alwafer-link-hub.vercel.app/alwafer/` |
-| **Team Ahmed Ramadan** | `https://alwafer-link-hub.vercel.app/ahmed/` |
-| **Hala Al-Saghir** | `https://alwafer-link-hub.vercel.app/hala/` |
+| **ALWAFER** | `https://alwafer.vercel.app/alwafer/` |
+| **Team Ahmed Ramadan** | `https://alwafer.vercel.app/ahmed/` |
+| **Hala Al-Saghir** | `https://alwafer.vercel.app/hala/` |
 
 Route keys (`mustafa` / `ahmed` / `hala`) are unchanged. No profile selected → a small
 functional selector page. Add `?hotspots=1` to a canonical profile URL to outline the clickable zones for tuning.
@@ -128,22 +128,26 @@ these are set:
 
 | Variable | Purpose |
 | --- | --- |
-| `ALWAFER_ADMIN_USERS_JSON` | The three users with **sha256 password hashes** (see below). |
+| `ALWAFER_ADMIN_USERS_JSON` | The three users with password hashes. **PBKDF2 is recommended**; legacy SHA-256 hashes remain supported for backward compatibility during migration. |
 | `ALWAFER_COOKIE_SECRET` | Random secret that signs the session cookie. |
 | `GITHUB_TOKEN` | Fine-grained PAT, Contents: Read+Write on this repo. |
 | `GITHUB_OWNER` | `Mbatman9972` (default) |
 | `GITHUB_REPO` | `alwafer-link-hub` (default) |
 | `GITHUB_BRANCH` | `main` (default) |
 
-`ALWAFER_ADMIN_USERS_JSON` shape (passwords are never stored — only sha256 hashes):
+`ALWAFER_ADMIN_USERS_JSON` shape (passwords are never stored — only password hashes):
 
 ```json
 {
-  "mustafa": { "displayName": "ALWAFER", "role": "owner", "passwordHash": "<sha256>" },
-  "ahmed":   { "displayName": "Team Ahmed Ramadan", "role": "profile", "profile": "ahmed", "passwordHash": "<sha256>" },
-  "hala":    { "displayName": "Hala Al-Saghir", "role": "profile", "profile": "hala", "passwordHash": "<sha256>" }
+  "mustafa": { "displayName": "ALWAFER", "role": "owner", "passwordHash": "<pbkdf2$iterations$saltHex$derivedHex>" },
+  "ahmed":   { "displayName": "Team Ahmed Ramadan", "role": "profile", "profile": "ahmed", "passwordHash": "<pbkdf2$iterations$saltHex$derivedHex>" },
+  "hala":    { "displayName": "Hala Al-Saghir", "role": "profile", "profile": "hala", "passwordHash": "<pbkdf2$iterations$saltHex$derivedHex>" }
 }
 ```
+
+PBKDF2 hashes use the format `pbkdf2$210000$<saltHex>$<derivedHex>` with SHA-256 and a random 16-byte salt. The API still accepts legacy 64-character SHA-256 hashes so existing accounts do not break during migration.
+
+The admin surface also enforces signed Secure/HttpOnly/SameSite cookies, same-origin checks on mutating requests, temporary login throttling, server-side role permissions, strict URL validation, no-store responses, and restrictive admin security headers.
 
 (Alternatively set `ALWAFER_OWNER_PASSWORD_HASH` / `ALWAFER_AHMED_PASSWORD_HASH` /
 `ALWAFER_HALA_PASSWORD_HASH`.) URLs are validated server-side: only `http://`,
