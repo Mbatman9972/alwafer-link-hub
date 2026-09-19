@@ -196,7 +196,7 @@ button.cta{color:#a8b3bf;font:inherit;cursor:pointer}.nav .cta{border:1px solid 
 .contact-modal{position:fixed;inset:0;z-index:140;display:none;place-items:center;padding:20px;background:rgba(2,4,7,.82);backdrop-filter:blur(14px)}.contact-modal.open{display:grid}.contact-panel{width:min(720px,100%);max-height:92vh;overflow:auto;border:1px solid rgba(255,255,255,.13);border-radius:28px;background:linear-gradient(145deg,#0c121b,#070a10);padding:30px;box-shadow:0 30px 100px rgba(0,0,0,.4)}.contact-head{display:flex;justify-content:space-between;gap:30px}.contact-head h2{font-size:38px;letter-spacing:-.035em;margin:9px 0 8px}.contact-head p{color:#8796a6;line-height:1.6;margin:0}.contact-close{flex:0 0 auto;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:none;color:white;font-size:21px;cursor:pointer}.contact-form{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:26px}.contact-form label{font-size:10px;color:#758698;letter-spacing:.05em}.contact-form label:last-child{grid-column:1/-1}.contact-form input,.contact-form textarea{width:100%;margin-top:7px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:#060a10;color:#eef6fa;padding:12px 13px;outline:none}.contact-form input:focus,.contact-form textarea:focus{border-color:rgba(93,230,255,.48);box-shadow:0 0 0 3px rgba(93,230,255,.06)}.contact-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:18px}.mail-provider{border:1px solid var(--line);background:rgba(255,255,255,.025);color:#dbe6ed;border-radius:12px;padding:12px 10px;cursor:pointer}.mail-provider:hover{border-color:rgba(93,230,255,.45);background:rgba(93,230,255,.04)}.contact-note{font-size:10px;color:#637283;margin:13px 0 0}
 .agent-launch{position:fixed;right:22px;bottom:22px;z-index:115;display:flex;align-items:center;gap:9px;border:1px solid rgba(93,230,255,.25);background:rgba(7,12,18,.90);color:#e5f7fb;border-radius:999px;padding:8px 14px 8px 8px;backdrop-filter:blur(12px);box-shadow:0 18px 50px rgba(0,0,0,.30);cursor:pointer}.agent-launch img{width:32px;height:32px}.agent-launch span{font-size:11px}.agent-panel{position:fixed;right:22px;bottom:78px;z-index:116;width:min(390px,calc(100vw - 28px));height:min(570px,calc(100vh - 120px));display:none;grid-template-rows:auto 1fr auto auto;border:1px solid rgba(255,255,255,.13);border-radius:22px;background:rgba(6,10,15,.97);box-shadow:0 28px 90px rgba(0,0,0,.46);overflow:hidden;backdrop-filter:blur(18px)}.agent-panel.open{display:grid}.agent-head{display:flex;align-items:center;justify-content:space-between;padding:14px 15px;border-bottom:1px solid var(--line)}.agent-identity{display:flex;align-items:center;gap:10px}.agent-identity img{width:35px;height:35px}.agent-identity strong{display:block;font-size:12px}.agent-identity small{display:block;margin-top:3px;color:#68798a;font-size:9px}.agent-head-actions{display:flex;align-items:center;gap:7px}.agent-head-actions>button{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:none;color:white;cursor:pointer}.agent-voice-toggle{font-size:13px}.agent-voice-toggle.on{border-color:rgba(93,230,255,.55);background:rgba(93,230,255,.08);box-shadow:0 0 16px rgba(93,230,255,.10)}.agent-voice-toggle.speaking{animation:voicePulse 1s ease-in-out infinite}
 @keyframes voicePulse{50%{box-shadow:0 0 0 5px rgba(93,230,255,.08),0 0 18px rgba(93,230,255,.18)}}
-.agent-feed{padding:15px;overflow:auto;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin}.agent-msg{max-width:88%;font-size:12px;line-height:1.55;padding:10px 12px;border-radius:14px;white-space:pre-wrap}.agent-msg.bot{align-self:flex-start;background:#0d151f;border:1px solid rgba(93,230,255,.11);color:#c8d7e2}.agent-msg.user{align-self:flex-end;background:#dff8ff;color:#071017}.agent-msg .agent-contact{display:inline-flex;margin-top:9px;border:1px solid rgba(93,230,255,.25);background:none;color:#9fefff;border-radius:9px;padding:7px 9px;cursor:pointer;font-size:10px}.agent-suggestions{display:flex;gap:6px;overflow-x:auto;padding:0 12px 10px}.agent-suggestions button{white-space:nowrap;border:1px solid var(--line);background:#090e15;color:#8090a1;border-radius:999px;padding:7px 9px;font-size:9px;cursor:pointer}.agent-form{display:grid;grid-template-columns:40px 1fr auto;gap:8px;padding:12px;border-top:1px solid var(--line)}.agent-form input{border:1px solid rgba(255,255,255,.10);border-radius:11px;background:#05080c;color:white;padding:10px 11px;outline:none}.agent-form>button[type="submit"]{border:0;border-radius:10px;background:#dff8ff;color:#071017;font-weight:700;padding:0 13px;cursor:pointer}.agent-mic{width:40px;height:40px;border-radius:11px;border:1px solid rgba(255,255,255,.10);background:#080d14;color:#7d91a3;cursor:pointer;display:grid;place-items:center}.agent-mic:hover{border-color:rgba(93,230,255,.38);color:#dff8ff}.agent-mic.listening{color:#ff8f8f;border-color:rgba(255,110,110,.45);background:rgba(255,75,75,.06);animation:micPulse 1s ease-in-out infinite}.agent-mic.unsupported{opacity:.4;cursor:not-allowed}.mic-svg{width:19px;height:19px;display:block}.agent-msg-tools{display:flex;gap:6px;margin-top:8px}.agent-listen{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.02);color:#7f92a4;border-radius:8px;padding:5px 7px;font-size:9px;cursor:pointer}.agent-listen:hover{color:#dff8ff;border-color:rgba(93,230,255,.34)}@keyframes micPulse{50%{box-shadow:0 0 0 6px rgba(255,90,90,.06),0 0 18px rgba(255,90,90,.12)}}
+.agent-feed{padding:15px;overflow:auto;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin}.agent-msg{max-width:88%;font-size:12px;line-height:1.55;padding:10px 12px;border-radius:14px;white-space:pre-wrap}.agent-msg.bot{align-self:flex-start;background:#0d151f;border:1px solid rgba(93,230,255,.11);color:#c8d7e2}.agent-msg.user{align-self:flex-end;background:#dff8ff;color:#071017}.agent-msg .agent-contact{display:inline-flex;margin-top:9px;border:1px solid rgba(93,230,255,.25);background:none;color:#9fefff;border-radius:9px;padding:7px 9px;cursor:pointer;font-size:10px}.agent-suggestions{display:flex;gap:6px;overflow-x:auto;padding:0 12px 10px}.agent-suggestions button{white-space:nowrap;border:1px solid var(--line);background:#090e15;color:#8090a1;border-radius:999px;padding:7px 9px;font-size:9px;cursor:pointer}.agent-form{display:grid;grid-template-columns:40px 1fr auto;gap:8px;padding:12px;border-top:1px solid var(--line)}.agent-form input{border:1px solid rgba(255,255,255,.10);border-radius:11px;background:#05080c;color:white;padding:10px 11px;outline:none}.agent-form>button[type="submit"]{border:0;border-radius:10px;background:#dff8ff;color:#071017;font-weight:700;padding:0 13px;cursor:pointer}.agent-mic{width:40px;height:40px;border-radius:11px;border:1px solid rgba(255,255,255,.10);background:#080d14;color:#7d91a3;cursor:pointer;display:grid;place-items:center}.agent-mic:hover{border-color:rgba(93,230,255,.38);color:#dff8ff}.agent-mic.listening{color:#ff8f8f;border-color:rgba(255,110,110,.45);background:rgba(255,75,75,.06);animation:micPulse 1s ease-in-out infinite}.agent-mic.processing{color:#7cf7ff;border-color:rgba(93,230,255,.45);background:rgba(93,230,255,.06);animation:voicePulse 1s ease-in-out infinite}.agent-mic.unsupported{opacity:.4;cursor:not-allowed}.mic-svg{width:19px;height:19px;display:block}.agent-msg-tools{display:flex;gap:6px;margin-top:8px}.agent-listen{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.02);color:#7f92a4;border-radius:8px;padding:5px 7px;font-size:9px;cursor:pointer}.agent-listen:hover{color:#dff8ff;border-color:rgba(93,230,255,.34)}@keyframes micPulse{50%{box-shadow:0 0 0 6px rgba(255,90,90,.06),0 0 18px rgba(255,90,90,.12)}}
 html[dir="rtl"] .agent-launch{right:auto;left:22px}.agent-panel[dir="rtl"],html[dir="rtl"] .agent-panel{right:auto;left:22px}.agent-panel[dir="rtl"] .agent-msg.bot,html[dir="rtl"] .agent-msg.bot{align-self:flex-start;text-align:right}.agent-panel[dir="rtl"] .agent-msg.user,html[dir="rtl"] .agent-msg.user{align-self:flex-end;text-align:right}
 @media(max-width:720px){.contact-form{grid-template-columns:1fr}.contact-form label:last-child{grid-column:auto}.contact-actions{grid-template-columns:1fr 1fr}.contact-panel{padding:22px}.contact-head h2{font-size:30px}.agent-launch{right:12px;bottom:12px}.agent-panel{right:10px;bottom:64px;height:calc(100vh - 82px)}html[dir="rtl"] .agent-launch{left:12px}html[dir="rtl"] .agent-panel{left:10px}}
 
@@ -777,28 +777,43 @@ var AGENT_KB=[
   de:"0→1 bedeutet, von einer unklaren Chance zum ersten glaubwürdigen, funktionierenden Produkt zu gelangen."}}
 ];
 function agentNormalize(s){return String(s||"").toLowerCase().normalize("NFKD").replace(/[؟?.,!;:()\-_/]/g," ").replace(/\s+/g," ").trim()}
-function agentAnswer(input){
-  var s=agentNormalize(input),best=null,bestScore=0;
+function detectAgentLanguage(input,fallback){
+  var raw=String(input||""),s=" "+agentNormalize(raw)+" ";
+  if(/[\u0600-\u06ff]/.test(raw))return "ar";
+  var scores={en:0,fr:0,de:0};
+  if(/[éèêëàâçùûüîïôœ]/i.test(raw))scores.fr+=5;
+  if(/[äöüß]/i.test(raw))scores.de+=5;
+  var words={
+    en:[" the "," and "," what "," how "," can "," tell "," about "," with "," does "," is "," are "," work "," project "," product "],
+    fr:[" le "," la "," les "," et "," est "," sont "," comment "," quoi "," avec "," pour "," pouvez "," projet "," produit "," parle "," moi "],
+    de:[" der "," die "," das "," und "," ist "," sind "," wie "," was "," mit "," für "," kannst "," projekt "," produkt "," erzähl "," mir "]
+  };
+  Object.keys(words).forEach(function(lang){words[lang].forEach(function(w){if(s.indexOf(w)>-1)scores[lang]++})});
+  var best=fallback||"en",max=scores[best]||0;Object.keys(scores).forEach(function(k){if(scores[k]>max){best=k;max=scores[k]}});
+  return max>0?best:(fallback||currentLang||"en");
+}
+function agentAnswer(input,responseLang){
+  var lang=responseLang||detectAgentLanguage(input,currentLang),s=agentNormalize(input),best=null,bestScore=0;
   AGENT_KB.forEach(function(item){var score=0;item.keys.forEach(function(k){var nk=agentNormalize(k);if(s.indexOf(nk)>-1)score+=Math.max(2,nk.split(" ").length*2);else nk.split(" ").forEach(function(w){if(w.length>3&&s.indexOf(w)>-1)score+=1})});if(score>bestScore){bestScore=score;best=item}});
-  if(best&&bestScore>=2)return {text:best.answers[currentLang]||best.answers.en,known:true};
+  if(best&&bestScore>=2)return {text:best.answers[lang]||best.answers.en,known:true,lang:lang};
   var fallback={
     en:"I don’t have enough verified portfolio information to answer that confidently. I can still help you contact Alwefer directly.",
     ar:"لا أملك معلومات موثقة كافية في البورتفوليو للإجابة بثقة على هذا السؤال. يمكنني مساعدتك بالتواصل مباشرة مع الوافر.",
     fr:"Je n’ai pas assez d’informations vérifiées dans ce portfolio pour répondre avec certitude. Je peux vous aider à contacter Alwefer directement.",
     de:"Ich habe nicht genug verifizierte Portfolio-Informationen, um das sicher zu beantworten. Ich kann Ihnen helfen, Alwefer direkt zu kontaktieren."
   };
-  return {text:fallback[currentLang]||fallback.en,known:false};
+  return {text:fallback[lang]||fallback.en,known:false,lang:lang};
 }
 
 var VOICE_LANG={en:"en-US",ar:"ar-SA",fr:"fr-FR",de:"de-DE"};
 var VOICE_UI={
- en:{mic:"Use microphone",listening:"Listening…",listen:"Listen",stop:"Stop",voiceOn:"Voice replies on",voiceOff:"Voice replies off",unsupported:"Voice input is not supported in this browser.",placeholder:"Ask about the portfolio, projects or services…"},
- ar:{mic:"استخدم المايك",listening:"أستمع…",listen:"استمع",stop:"إيقاف",voiceOn:"الردود الصوتية مفعلة",voiceOff:"الردود الصوتية متوقفة",unsupported:"الإدخال الصوتي غير مدعوم في هذا المتصفح.",placeholder:"اسأل عن البورتفوليو أو المشاريع أو الخدمات…"},
- fr:{mic:"Utiliser le micro",listening:"Écoute…",listen:"Écouter",stop:"Arrêter",voiceOn:"Réponses vocales activées",voiceOff:"Réponses vocales désactivées",unsupported:"La saisie vocale n’est pas prise en charge par ce navigateur.",placeholder:"Posez une question sur le portfolio, les projets ou les services…"},
- de:{mic:"Mikrofon verwenden",listening:"Ich höre zu…",listen:"Anhören",stop:"Stopp",voiceOn:"Sprachantworten aktiviert",voiceOff:"Sprachantworten deaktiviert",unsupported:"Spracheingabe wird in diesem Browser nicht unterstützt.",placeholder:"Frag nach Portfolio, Projekten oder Leistungen…"}
+ en:{mic:"Use microphone — language auto-detect",listening:"Listening — auto-detecting language…",processing:"Understanding your language…",loading:"Preparing multilingual voice…",listen:"Listen",stop:"Stop",voiceOn:"Voice replies on",voiceOff:"Voice replies off",unsupported:"Voice input is not supported in this browser.",placeholder:"Ask about the portfolio, projects or services…"},
+ ar:{mic:"استخدم المايك — كشف اللغة تلقائي",listening:"أستمع — وأتعرف على اللغة تلقائيًا…",processing:"أفهم لغتك الآن…",loading:"أجهّز التعرف متعدد اللغات…",listen:"استمع",stop:"إيقاف",voiceOn:"الردود الصوتية مفعلة",voiceOff:"الردود الصوتية متوقفة",unsupported:"الإدخال الصوتي غير مدعوم في هذا المتصفح.",placeholder:"اسأل عن البورتفوليو أو المشاريع أو الخدمات…"},
+ fr:{mic:"Utiliser le micro — détection automatique",listening:"Écoute — détection de la langue…",processing:"Compréhension de votre langue…",loading:"Préparation de la voix multilingue…",listen:"Écouter",stop:"Arrêter",voiceOn:"Réponses vocales activées",voiceOff:"Réponses vocales désactivées",unsupported:"La saisie vocale n’est pas prise en charge par ce navigateur.",placeholder:"Posez une question sur le portfolio, les projets ou les services…"},
+ de:{mic:"Mikrofon verwenden — Sprache automatisch erkennen",listening:"Ich höre zu — Sprache wird erkannt…",processing:"Ich erkenne deine Sprache…",loading:"Mehrsprachige Spracherkennung wird vorbereitet…",listen:"Anhören",stop:"Stopp",voiceOn:"Sprachantworten aktiviert",voiceOff:"Sprachantworten deaktiviert",unsupported:"Spracheingabe wird in diesem Browser nicht unterstützt.",placeholder:"Frag nach Portfolio, Projekten oder Leistungen…"}
 };
 var autoVoice=false,speakNextReply=false,currentUtterances=[],speechGeneration=0;
-function speechLocale(){return VOICE_LANG[currentLang]||"en-US"}
+function speechLocale(lang){return VOICE_LANG[lang||currentLang]||"en-US"}
 function normalizeForSpeech(text,lang){
  var s=String(text||"");
  if(lang==="ar"){
@@ -837,10 +852,10 @@ function stopSpeaking(){
  speechGeneration++;try{speechSynthesis.cancel()}catch(e){}currentUtterances=[];
  var vt=q("#agentVoiceToggle");if(vt)vt.classList.remove("speaking");
 }
-function speakHuman(text){
+function speakHuman(text,langOverride){
  if(!("speechSynthesis" in window))return;
  stopSpeaking();
- var gen=speechGeneration,lang=currentLang,locale=speechLocale(),voice=bestVoice(locale),chunks=splitSpeech(normalizeForSpeech(text,lang));
+ var gen=speechGeneration,lang=langOverride||currentLang,locale=speechLocale(lang),voice=bestVoice(locale),chunks=splitSpeech(normalizeForSpeech(text,lang));
  if(!chunks.length)return;
  var vt=q("#agentVoiceToggle");if(vt)vt.classList.add("speaking");
  function speakChunk(i){
@@ -863,9 +878,9 @@ function updateVoiceUiLanguage(){
 if("speechSynthesis" in window){speechSynthesis.onvoiceschanged=function(){bestVoice(speechLocale())}}
 
 var agentLaunch=q("#agentLaunch"),agentPanel=q("#agentPanel"),agentClose=q("#agentClose"),agentFeed=q("#agentFeed"),agentForm=q("#agentForm"),agentInput=q("#agentInput"),agentMic=q("#agentMic"),agentVoiceToggle=q("#agentVoiceToggle");
-function addAgentMessage(text,who,contact){
-  var d=document.createElement("div");d.className="agent-msg "+who;var body=document.createElement("div");body.textContent=text;d.appendChild(body);
-  if(who==="bot"){var tools=document.createElement("div");tools.className="agent-msg-tools";var listen=document.createElement("button");listen.className="agent-listen";listen.type="button";listen.textContent="🔊";listen.title=(VOICE_UI[currentLang]||VOICE_UI.en).listen;listen.onclick=function(){speakHuman(text)};tools.appendChild(listen);d.appendChild(tools)}
+function addAgentMessage(text,who,contact,msgLang){
+  var lang=msgLang||currentLang,d=document.createElement("div");d.className="agent-msg "+who;d.dataset.lang=lang;d.setAttribute("dir",lang==="ar"?"rtl":"ltr");var body=document.createElement("div");body.textContent=text;d.appendChild(body);
+  if(who==="bot"){var tools=document.createElement("div");tools.className="agent-msg-tools";var listen=document.createElement("button");listen.className="agent-listen";listen.type="button";listen.textContent="🔊";listen.title=(VOICE_UI[currentLang]||VOICE_UI.en).listen;listen.onclick=function(){speakHuman(text,lang)};tools.appendChild(listen);d.appendChild(tools)}
   if(contact){var b=document.createElement("button");b.className="agent-contact";b.type="button";b.textContent=translateString("Start a conversation",currentLang);b.onclick=function(){openContact(text+"\n\n")};d.appendChild(b)}
   agentFeed.appendChild(d);agentFeed.scrollTop=agentFeed.scrollHeight;
 }
@@ -881,20 +896,116 @@ function agentWelcome(){
 agentLaunch.onclick=function(){agentPanel.classList.add("open");agentPanel.setAttribute("aria-hidden","false");agentWelcome();updateVoiceUiLanguage();setTimeout(function(){agentInput.focus()},50)};
 agentClose.onclick=function(){agentPanel.classList.remove("open");agentPanel.setAttribute("aria-hidden","true");stopSpeaking()};
 agentVoiceToggle.onclick=function(){autoVoice=!autoVoice;agentVoiceToggle.classList.toggle("on",autoVoice);if(!autoVoice)stopSpeaking();updateVoiceUiLanguage()};
-agentForm.onsubmit=function(e){e.preventDefault();var v=agentInput.value.trim();if(!v)return;addAgentMessage(v,"user",false);agentInput.value="";setTimeout(function(){var a=agentAnswer(v);addAgentMessage(a.text,"bot",!a.known);if(autoVoice||speakNextReply){speakHuman(a.text);speakNextReply=false}},180)};
+agentForm.onsubmit=function(e){e.preventDefault();var v=agentInput.value.trim();if(!v)return;var lang=agentInput.dataset.detectedLang||detectAgentLanguage(v,currentLang);delete agentInput.dataset.detectedLang;addAgentMessage(v,"user",false,lang);agentInput.value="";setTimeout(function(){var a=agentAnswer(v,lang);addAgentMessage(a.text,"bot",!a.known,a.lang);if(autoVoice||speakNextReply){speakHuman(a.text,a.lang);speakNextReply=false}},180)};
 qa("#agentSuggestions button").forEach(function(b){b.onclick=function(){agentInput.value=b.textContent;agentForm.requestSubmit()}});
 
 var SpeechRecognitionCtor=window.SpeechRecognition||window.webkitSpeechRecognition||null,recognition=null;
-if(!SpeechRecognitionCtor){agentMic.classList.add("unsupported");agentMic.disabled=true;agentMic.title=(VOICE_UI[currentLang]||VOICE_UI.en).unsupported}
-else{
- recognition=new SpeechRecognitionCtor();recognition.continuous=false;recognition.interimResults=true;recognition.maxAlternatives=1;
- recognition.onstart=function(){agentMic.classList.add("listening");agentMic.title=(VOICE_UI[currentLang]||VOICE_UI.en).listening};
- recognition.onresult=function(e){var interim="",finalText="";for(var i=e.resultIndex;i<e.results.length;i++){var t=e.results[i][0].transcript;if(e.results[i].isFinal)finalText+=t;else interim+=t}agentInput.value=finalText||interim;if(finalText.trim()){speakNextReply=true;setTimeout(function(){agentForm.requestSubmit()},120)}};
- recognition.onerror=function(){agentMic.classList.remove("listening");updateVoiceUiLanguage()};
- recognition.onend=function(){agentMic.classList.remove("listening");updateVoiceUiLanguage()};
- agentMic.onclick=function(){if(agentMic.classList.contains("listening")){recognition.stop();return}stopSpeaking();recognition.lang=speechLocale();recognition.start()};
+var adaptiveRecorder=null,adaptiveStream=null,adaptiveCtx=null,adaptiveTimer=null,adaptiveChunks=[],adaptiveWhisperPromise=null,adaptiveBusy=false;
+
+function setAdaptiveMicState(state){
+ var ui=VOICE_UI[currentLang]||VOICE_UI.en;
+ agentMic.classList.toggle("listening",state==="listening");
+ agentMic.classList.toggle("processing",state==="processing"||state==="loading");
+ agentMic.disabled=state==="processing"||state==="loading";
+ var label=state==="listening"?ui.listening:state==="processing"?ui.processing:state==="loading"?ui.loading:ui.mic;
+ agentMic.title=label;agentMic.setAttribute("aria-label",label);
+ if(state==="listening"||state==="processing"||state==="loading")agentInput.placeholder=label;else agentInput.placeholder=ui.placeholder;
 }
-updateVoiceUiLanguage();
+function adaptiveStatus(text){
+ var existing=q(".agent-voice-status",agentFeed);
+ if(!text){if(existing)existing.remove();return}
+ if(!existing){existing=document.createElement("div");existing.className="agent-msg bot agent-voice-status";agentFeed.appendChild(existing)}
+ existing.textContent=text;agentFeed.scrollTop=agentFeed.scrollHeight;
+}
+function downsampleTo16k(buffer){
+ var rate=buffer.sampleRate,channels=buffer.numberOfChannels,length=Math.max(1,Math.round(buffer.duration*16000)),out=new Float32Array(length),ratio=rate/16000;
+ for(var i=0;i<length;i++){var pos=i*ratio,i0=Math.floor(pos),i1=Math.min(i0+1,buffer.length-1),frac=pos-i0,sum=0;for(var ch=0;ch<channels;ch++){var data=buffer.getChannelData(ch);sum+=(data[i0]*(1-frac)+data[i1]*frac)}out[i]=sum/channels}
+ return out;
+}
+async function audioBlobTo16k(blob){
+ var AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw new Error("AudioContext unavailable");
+ var ctx=new AC(),ab=await blob.arrayBuffer(),decoded=await ctx.decodeAudioData(ab.slice(0)),samples=downsampleTo16k(decoded);try{await ctx.close()}catch(e){}return samples;
+}
+async function ensureAdaptiveWhisper(){
+ if(adaptiveWhisperPromise)return adaptiveWhisperPromise;
+ adaptiveWhisperPromise=(async function(){
+   var mod=await import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0");
+   if(mod.env){mod.env.allowLocalModels=false;mod.env.useBrowserCache=true}
+   var options={};if(navigator.gpu)options.device="webgpu";
+   try{return await mod.pipeline("automatic-speech-recognition","onnx-community/whisper-tiny",options)}
+   catch(e){if(options.device){return await mod.pipeline("automatic-speech-recognition","onnx-community/whisper-tiny",{})}throw e}
+ })();
+ return adaptiveWhisperPromise;
+}
+async function transcribeAdaptive(blob){
+ var ui=VOICE_UI[currentLang]||VOICE_UI.en;setAdaptiveMicState("loading");adaptiveStatus(ui.loading);
+ var samples=await audioBlobTo16k(blob),pipe=await ensureAdaptiveWhisper();
+ setAdaptiveMicState("processing");adaptiveStatus(ui.processing);
+ var result=await pipe(samples,{task:"transcribe"});
+ var text=result&&result.text?String(result.text).trim():"";
+ if(!text)throw new Error("No speech recognized");
+ return text;
+}
+function cleanupAdaptiveCapture(){
+ clearTimeout(adaptiveTimer);adaptiveTimer=null;
+ if(adaptiveCtx){try{adaptiveCtx.close()}catch(e){}adaptiveCtx=null}
+ if(adaptiveStream){adaptiveStream.getTracks().forEach(function(t){t.stop()});adaptiveStream=null}
+ adaptiveRecorder=null;
+}
+function stopAdaptiveCapture(){
+ if(adaptiveRecorder&&adaptiveRecorder.state!=="inactive"){try{adaptiveRecorder.stop()}catch(e){}}
+}
+async function startAdaptiveCapture(){
+ if(adaptiveBusy)return;
+ if(adaptiveRecorder&&adaptiveRecorder.state==="recording"){stopAdaptiveCapture();return}
+ stopSpeaking();adaptiveChunks=[];
+ try{
+   adaptiveStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+   var mime=["audio/webm;codecs=opus","audio/webm","audio/mp4"].find(function(x){return window.MediaRecorder&&MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(x)});
+   adaptiveRecorder=mime?new MediaRecorder(adaptiveStream,{mimeType:mime}):new MediaRecorder(adaptiveStream);
+   adaptiveRecorder.ondataavailable=function(e){if(e.data&&e.data.size)adaptiveChunks.push(e.data)};
+   adaptiveRecorder.onstop=async function(){
+     var blob=new Blob(adaptiveChunks,{type:adaptiveRecorder&&adaptiveRecorder.mimeType?adaptiveRecorder.mimeType:"audio/webm"});cleanupAdaptiveCapture();adaptiveBusy=true;
+     try{
+       var text=await transcribeAdaptive(blob),lang=detectAgentLanguage(text,currentLang);
+       adaptiveStatus("");setAdaptiveMicState("idle");agentInput.value=text;agentInput.dataset.detectedLang=lang;speakNextReply=true;agentForm.requestSubmit();
+     }catch(err){
+       adaptiveStatus("");setAdaptiveMicState("idle");
+       if(SpeechRecognitionCtor){startNativeFallbackRecognition()}else addAgentMessage((VOICE_UI[currentLang]||VOICE_UI.en).unsupported,"bot",false,currentLang);
+     }finally{adaptiveBusy=false}
+   };
+   adaptiveRecorder.start(180);setAdaptiveMicState("listening");
+   var ui=VOICE_UI[currentLang]||VOICE_UI.en;adaptiveStatus(ui.listening);
+   var AC=window.AudioContext||window.webkitAudioContext;
+   if(AC){
+     adaptiveCtx=new AC();var src=adaptiveCtx.createMediaStreamSource(adaptiveStream),an=adaptiveCtx.createAnalyser();an.fftSize=1024;src.connect(an);
+     var buf=new Float32Array(an.fftSize),started=performance.now(),heard=false,lastVoice=started,baseline=.006,baselineN=0;
+     (function monitor(){
+       if(!adaptiveRecorder||adaptiveRecorder.state!=="recording")return;
+       an.getFloatTimeDomainData(buf);var sum=0;for(var i=0;i<buf.length;i++)sum+=buf[i]*buf[i];var rms=Math.sqrt(sum/buf.length),now=performance.now();
+       if(now-started<450){baseline=(baseline*baselineN+rms)/(baselineN+1);baselineN++}
+       var threshold=Math.max(.012,baseline*2.3+.003);
+       if(rms>threshold){heard=true;lastVoice=now}
+       if((heard&&now-lastVoice>950&&now-started>900)||(now-started>14000)||(!heard&&now-started>6500)){stopAdaptiveCapture();return}
+       adaptiveTimer=setTimeout(monitor,80);
+     })();
+   }else adaptiveTimer=setTimeout(stopAdaptiveCapture,10000);
+ }catch(e){cleanupAdaptiveCapture();setAdaptiveMicState("idle");if(SpeechRecognitionCtor)startNativeFallbackRecognition();else addAgentMessage((VOICE_UI[currentLang]||VOICE_UI.en).unsupported,"bot",false,currentLang)}
+}
+function startNativeFallbackRecognition(){
+ if(!SpeechRecognitionCtor)return;
+ recognition=new SpeechRecognitionCtor();recognition.continuous=false;recognition.interimResults=true;recognition.maxAlternatives=1;
+ // Fallback only. Main path uses multilingual Whisper auto-detection.
+ recognition.lang=speechLocale(currentLang);
+ recognition.onstart=function(){setAdaptiveMicState("listening")};
+ recognition.onresult=function(e){var finalText="",interim="";for(var i=e.resultIndex;i<e.results.length;i++){var t=e.results[i][0].transcript;if(e.results[i].isFinal)finalText+=t;else interim+=t}agentInput.value=finalText||interim;if(finalText.trim()){var lang=detectAgentLanguage(finalText,currentLang);agentInput.dataset.detectedLang=lang;speakNextReply=true;setTimeout(function(){agentForm.requestSubmit()},120)}};
+ recognition.onerror=function(){setAdaptiveMicState("idle")};recognition.onend=function(){setAdaptiveMicState("idle")};recognition.start();
+}
+if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder)){
+ if(!SpeechRecognitionCtor){agentMic.classList.add("unsupported");agentMic.disabled=true;agentMic.title=(VOICE_UI[currentLang]||VOICE_UI.en).unsupported}
+}
+agentMic.onclick=function(){if(adaptiveRecorder&&adaptiveRecorder.state==="recording"){stopAdaptiveCapture()}else if(!adaptiveBusy){startAdaptiveCapture()}};
+setAdaptiveMicState("idle");updateVoiceUiLanguage();
 
 function startProjectMotion(){
   var bars=qa(".covat-bars i");
