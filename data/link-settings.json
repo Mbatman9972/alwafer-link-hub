@@ -3,8 +3,8 @@
   "updatedAt": "2026-09-19T12:18:23.980Z",
   "profiles": {
     "mustafa": {
-      "title": "Al Wafer",
-      "subtitle": "Al Wafer",
+      "title": "Alwafer",
+      "subtitle": "Alwafer",
       "tagline": "Empowering creators. Building influence. Elevating brands.\nتمكّن المبدعين، نبني التأثير، نرتقي بالعلامات التجارية.",
       "profileImage": "/assets/alwefer-mark.svg",
       "links": {
@@ -41,7 +41,7 @@
         "website": {
           "enabled": true,
           "url": "/portfolio/",
-          "label": "Al Wafer Venture Portfolio / محفظة الوافر"
+          "label": "Alwafer Venture Portfolio / محفظة الوافر"
         }
       }
     },
