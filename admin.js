@@ -681,6 +681,16 @@
         });
       }
       if (res.status === 503) { showLogin("Admin sign-in is not configured.", "error"); return false; }
+      if (res.status === 429) {
+        var wait = Number(res.body && res.body.retryAfter) || 900;
+        var mins = Math.max(1, Math.ceil(wait / 60));
+        showLogin("Too many sign-in attempts. Try again in about " + mins + " minute" + (mins === 1 ? "." : "s."), "error");
+        return false;
+      }
+      if (res.status === 403 && res.body && res.body.error === "origin_not_allowed") {
+        showLogin("Sign-in was blocked because this page did not originate from the Alwafer site.", "error");
+        return false;
+      }
       showLogin("Incorrect account or password.", "error");
       return false;
     }).catch(function (error) {
