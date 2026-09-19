@@ -57,12 +57,127 @@ html[dir="rtl"] .ri:before{left:auto;right:-40px}
 @media(max-width:720px){.mobilelang{display:flex}.brand small{display:none}}
 
 @media(max-width:1100px){.hero{grid-template-columns:1fr}.visual{height:560px}.process{grid-template-columns:repeat(2,1fr)}.card,.card.featured{grid-column:span 6}.modes{grid-template-columns:1fr 1fr}.nav a:not(.cta){display:none}}@media(max-width:720px){.proofshell{grid-template-columns:1fr}.screenbody{grid-template-columns:1fr}.screenright{min-height:180px}.screenleft{border-right:0;border-bottom:1px solid var(--line)}.wrap{padding:0 20px}.nav{display:none}.hero{padding-top:44px;gap:40px}.hero h1{font-size:54px}.actions{flex-direction:column}.metrics{grid-template-columns:1fr 1fr}.visual{min-height:430px;height:56vh}.intro,.head,.range{grid-template-columns:1fr;gap:28px}.process{grid-template-columns:1fr}.grid{display:block}.card,.card.featured{margin-bottom:14px;min-height:455px}.mr{grid-template-columns:48px 1fr 20px}.mr p{grid-column:2/4}.panel{padding:40px 22px}.modes{grid-template-columns:1fr}.casegrid{grid-template-columns:1fr}.box{padding:36px 20px}.box h2{font-size:42px}footer{flex-direction:column}}
+
+/* === refinement pass: alignment, localization, real motion === */
+.nav{gap:16px}
+html[dir="rtl"] .top .wrap{direction:rtl}
+html[dir="rtl"] .nav{direction:rtl}
+html[dir="rtl"] .hero,
+html[dir="rtl"] .intro,
+html[dir="rtl"] .head,
+html[dir="rtl"] .range,
+html[dir="rtl"] .screenbody,
+html[dir="rtl"] .process,
+html[dir="rtl"] .grid,
+html[dir="rtl"] .modes,
+html[dir="rtl"] .casegrid{direction:rtl}
+html[dir="rtl"] .hero>div:first-child,
+html[dir="rtl"] .screenleft,
+html[dir="rtl"] .intro>*,
+html[dir="rtl"] .head>*,
+html[dir="rtl"] .range>*,
+html[dir="rtl"] .card,
+html[dir="rtl"] .p,
+html[dir="rtl"] .mr,
+html[dir="rtl"] .engage,
+html[dir="rtl"] footer,
+html[dir="rtl"] .casegrid section{text-align:right}
+html[dir="rtl"] .actions,
+html[dir="rtl"] .filters,
+html[dir="rtl"] .tags,
+html[dir="rtl"] .quicklinks{direction:rtl;justify-content:flex-start}
+html[dir="rtl"] .metrics{direction:rtl}
+html[dir="rtl"] .topline{direction:rtl}
+html[dir="rtl"] .more{left:24px;right:24px;flex-direction:row-reverse}
+html[dir="rtl"] .close{right:auto;left:18px}
+html[dir="rtl"] .proofcard a{right:auto;left:16px}
+html[dir="rtl"] .signalbox{text-align:right}
+html[dir="rtl"] .screenleft{border-right:0;border-left:1px solid var(--line)}
+html[dir="rtl"] .mr:hover{padding-left:0;padding-right:14px;background:linear-gradient(270deg,rgba(93,230,255,.035),transparent)}
+html[dir="rtl"] footer{direction:rtl}
+html[dir="rtl"] .panel .orb{right:auto;left:-100px}
+
+/* center visual: visibly alive even without pointer input */
+.visual{isolation:isolate}
+.visual:before{content:"";position:absolute;inset:9%;border:1px solid rgba(93,230,255,.08);border-radius:50%;animation:heroOrbit 16s linear infinite;z-index:0}
+.visual:after{content:"";position:absolute;left:50%;top:50%;width:46%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(93,230,255,.08),transparent 63%);animation:heroBreath 3.4s ease-in-out infinite;z-index:0}
+.core{z-index:4;animation:coreFloat 4.8s ease-in-out infinite}
+.core:before,.core:after{content:"";position:absolute;border-radius:50%;width:10px;height:10px;background:var(--cyan);box-shadow:0 0 20px var(--cyan);left:50%;top:50%;transform-origin:0 82px;animation:coreSatellite 4s linear infinite}
+.core:after{width:7px;height:7px;background:var(--vio);box-shadow:0 0 18px var(--vio);transform-origin:0 104px;animation-duration:6.5s;animation-direction:reverse}
+.ring.a{animation-duration:7s}.ring.b{animation-duration:4.5s}
+@keyframes heroOrbit{to{transform:rotate(360deg)}}
+@keyframes heroBreath{0%,100%{opacity:.45;transform:translate(-50%,-50%) scale(.88)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.14)}}
+@keyframes coreFloat{0%,100%{transform:translate(-50%,-50%) translateY(-5px)}50%{transform:translate(-50%,-50%) translateY(8px)}}
+@keyframes coreSatellite{to{transform:rotate(360deg)}}
+
+/* project motion signatures */
+.sig{height:126px}
+.sig:after{display:none!important}
+.sig-stage{position:absolute;inset:0;overflow:hidden}
+.sig-label{position:absolute;left:10px;top:9px;font:7px "DM Mono";letter-spacing:.1em;color:#4d6071;z-index:5}
+
+/* COVAT: live financial bars */
+.covat-bars{position:absolute;inset:27px 22px 17px;display:flex;align-items:flex-end;justify-content:space-between;gap:7px}
+.covat-bars i{display:block;width:11%;height:var(--h);min-height:13px;border-radius:5px 5px 2px 2px;background:linear-gradient(180deg,var(--cyan),rgba(93,230,255,.12));box-shadow:0 0 16px rgba(93,230,255,.14);animation:covatBars var(--d) ease-in-out infinite alternate;transform-origin:bottom}
+.covat-bars i:nth-child(2n){background:linear-gradient(180deg,var(--vio),rgba(169,116,255,.10));box-shadow:0 0 16px rgba(169,116,255,.12)}
+.covat-line{position:absolute;left:18px;right:18px;bottom:22px;height:1px;background:rgba(255,255,255,.08)}
+@keyframes covatBars{0%{height:16%;opacity:.55}35%{height:var(--h);opacity:1}70%{height:calc(var(--h) * .58)}100%{height:calc(var(--h) * .88)}}
+
+/* ReelsCheck: scanning evidence nodes */
+.reel-frame{position:absolute;inset:25px 28px 18px;border:1px solid rgba(93,230,255,.16);border-radius:12px}
+.reel-scan{position:absolute;left:12px;right:12px;height:1px;top:16%;background:linear-gradient(90deg,transparent,var(--cyan),transparent);box-shadow:0 0 14px var(--cyan);animation:reelScan 2.3s ease-in-out infinite}
+.reel-node{position:absolute;width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px var(--cyan);animation:nodePulse 1.8s ease-in-out infinite}
+.reel-node.n1{left:22%;top:35%}.reel-node.n2{right:20%;top:48%;animation-delay:.35s}.reel-node.n3{left:48%;bottom:23%;animation-delay:.7s}
+@keyframes reelScan{0%,100%{top:16%;opacity:.25}50%{top:82%;opacity:1}}
+@keyframes nodePulse{0%,100%{transform:scale(.65);opacity:.35}50%{transform:scale(1.35);opacity:1}}
+
+/* Projact: active project timeline */
+.project-track{position:absolute;left:18px;right:18px;top:62%;height:1px;background:rgba(255,255,255,.12)}
+.project-track i{position:absolute;top:-5px;width:10px;height:10px;border-radius:50%;border:1px solid var(--vio);background:#090d14;box-shadow:0 0 14px rgba(169,116,255,.35)}
+.project-track i:nth-child(1){left:4%}.project-track i:nth-child(2){left:31%}.project-track i:nth-child(3){left:59%}.project-track i:nth-child(4){left:88%}
+.project-runner{position:absolute;top:calc(62% - 4px);width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 18px var(--cyan);animation:projectRunner 4s ease-in-out infinite}
+.project-ledger{position:absolute;left:22px;right:22px;top:28px;display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.project-ledger b{height:18px;border:1px solid rgba(255,255,255,.06);border-radius:4px;background:rgba(93,230,255,.04);animation:ledgerPulse 2.2s ease-in-out infinite}
+.project-ledger b:nth-child(2){animation-delay:.3s}.project-ledger b:nth-child(3){animation-delay:.6s}.project-ledger b:nth-child(4){animation-delay:.9s}
+@keyframes projectRunner{0%{left:8%}50%{left:87%}100%{left:8%}}
+@keyframes ledgerPulse{50%{background:rgba(169,116,255,.15);border-color:rgba(169,116,255,.22)}}
+
+/* AquaGuard: RTLS / safety positioning */
+.aqua-pool{position:absolute;left:50%;top:55%;width:58px;height:58px;border-radius:50%;transform:translate(-50%,-50%);border:1px solid rgba(93,230,255,.45);box-shadow:0 0 0 17px rgba(93,230,255,.05),0 0 0 35px rgba(93,230,255,.025);animation:aquaRipple 2.4s ease-out infinite}
+.aqua-tag{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--orange);box-shadow:0 0 16px var(--orange);left:50%;top:55%;animation:aquaOrbit 3.8s linear infinite;transform-origin:0 45px}
+.aqua-anchor{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--cyan)}
+.aqua-anchor.a1{left:20%;top:30%}.aqua-anchor.a2{right:20%;top:30%}.aqua-anchor.a3{left:20%;bottom:17%}.aqua-anchor.a4{right:20%;bottom:17%}
+@keyframes aquaRipple{0%{box-shadow:0 0 0 4px rgba(93,230,255,.16),0 0 0 10px rgba(93,230,255,.08)}100%{box-shadow:0 0 0 28px rgba(93,230,255,0),0 0 0 58px rgba(93,230,255,0)}}
+@keyframes aquaOrbit{to{transform:rotate(360deg)}}
+
+/* Securia: active shield matrix */
+.sec-shield{position:absolute;left:50%;top:55%;width:44px;height:52px;transform:translate(-50%,-50%);clip-path:polygon(50% 0,92% 16%,86% 72%,50% 100%,14% 72%,8% 16%);border:1px solid var(--mint);background:linear-gradient(180deg,rgba(117,255,200,.11),rgba(117,255,200,.02));animation:shieldPulse 2.7s ease-in-out infinite}
+.sec-ring{position:absolute;left:50%;top:55%;width:82px;height:82px;border-radius:50%;border:1px dashed rgba(117,255,200,.18);animation:spin 6s linear infinite}
+.sec-ping{position:absolute;left:50%;top:55%;width:5px;height:5px;border-radius:50%;background:var(--mint);box-shadow:0 0 15px var(--mint);animation:secPing 1.5s ease-in-out infinite}
+@keyframes shieldPulse{50%{filter:drop-shadow(0 0 12px rgba(117,255,200,.45));transform:translate(-50%,-50%) scale(1.08)}}
+@keyframes secPing{50%{transform:scale(2.3);opacity:.2}}
+
+/* TikVibe: true animated waveform */
+.vibe-wave{position:absolute;left:20px;right:20px;bottom:20px;top:30px;display:flex;gap:4px;align-items:center;justify-content:center}
+.vibe-wave i{width:5px;height:var(--h);border-radius:4px;background:linear-gradient(180deg,var(--vio),var(--cyan));animation:vibe var(--d) ease-in-out infinite alternate;box-shadow:0 0 8px rgba(93,230,255,.10)}
+@keyframes vibe{0%{height:10%;opacity:.35}100%{height:var(--h);opacity:1}}
+
+/* Cento: rising scent particles */
+.scent-field{position:absolute;inset:0}
+.scent-field i{position:absolute;left:var(--x);bottom:12px;width:var(--s);height:var(--s);border-radius:50%;background:var(--orange);box-shadow:0 0 14px rgba(255,176,93,.55);animation:scentRise var(--d) ease-in infinite;animation-delay:var(--delay);opacity:0}
+@keyframes scentRise{0%{transform:translate(0,15px) scale(.65);opacity:0}15%{opacity:.9}70%{opacity:.5}100%{transform:translate(var(--drift),-100px) scale(1.5);opacity:0}}
+
+@media(max-width:720px){
+  html[dir="rtl"] .screenleft{border-left:0;border-bottom:1px solid var(--line)}
+  .langtoggle button{padding:8px 8px}
+}
+
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.glow{display:none}}
 </style>
 </head>
 <body>
 <div class="progress" id="progress"></div><div class="cursorDot" id="cursorDot"></div><div class="noise"></div><div class="glow"></div>
-<header class="top"><div class="wrap" style="width:100%;display:flex;justify-content:space-between;align-items:center"><a class="brand" href="#top"><span class="mark">MB</span><span><strong>MUSTAFA BARAKAT</strong><small>VENTURE BUILDER</small></span></a><div class="langtoggle mobilelang" aria-label="Language"><button data-lang="en" class="active">EN</button><button data-lang="ar">AR</button><button data-lang="fr">FR</button><button data-lang="de">DE</button></div><nav class="nav"><a href="#ventures">Ventures</a><a href="#method">Method</a><a class="localized-page" href="/portfolio/cv.html">CV</a><a href="#work">Work with me</a><a href="/alwafer/">Link Hub</a><div class="langtoggle" aria-label="Language"><button data-lang="en" class="active">EN</button><button data-lang="ar">AR</button><button data-lang="fr">FR</button><button data-lang="de">DE</button></div><a class="cta" href="mailto:b.mustafa99@gmail.com">Start a conversation</a></nav></div></header>
+<header class="top"><div class="wrap" style="width:100%;display:flex;justify-content:space-between;align-items:center"><a class="brand" href="#top"><span class="mark">MB</span><span><strong>MUSTAFA BARAKAT</strong><small>VENTURE BUILDER</small></span></a><div class="langtoggle mobilelang" aria-label="Language"><button data-lang="en" class="active">EN</button><button data-lang="ar">AR</button><button data-lang="fr">FR</button><button data-lang="de">DE</button></div><nav class="nav"><a href="#ventures">Ventures</a><a href="#method">Method</a><a class="localized-page" href="/portfolio/cv.html">CV</a><a href="#work">Work with me</a><a href="/alwafer/">Link Hub</a><div class="langtoggle" aria-label="Language"><button data-lang="en" class="active">EN</button><button data-lang="ar">AR</button><button data-lang="fr">FR</button><button data-lang="de">DE</button></div><a class="cta" href="mailto:alwafer89@gmail.com">Start a conversation</a></nav></div></header>
 <main id="top">
 <section class="wrap hero">
 <div class="reveal"><div class="eyebrow"><span class="dot"></span>Qatar-based · Remote globally · GCC · Switzerland</div><h1>I build products where the brief is still <span class="grad">incomplete.</span></h1><p class="lede">Venture builder, AI product lead and 0→1 product architect. I turn ambiguous business problems into credible products — from software and AI systems to IoT and emerging interfaces.</p><div class="actions"><a class="btn primary" href="#ventures">Explore the portfolio ↘</a><a class="btn localized-page" href="/portfolio/cv.html">Open CV ↗</a><a class="btn" target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/mustafabarakat-ventures">LinkedIn ↗</a></div><div class="metrics"><div><strong>7+</strong><span>selected ventures</span></div><div><strong>6+</strong><span>product domains</span></div><div><strong>0→1</strong><span>core operating zone</span></div></div></div>
@@ -132,9 +247,9 @@ html[dir="rtl"] .ri:before{left:auto;right:-40px}
 </div></section>
 <section class="wrap block reveal"><div class="kicker">03 / PROOF OF RANGE</div><div class="range"><div><h2>Software to hardware.<br>Strategy to release.</h2><p>The point is not that these ventures look alike. The point is that the same operating discipline survives radically different product constraints.</p></div><div class="rail"><div class="ri"><span>AI / MEDIA</span><strong>ReelsCheck</strong><small>multimodal intelligence</small></div><div class="ri"><span>ERP / FINTECH</span><strong>COVAT</strong><small>finance-led operations</small></div><div class="ri"><span>PROJECT ECONOMICS</span><strong>Projact</strong><small>delivery-business accounting</small></div><div class="ri"><span>IOT / EDGE</span><strong>AquaGuard</strong><small>wearables + RTLS + cloud</small></div><div class="ri"><span>CYBER</span><strong>Securia</strong><small>security workflows</small></div><div class="ri"><span>EMERGING INTERFACE</span><strong>Cento</strong><small>digital → scent</small></div></div></div></section>
 <section class="wrap block" id="method"><div class="head reveal"><div><div class="kicker">04 / HOW I BUILD</div><h2>Ownership over ceremony.</h2></div><p>Clarify the goal. Expose the hard constraints. Build evidence. Resolve blockers. Move the product forward.</p></div><div class="method"><div class="mr reveal"><span>01</span><h3>FRAME</h3><p>Start with user pain, commercial reality and the smallest credible experiment that could prove value.</p><b>→</b></div><div class="mr reveal"><span>02</span><h3>ARCHITECT</h3><p>Translate intent into product flows, system behavior, integration requirements and decision logic.</p><b>→</b></div><div class="mr reveal"><span>03</span><h3>BUILD</h3><p>Use AI, engineering, APIs, cloud services, hardware and suppliers as execution leverage — without outsourcing judgment.</p><b>→</b></div><div class="mr reveal"><span>04</span><h3>VALIDATE</h3><p>Test workflows, edge cases, user journeys, reliability, release criteria and commercial assumptions.</p><b>→</b></div><div class="mr reveal"><span>05</span><h3>SHIP</h3><p>Move from interesting concept to something another person can actually use, evaluate, pilot or buy.</p><b>↗</b></div></div></section>
-<section class="wrap block engage" id="work"><div class="panel reveal"><div class="orb"></div><div class="kicker">05 / ENGAGEMENT</div><h2>Put me where the problem is still messy.</h2><p>I am open to roles and mandates where product judgment, venture logic and execution need to live in the same room.</p><p style="font:10px DM Mono;color:#67798a;letter-spacing:.08em;text-transform:uppercase;margin-top:14px">Remote · Fractional · Venture Studio · Founding Product · EIR</p><div class="modes"><div><span>01</span><strong>Full-time product leadership</strong><small>Founding / AI / product / innovation roles</small></div><div><span>02</span><strong>Fractional product leadership</strong><small>Senior ownership without a full-time hire</small></div><div><span>03</span><strong>0→1 venture building</strong><small>Turn internal concepts into testable MVPs</small></div><div><span>04</span><strong>Venture studio / EIR</strong><small>Build and validate across a portfolio</small></div></div><div class="actions"><a class="btn primary" href="mailto:b.mustafa99@gmail.com?subject=Venture%20%2F%20Product%20Conversation">Start a conversation ↗</a><a class="btn localized-page" href="/portfolio/selected-ventures.html">Selected Work ↗</a><a class="btn localized-page" href="/portfolio/cv.html">CV ↗</a><a class="btn" target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/mustafabarakat-ventures">LinkedIn ↗</a></div></div></section>
+<section class="wrap block engage" id="work"><div class="panel reveal"><div class="orb"></div><div class="kicker">05 / ENGAGEMENT</div><h2>Put me where the problem is still messy.</h2><p>I am open to roles and mandates where product judgment, venture logic and execution need to live in the same room.</p><p style="font:10px DM Mono;color:#67798a;letter-spacing:.08em;text-transform:uppercase;margin-top:14px">Remote · Fractional · Venture Studio · Founding Product · EIR</p><div class="modes"><div><span>01</span><strong>Full-time product leadership</strong><small>Founding / AI / product / innovation roles</small></div><div><span>02</span><strong>Fractional product leadership</strong><small>Senior ownership without a full-time hire</small></div><div><span>03</span><strong>0→1 venture building</strong><small>Turn internal concepts into testable MVPs</small></div><div><span>04</span><strong>Venture studio / EIR</strong><small>Build and validate across a portfolio</small></div></div><div class="actions"><a class="btn primary" href="mailto:alwafer89@gmail.com?subject=Venture%20%2F%20Product%20Conversation">Start a conversation ↗</a><a class="btn localized-page" href="/portfolio/selected-ventures.html">Selected Work ↗</a><a class="btn localized-page" href="/portfolio/cv.html">CV ↗</a><a class="btn" target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/mustafabarakat-ventures">LinkedIn ↗</a></div></div></section>
 </main>
-<footer class="wrap"><div><strong>Mustafa Barakat</strong><span>Venture Builder · AI Product Lead · Product Architect</span></div><div><span>Qatar · Remote globally · </span><a href="mailto:b.mustafa99@gmail.com">b.mustafa99@gmail.com</a></div></footer>
+<footer class="wrap"><div><strong>Mustafa Barakat</strong><span>Venture Builder · AI Product Lead · Product Architect</span></div><div><span>Qatar · Remote globally · </span><a href="mailto:alwafer89@gmail.com">alwafer89@gmail.com</a></div></footer>
 <div class="modal" id="modal"><div class="box"><button class="close">×</button><div class="kicker">SELECTED CASE STUDY</div><h2 id="mt"></h2><p class="sub" id="ms"></p><div class="casegrid"><section><span>THE PROBLEM</span><p id="mp"></p></section><section><span>THE PRODUCT</span><p id="mprod"></p></section><section><span>MY ROLE</span><p id="mr"></p></section><section><span>WHAT IT PROVES</span><p id="mproof"></p></section></div></div></div>
 <script>
 var q=function(s,c){return (c||document).querySelector(s)},qa=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
@@ -309,8 +424,21 @@ var META={
  fr:{title:"Mustafa Barakat — Venture Builder",desc:"Mustafa Barakat construit des produits 0→1 dans l’IA, le SaaS, l’ERP, l’IoT, la cybersécurité et les interfaces émergentes."},
  de:{title:"Mustafa Barakat — Venture Builder",desc:"Mustafa Barakat baut 0→1-Produkte in KI, SaaS, ERP, IoT, Cybersecurity und neuen Interfaces."}
 };
+Object.assign(I18N.ar,{
+"Focused case studies":"دراسات حالة مركزة","Enough detail to prove judgment — without leaking confidential implementation.":"تفاصيل كافية لإثبات جودة الحكم دون كشف تنفيذ سري.","Selected Work ↗":"الأعمال المختارة ↗","SaaS":"SaaS","IoT":"إنترنت الأشياء","RTLS":"RTLS"
+});
+Object.assign(I18N.fr,{
+"Focused case studies":"Études de cas ciblées","Enough detail to prove judgment — without leaking confidential implementation.":"Assez de détails pour démontrer le jugement sans révéler d’implémentation confidentielle.","Selected Work ↗":"Travaux sélectionnés ↗","AI":"IA","SaaS":"SaaS","IoT":"IoT"
+});
+Object.assign(I18N.de,{
+"Focused case studies":"Fokussierte Fallstudien","Enough detail to prove judgment — without leaking confidential implementation.":"Genug Detail, um Urteilskraft zu belegen — ohne vertrauliche Implementierung offenzulegen.","Selected Work ↗":"Ausgewählte Arbeit ↗","AI":"KI","SaaS":"SaaS","IoT":"IoT"
+});
 var currentLang="en",originalText=new WeakMap();
-function translateString(s,lang){if(lang==="en")return s;return (I18N[lang]&&I18N[lang][s])||s}
+var I18N_NORMALIZED={};
+function normalizeI18nKey(s){return String(s||"").replace(/\s+/g," ").trim()}
+function buildI18nIndex(){["ar","fr","de"].forEach(function(lang){I18N_NORMALIZED[lang]={};Object.keys(I18N[lang]||{}).forEach(function(k){I18N_NORMALIZED[lang][normalizeI18nKey(k)]=I18N[lang][k]})})}
+buildI18nIndex();
+function translateString(s,lang){if(lang==="en")return s;var key=normalizeI18nKey(s);return (I18N_NORMALIZED[lang]&&I18N_NORMALIZED[lang][key])||s}
 function translateTree(lang){
  var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),n,list=[];
  while(n=walker.nextNode()){if(n.parentNode&&["SCRIPT","STYLE"].indexOf(n.parentNode.tagName)<0&&n.nodeValue.trim())list.push(n)}
@@ -337,7 +465,17 @@ function initLanguage(){
 }
 
 var prog=q("#progress"),cd=q("#cursorDot");addEventListener("scroll",function(){var h=document.documentElement.scrollHeight-innerHeight;prog.style.width=(h>0?(scrollY/h*100):0)+"%"});addEventListener("pointermove",function(e){cd.style.left=e.clientX+"px";cd.style.top=e.clientY+"px"});
-qa(".card").forEach(function(card){var b=q("[data-case]",card);if(!b)return;var id=b.dataset.case;var sig=document.createElement("div");sig.className="sig sig-"+id;var icon=q(".icon",card);if(icon)icon.insertAdjacentElement("afterend",sig)});
+function signatureMarkup(id){
+  if(id==="reelscheck")return '<span class="sig-label">MULTIMODAL EVIDENCE</span><div class="sig-stage"><div class="reel-frame"><i class="reel-scan"></i><i class="reel-node n1"></i><i class="reel-node n2"></i><i class="reel-node n3"></i></div></div>';
+  if(id==="covat")return '<span class="sig-label">LIVE FINANCIAL SIGNAL</span><div class="sig-stage"><div class="covat-bars"><i style="--h:44%;--d:1.7s"></i><i style="--h:72%;--d:2.2s"></i><i style="--h:57%;--d:1.5s"></i><i style="--h:88%;--d:2.6s"></i><i style="--h:64%;--d:1.9s"></i><i style="--h:79%;--d:2.35s"></i></div><div class="covat-line"></div></div>';
+  if(id==="projact")return '<span class="sig-label">PROJECT CONTROL</span><div class="sig-stage"><div class="project-ledger"><b></b><b></b><b></b><b></b></div><div class="project-track"><i></i><i></i><i></i><i></i></div><b class="project-runner"></b></div>';
+  if(id==="aquaguard")return '<span class="sig-label">RTLS / LOCAL SAFETY</span><div class="sig-stage"><i class="aqua-anchor a1"></i><i class="aqua-anchor a2"></i><i class="aqua-anchor a3"></i><i class="aqua-anchor a4"></i><div class="aqua-pool"></div><b class="aqua-tag"></b></div>';
+  if(id==="securia")return '<span class="sig-label">ACTIVE SECURITY</span><div class="sig-stage"><div class="sec-ring"></div><div class="sec-shield"></div><i class="sec-ping"></i></div>';
+  if(id==="tikvibe")return '<span class="sig-label">CREATOR SIGNAL</span><div class="sig-stage"><div class="vibe-wave"><i style="--h:42%;--d:.7s"></i><i style="--h:76%;--d:.9s"></i><i style="--h:35%;--d:.58s"></i><i style="--h:90%;--d:1.08s"></i><i style="--h:55%;--d:.73s"></i><i style="--h:82%;--d:.95s"></i><i style="--h:46%;--d:.62s"></i><i style="--h:68%;--d:.83s"></i><i style="--h:31%;--d:.54s"></i><i style="--h:88%;--d:1s"></i><i style="--h:60%;--d:.78s"></i></div></div>';
+  if(id==="cento")return '<span class="sig-label">DIGITAL → SCENT</span><div class="sig-stage scent-field"><i style="--x:20%;--s:7px;--d:3.2s;--delay:.1s;--drift:24px"></i><i style="--x:34%;--s:5px;--d:2.7s;--delay:.8s;--drift:-18px"></i><i style="--x:48%;--s:8px;--d:3.8s;--delay:.35s;--drift:12px"></i><i style="--x:62%;--s:6px;--d:2.9s;--delay:1.1s;--drift:-22px"></i><i style="--x:76%;--s:4px;--d:3.5s;--delay:.55s;--drift:18px"></i></div>';
+  return "";
+}
+qa(".card").forEach(function(card){var b=q("[data-case]",card);if(!b)return;var id=b.dataset.case;var sig=document.createElement("div");sig.className="sig sig-"+id;sig.innerHTML=signatureMarkup(id);var icon=q(".icon",card);if(icon)icon.insertAdjacentElement("afterend",sig)});
 
 var g=q(".glow");addEventListener("pointermove",function(e){g.style.left=e.clientX+"px";g.style.top=e.clientY+"px"});
 var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("on");io.unobserve(e.target)}})},{threshold:.12});qa(".reveal").forEach(function(x){io.observe(x)});
@@ -455,6 +593,6 @@ Object.assign(I18N.de,{
 
 var modal=q("#modal");qa("[data-case]").forEach(function(b){b.onclick=function(){var d=cases[b.dataset.case];q("#mt").textContent=translateString(d[0],currentLang);q("#ms").textContent=translateString(d[1],currentLang);q("#mp").textContent=translateString(d[2],currentLang);q("#mprod").textContent=translateString(d[3],currentLang);q("#mr").textContent=translateString(d[4],currentLang);q("#mproof").textContent=translateString(d[5],currentLang);modal.classList.add("open")}});q(".close").onclick=function(){modal.classList.remove("open")};modal.onclick=function(e){if(e.target===modal)modal.classList.remove("open")};
 initLanguage();
-var cv=q("#cv"),ctx=cv.getContext("2d"),W=0,H=0,mx=0,my=0,t=0,names=["REELS","COVAT","PROJACT","AQUA","SECURIA","TIKVIBE","CENTO"],nodes=names.map(function(n,i){return{name:n,a:i/names.length*Math.PI*2,r:140+(i%3)*30,y:(i%2?1:-1)*(35+(i%3)*18),s:3+(i%2)}});function rs(){var r=cv.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);W=r.width;H=r.height;cv.width=W*d;cv.height=H*d;ctx.setTransform(d,0,0,d,0,0)}rs();new ResizeObserver(rs).observe(cv);cv.onpointermove=function(e){var r=cv.getBoundingClientRect();mx=(e.clientX-r.left-r.width/2)/r.width;my=(e.clientY-r.top-r.height/2)/r.height};cv.onpointerleave=function(){mx=my=0};function pr(x,y,z){var cam=520,s=cam/(cam+z);return{x:W/2+(x+mx*55)*s,y:H/2+(y+my*40)*s,s:s,z:z}}function draw(){t+=.004;ctx.clearRect(0,0,W,H);var pts=[];nodes.forEach(function(n,i){var a=n.a+t*(i%2?.65:-.48);var p=pr(Math.cos(a)*n.r,n.y+Math.sin(t*3+i)*12,Math.sin(a)*n.r);p.name=n.name;pts.push(p)});pts.sort(function(a,b){return b.z-a.z});ctx.lineWidth=.7;ctx.strokeStyle="rgba(93,230,255,.12)";for(var i=0;i<pts.length;i++)for(var j=i+1;j<pts.length;j++){var A=pts[i],B=pts[j],d=Math.hypot(A.x-B.x,A.y-B.y);if(d<230){ctx.globalAlpha=Math.max(0,1-d/230);ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.lineTo(B.x,B.y);ctx.stroke()}}ctx.globalAlpha=1;pts.forEach(function(p){var gr=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,20*p.s);gr.addColorStop(0,"rgba(93,230,255,.9)");gr.addColorStop(.18,"rgba(93,230,255,.25)");gr.addColorStop(1,"rgba(93,230,255,0)");ctx.fillStyle=gr;ctx.beginPath();ctx.arc(p.x,p.y,20*p.s,0,Math.PI*2);ctx.fill();ctx.fillStyle="rgba(230,245,255,.75)";ctx.beginPath();ctx.arc(p.x,p.y,2.2*p.s,0,Math.PI*2);ctx.fill();ctx.font=(8*p.s)+"px DM Mono";ctx.fillStyle="rgba(188,205,220,.65)";ctx.fillText(p.name,p.x+9*p.s,p.y-7*p.s)});requestAnimationFrame(draw)}draw();
+var cv=q("#cv"),ctx=cv.getContext("2d"),W=0,H=0,mx=0,my=0,t=0,names=["REELS","COVAT","PROJACT","AQUA","SECURIA","TIKVIBE","CENTO"],nodes=names.map(function(n,i){return{name:n,a:i/names.length*Math.PI*2,r:140+(i%3)*30,y:(i%2?1:-1)*(35+(i%3)*18),s:3+(i%2)}});function rs(){var r=cv.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);W=r.width;H=r.height;cv.width=W*d;cv.height=H*d;ctx.setTransform(d,0,0,d,0,0)}rs();new ResizeObserver(rs).observe(cv);cv.onpointermove=function(e){var r=cv.getBoundingClientRect();mx=(e.clientX-r.left-r.width/2)/r.width;my=(e.clientY-r.top-r.height/2)/r.height};cv.onpointerleave=function(){mx=my=0};function pr(x,y,z){var cam=520,s=cam/(cam+z);return{x:W/2+(x+mx*55)*s,y:H/2+(y+my*40)*s,s:s,z:z}}function draw(){t+=.011;ctx.clearRect(0,0,W,H);var pts=[];nodes.forEach(function(n,i){var a=n.a+t*(i%2?.65:-.48);var p=pr(Math.cos(a)*n.r*1.08,n.y+Math.sin(t*4.4+i)*22,Math.sin(a)*n.r);p.name=n.name;pts.push(p)});pts.sort(function(a,b){return b.z-a.z});ctx.lineWidth=.7;ctx.strokeStyle="rgba(93,230,255,.12)";for(var i=0;i<pts.length;i++)for(var j=i+1;j<pts.length;j++){var A=pts[i],B=pts[j],d=Math.hypot(A.x-B.x,A.y-B.y);if(d<230){ctx.globalAlpha=Math.max(0,1-d/230);ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.lineTo(B.x,B.y);ctx.stroke()}}ctx.globalAlpha=1;pts.forEach(function(p){var gr=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,20*p.s);gr.addColorStop(0,"rgba(93,230,255,.9)");gr.addColorStop(.18,"rgba(93,230,255,.25)");gr.addColorStop(1,"rgba(93,230,255,0)");ctx.fillStyle=gr;ctx.beginPath();ctx.arc(p.x,p.y,20*p.s,0,Math.PI*2);ctx.fill();ctx.fillStyle="rgba(230,245,255,.75)";ctx.beginPath();ctx.arc(p.x,p.y,2.2*p.s,0,Math.PI*2);ctx.fill();ctx.font=(8*p.s)+"px DM Mono";ctx.fillStyle="rgba(188,205,220,.65)";ctx.fillText(p.name,p.x+9*p.s,p.y-7*p.s)});requestAnimationFrame(draw)}draw();
 </script>
 </body></html>
