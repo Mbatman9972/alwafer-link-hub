@@ -310,7 +310,7 @@ html[dir="rtl"] .agent-launch{right:auto;left:22px}.agent-panel[dir="rtl"],html[
 </button>
 <div class="agent-panel" id="agentPanel" aria-hidden="true">
   <div class="agent-head">
-    <div class="agent-identity"><img src="/assets/alwefer-mark.svg" alt=""><div><strong>Alwefer Agent</strong><small>Portfolio concierge</small></div></div>
+    <div class="agent-identity"><img src="/assets/alwefer-mark.svg" alt=""><div><strong>Alwefer Agent</strong><small>Portfolio concierge · AI-generated voice</small></div></div>
     <div class="agent-head-actions"><button id="agentVoiceToggle" class="agent-voice-toggle" type="button" aria-label="Voice replies" aria-pressed="false">🔊</button><button id="agentClose" type="button" aria-label="Close">×</button></div>
   </div>
   <div class="agent-feed" id="agentFeed"></div>
@@ -812,7 +812,7 @@ var VOICE_UI={
  fr:{mic:"Utiliser le micro — détection automatique",listening:"Écoute — détection de la langue…",processing:"Compréhension de votre langue…",loading:"Détection de la langue…",listen:"Écouter",stop:"Arrêter",voiceOn:"Réponses vocales activées",voiceOff:"Réponses vocales désactivées",unsupported:"La saisie vocale n’est pas prise en charge par ce navigateur.",placeholder:"Posez une question sur le portfolio, les projets ou les services…"},
  de:{mic:"Mikrofon verwenden — Sprache automatisch erkennen",listening:"Ich höre zu — Sprache wird erkannt…",processing:"Ich erkenne deine Sprache…",loading:"Sprache wird erkannt…",listen:"Anhören",stop:"Stopp",voiceOn:"Sprachantworten aktiviert",voiceOff:"Sprachantworten deaktiviert",unsupported:"Spracheingabe wird in diesem Browser nicht unterstützt.",placeholder:"Frag nach Portfolio, Projekten oder Leistungen…"}
 };
-var autoVoice=false,speakNextReply=false,currentUtterances=[],speechGeneration=0;
+var autoVoice=false,speakNextReply=false,currentUtterances=[],speechGeneration=0,currentAudio=null,currentAudioUrl="",ttsController=null;
 function speechLocale(lang){return VOICE_LANG[lang||currentLang]||"en-US"}
 function normalizeForSpeech(text,lang){
  var s=String(text||"");
@@ -849,24 +849,36 @@ function splitSpeech(text){
  return chunks.filter(Boolean);
 }
 function stopSpeaking(){
- speechGeneration++;try{speechSynthesis.cancel()}catch(e){}currentUtterances=[];
+ speechGeneration++;
+ try{speechSynthesis.cancel()}catch(e){}
+ currentUtterances=[];
+ if(ttsController){try{ttsController.abort()}catch(e){}ttsController=null}
+ if(currentAudio){try{currentAudio.pause();currentAudio.currentTime=0}catch(e){}currentAudio=null}
+ if(currentAudioUrl){try{URL.revokeObjectURL(currentAudioUrl)}catch(e){}currentAudioUrl=""}
  var vt=q("#agentVoiceToggle");if(vt)vt.classList.remove("speaking");
 }
-function speakHuman(text,langOverride){
- if(!("speechSynthesis" in window))return;
- stopSpeaking();
- var gen=speechGeneration,lang=langOverride||currentLang,locale=speechLocale(lang),voice=bestVoice(locale),chunks=splitSpeech(normalizeForSpeech(text,lang));
- if(!chunks.length)return;
+async function speakHuman(text,langOverride){
+ var lang=langOverride||currentLang,gen;
+ stopSpeaking();gen=speechGeneration;
  var vt=q("#agentVoiceToggle");if(vt)vt.classList.add("speaking");
- function speakChunk(i){
-   if(gen!==speechGeneration||i>=chunks.length){if(vt)vt.classList.remove("speaking");return}
-   var u=new SpeechSynthesisUtterance(chunks[i]);u.lang=locale;if(voice)u.voice=voice;
-   u.rate=lang==="ar"?0.90:lang==="de"?0.93:0.94;u.pitch=1.0;u.volume=1;
-   u.onend=function(){setTimeout(function(){speakChunk(i+1)},70)};
-   u.onerror=function(){if(vt)vt.classList.remove("speaking")};
-   currentUtterances.push(u);speechSynthesis.speak(u);
+ try{
+   ttsController=new AbortController();
+   var spokenText=normalizeForSpeech(text,lang);
+   var res=await fetch("/api/portfolio-speak",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:spokenText,lang:lang}),signal:ttsController.signal,cache:"no-store"});
+   if(!res.ok)throw new Error("tts_http_"+res.status);
+   var blob=await res.blob();
+   if(gen!==speechGeneration)return;
+   currentAudioUrl=URL.createObjectURL(blob);
+   currentAudio=new Audio(currentAudioUrl);
+   currentAudio.preload="auto";
+   currentAudio.onended=function(){if(vt)vt.classList.remove("speaking");if(currentAudioUrl){URL.revokeObjectURL(currentAudioUrl);currentAudioUrl=""}currentAudio=null};
+   currentAudio.onerror=function(){if(vt)vt.classList.remove("speaking")};
+   await currentAudio.play();
+ }catch(e){
+   if(e&&e.name==="AbortError")return;
+   if(vt)vt.classList.remove("speaking");
+   console.warn("Natural voice unavailable",e);
  }
- speakChunk(0);
 }
 function updateVoiceUiLanguage(){
  var ui=VOICE_UI[currentLang]||VOICE_UI.en,m=q("#agentMic"),v=q("#agentVoiceToggle"),inp=q("#agentInput");
@@ -935,6 +947,18 @@ agentForm.onsubmit=async function(e){
  if(autoVoice||speakNextReply){speakHuman(a.text,a.lang);speakNextReply=false}
 };
 qa("#agentSuggestions button").forEach(function(b){b.onclick=function(){agentInput.value=b.textContent;agentForm.requestSubmit()}});
+
+function resetAgentSession(){
+ stopSpeaking();
+ agentHistory=[];
+ speakNextReply=false;
+ if(agentFeed)agentFeed.innerHTML="";
+ if(agentInput){agentInput.value="";delete agentInput.dataset.detectedLang}
+ if(agentPanel){agentPanel.classList.remove("open");agentPanel.setAttribute("aria-hidden","true")}
+}
+window.addEventListener("pagehide",function(){resetAgentSession()});
+window.addEventListener("pageshow",function(){resetAgentSession()});
+
 
 var SpeechRecognitionCtor=window.SpeechRecognition||window.webkitSpeechRecognition||null,recognition=null;
 var adaptiveRecorder=null,adaptiveStream=null,adaptiveCtx=null,adaptiveTimer=null,adaptiveChunks=[],adaptiveBusy=false,lastSpokenLang="";
