@@ -956,6 +956,7 @@ function resetAgentSession(){
  if(agentInput){agentInput.value="";delete agentInput.dataset.detectedLang}
  if(agentPanel){agentPanel.classList.remove("open");agentPanel.setAttribute("aria-hidden","true")}
 }
+window.addEventListener("beforeunload",function(){resetAgentSession()});
 window.addEventListener("pagehide",function(){resetAgentSession()});
 window.addEventListener("pageshow",function(){resetAgentSession()});
 
