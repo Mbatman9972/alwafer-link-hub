@@ -3,61 +3,176 @@
   "cleanUrls": true,
   "trailingSlash": true,
   "redirects": [
-    { "source": "/admin/", "has": [{ "type": "query", "key": "profile", "value": "mustafa" }], "destination": "/admin/alwafer/", "permanent": true },
-    { "source": "/admin/", "has": [{ "type": "query", "key": "profile", "value": "ahmed" }], "destination": "/admin/ahmed/", "permanent": true },
-    { "source": "/admin/", "has": [{ "type": "query", "key": "profile", "value": "hala" }], "destination": "/admin/hala/", "permanent": true }
+    {
+      "source": "/admin/",
+      "has": [
+        {
+          "type": "query",
+          "key": "profile",
+          "value": "mustafa"
+        }
+      ],
+      "destination": "/admin/alwafer/",
+      "permanent": true
+    },
+    {
+      "source": "/admin/",
+      "has": [
+        {
+          "type": "query",
+          "key": "profile",
+          "value": "ahmed"
+        }
+      ],
+      "destination": "/admin/ahmed/",
+      "permanent": true
+    },
+    {
+      "source": "/admin/",
+      "has": [
+        {
+          "type": "query",
+          "key": "profile",
+          "value": "hala"
+        }
+      ],
+      "destination": "/admin/hala/",
+      "permanent": true
+    }
   ],
   "rewrites": [
-    { "source": "/admin/alwafer/", "destination": "/admin/" },
-    { "source": "/admin/ahmed/", "destination": "/admin/" },
-    { "source": "/admin/hala/", "destination": "/admin/" }
+    {
+      "source": "/admin/alwafer/",
+      "destination": "/admin/"
+    },
+    {
+      "source": "/admin/ahmed/",
+      "destination": "/admin/"
+    },
+    {
+      "source": "/admin/hala/",
+      "destination": "/admin/"
+    }
   ],
   "headers": [
     {
       "source": "/",
-      "headers": [{ "key": "Cache-Control", "value": "no-store, must-revalidate" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, must-revalidate"
+        }
+      ]
     },
     {
       "source": "/index.html",
-      "headers": [{ "key": "Cache-Control", "value": "no-store, must-revalidate" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, must-revalidate"
+        }
+      ]
     },
     {
       "source": "/(alwafer|ahmed|hala)",
-      "headers": [{ "key": "Cache-Control", "value": "no-store, must-revalidate" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, must-revalidate"
+        }
+      ]
     },
     {
       "source": "/(alwafer|ahmed|hala)/",
-      "headers": [{ "key": "Cache-Control", "value": "no-store, must-revalidate" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, must-revalidate"
+        }
+      ]
     },
     {
       "source": "/data/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "no-store" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
     },
     {
       "source": "/admin/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "no-store, must-revalidate" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, must-revalidate"
+        }
+      ]
     },
     {
       "source": "/admin.(js|css)",
-      "headers": [{ "key": "Cache-Control", "value": "no-store, must-revalidate" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, must-revalidate"
+        }
+      ]
     },
     {
       "source": "/(.*)\\.artwork\\.v2\\.(js|css)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     },
     {
       "source": "/api/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "no-store" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" }
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    },
+    {
+      "source": "/portfolio",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/portfolio/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, must-revalidate"
+        }
       ]
     },
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        }
       ]
     }
   ]
