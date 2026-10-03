@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Mustafa Barakat — Venture Brief</title>
+  <meta name="description" content="A concise external brief covering ReelsCheck, TechVibe, AquaGuard, COVAT and Cento: current stage, market need and what each project is looking for next.">
+  <meta property="og:title" content="Mustafa Barakat — Venture Brief">
+  <meta property="og:description" content="Five ventures across AI, creator technology, aquatic safety, ERP and digital scent — current stage and next-step opportunities.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/assets/alwefer-mark.svg">
+  <meta name="theme-color" content="#05070b">
+  <link rel="icon" href="/assets/alwefer-mark.svg" type="image/svg+xml">
+  <style>
+    :root{
+      --bg:#05070b;
+      --panel:#0a1018;
+      --panel2:#0d141e;
+      --line:rgba(255,255,255,.10);
+      --text:#edf4f8;
+      --muted:#91a0af;
+      --soft:#657687;
+      --accent:#dff8ff;
+      --accent2:#8edcf4;
+      --good:#9ef0c7;
+      --max:1080px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:
+        radial-gradient(circle at 80% -10%,rgba(80,180,220,.16),transparent 34%),
+        radial-gradient(circle at -10% 30%,rgba(50,110,180,.10),transparent 28%),
+        var(--bg);
+      color:var(--text);
+      font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      line-height:1.65;
+    }
+    a{color:inherit}
+    .wrap{width:min(var(--max),calc(100% - 32px));margin:auto}
+    .topbar{
+      position:sticky;top:0;z-index:20;
+      backdrop-filter:blur(18px);
+      background:rgba(5,7,11,.78);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar .inner{
+      min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px
+    }
+    .brand{display:flex;align-items:center;gap:11px;text-decoration:none}
+    .brand img{width:38px;height:38px;object-fit:contain}
+    .brand strong{display:block;font-size:13px;letter-spacing:.12em}
+    .brand small{display:block;color:var(--soft);font-size:9px;letter-spacing:.15em}
+    .badge{
+      border:1px solid var(--line);border-radius:999px;padding:7px 11px;
+      color:var(--muted);font-size:10px;letter-spacing:.12em;text-transform:uppercase
+    }
+    .hero{padding:72px 0 34px}
+    .eyebrow{
+      color:var(--accent2);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+      margin-bottom:13px
+    }
+    h1{
+      margin:0;max-width:830px;
+      font-size:clamp(42px,7vw,78px);line-height:.98;letter-spacing:-.055em
+    }
+    .hero p{
+      max-width:820px;margin:25px 0 0;color:var(--muted);
+      font-size:clamp(16px,2.2vw,20px)
+    }
+    .statusrow{
+      display:flex;flex-wrap:wrap;gap:9px;margin:28px 0 0
+    }
+    .pill{
+      border:1px solid var(--line);background:rgba(255,255,255,.025);
+      padding:8px 11px;border-radius:999px;color:#cbd7df;font-size:12px
+    }
+    .intro-note{
+      margin:34px 0 0;padding:17px 18px;border-left:3px solid var(--accent2);
+      background:linear-gradient(90deg,rgba(142,220,244,.09),rgba(142,220,244,.015));
+      color:#b7c5cf;border-radius:0 12px 12px 0
+    }
+    .grid{display:grid;grid-template-columns:1fr;gap:18px;padding:22px 0 72px}
+    .card{
+      position:relative;overflow:hidden;
+      border:1px solid var(--line);border-radius:24px;
+      background:linear-gradient(145deg,rgba(13,20,30,.95),rgba(8,12,18,.96));
+      padding:clamp(24px,4vw,40px)
+    }
+    .card:before{
+      content:"";position:absolute;inset:0 auto auto 0;width:100%;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(223,248,255,.25),transparent)
+    }
+    .cardhead{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;flex-wrap:wrap}
+    .tag{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent2)}
+    h2{font-size:clamp(30px,4vw,44px);letter-spacing:-.035em;margin:4px 0 0}
+    .stage{
+      border:1px solid rgba(158,240,199,.24);color:var(--good);
+      background:rgba(158,240,199,.055);border-radius:999px;padding:7px 10px;
+      font-size:11px;white-space:nowrap
+    }
+    .lead{font-size:18px;color:#d8e2e8;max-width:880px;margin:20px 0 8px}
+    .card p{color:var(--muted);margin:12px 0}
+    .facts{
+      display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0
+    }
+    .fact{
+      border:1px solid var(--line);background:rgba(255,255,255,.02);
+      border-radius:15px;padding:16px
+    }
+    .fact strong{display:block;font-size:23px;line-height:1.1;color:var(--text);margin-bottom:7px}
+    .fact span{display:block;font-size:12px;color:var(--soft);line-height:1.45}
+    .split{display:grid;grid-template-columns:1.25fr .75fr;gap:16px;margin-top:22px}
+    .box{
+      border:1px solid var(--line);border-radius:16px;padding:18px;
+      background:rgba(255,255,255,.018)
+    }
+    .box h3{font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:#b8c8d2;margin:0 0 10px}
+    .box ul{padding-left:18px;margin:0;color:var(--muted)}
+    .box li{margin:7px 0}
+    .cta{
+      display:inline-flex;align-items:center;gap:8px;text-decoration:none;
+      margin-top:12px;background:var(--accent);color:#061016;
+      padding:11px 14px;border-radius:12px;font-weight:700;font-size:13px
+    }
+    .source{
+      font-size:11px!important;color:var(--soft)!important;margin-top:18px!important
+    }
+    .source a{color:#a9c9d8}
+    .ask{
+      margin:6px 0 86px;border:1px solid var(--line);border-radius:24px;
+      background:linear-gradient(135deg,rgba(14,23,34,.94),rgba(7,11,17,.98));
+      padding:clamp(25px,5vw,46px)
+    }
+    .ask h2{margin-top:0}
+    .askgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-top:22px}
+    .askitem{border:1px solid var(--line);border-radius:14px;padding:15px;color:#bcc9d1;background:rgba(255,255,255,.02)}
+    footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--soft);font-size:12px}
+    .foot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+    @media(max-width:780px){
+      .hero{padding-top:52px}
+      .facts{grid-template-columns:1fr}
+      .split{grid-template-columns:1fr}
+      .askgrid{grid-template-columns:1fr}
+      .badge{display:none}
+      .card{border-radius:20px}
+    }
+    @media print{
+      .topbar{position:static}
+      body{background:#fff;color:#111}
+      .card,.ask,.fact,.box{background:#fff;border-color:#ddd}
+      .hero p,.card p,.box ul,.askitem,.source,footer{color:#444!important}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap inner">
+      <a class="brand" href="/portfolio/" aria-label="Alwafer portfolio">
+        <img src="/assets/alwefer-mark.svg" alt="">
+        <span><strong>ALWAFER</strong><small>VENTURE BRIEF</small></span>
+      </a>
+      <div class="badge">Public external edition · October 2026</div>
+    </div>
+  </header>
+
+  <main>
+    <section class="wrap hero">
+      <div class="eyebrow">Mustafa Barakat · Venture Builder / Product Owner</div>
+      <h1>Five ventures.<br>Different stages.<br>One common challenge: scale.</h1>
+      <p>This is a concise, non-technical overview of where each project stands today, why it exists, and the kind of support that could move it forward. Confidential architecture, supplier information and unpublished implementation details are intentionally omitted.</p>
+      <div class="statusrow">
+        <span class="pill">AI / Media</span>
+        <span class="pill">Creator Tech</span>
+        <span class="pill">Aquatic Safety / IoT</span>
+        <span class="pill">ERP / Finance</span>
+        <span class="pill">Digital Scent</span>
+      </div>
+      <div class="intro-note">Most of the work to date has been built independently. The next phase is less about generating ideas and more about the right introductions, commercialization, validation partners, manufacturing relationships and capital.</div>
+    </section>
+
+    <section class="wrap grid">
+      <article class="card" id="reelscheck">
+        <div class="cardhead">
+          <div><div class="tag">AI / MEDIA INTELLIGENCE</div><h2>ReelsCheck</h2></div>
+          <div class="stage">Built · engineering hardening</div>
+        </div>
+        <p class="lead">A pre-publication intelligence platform for creators, agencies, brands and media teams.</p>
+        <p>ReelsCheck is designed to assess video, image and related content before it is published, helping users understand potential platform-policy issues, publication risks, readiness gaps and practical improvements before those problems become public.</p>
+        <p>The product has already been built and has gone through substantial development and testing. It is currently in another engineering and hardening cycle, so the public application is intentionally not being shared while that work is underway. The goal is to bring it back online once the experience is stable enough to represent the product properly.</p>
+        <div class="split">
+          <div class="box">
+            <h3>Current focus</h3>
+            <ul><li>Runtime hardening and product reliability</li><li>Commercial launch preparation</li><li>Strategic early users and partner validation</li></ul>
+          </div>
+          <div class="box">
+            <h3>What could help next</h3>
+            <ul><li>Go-to-market introductions</li><li>Creator / agency exposure</li><li>Growth capital</li></ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" id="techvibe">
+        <div class="cardhead">
+          <div><div class="tag">CREATOR TECH / LIVE</div><h2>TechVibe</h2></div>
+          <div class="stage">Product direction established</div>
+        </div>
+        <p class="lead">A richer operating layer around the live creator experience.</p>
+        <p>TechVibe is focused on live creators: interaction, engagement, alerts, audience behaviour, analytics and the tools a creator needs to understand and manage what is happening around a live audience in real time.</p>
+        <p>The concept and product direction are already defined, but it is earlier than ReelsCheck. The next phase is about sharpening market validation, creator fit, launch positioning and the distribution path.</p>
+        <div class="split">
+          <div class="box">
+            <h3>Current focus</h3>
+            <ul><li>Creator workflow validation</li><li>Product and launch presentation</li><li>Market-facing positioning</li></ul>
+          </div>
+          <div class="box">
+            <h3>What could help next</h3>
+            <ul><li>Creator-economy partners</li><li>Platform / audience introductions</li><li>Strategic collaboration</li></ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" id="aquaguard">
+        <div class="cardhead">
+          <div><div class="tag">AQUATIC SAFETY / IOT</div><h2>AquaGuard</h2></div>
+          <div class="stage">Software foundation built · pre-prototype</div>
+        </div>
+        <p class="lead">A facility-scale aquatic safety platform built around earlier signals, swimmer context and faster staff response.</p>
+        <div class="facts">
+          <div class="fact"><strong>~300,000</strong><span>estimated drowning deaths worldwide each year</span></div>
+          <div class="fact"><strong>~24%</strong><span>of drowning deaths are among children under five</span></div>
+          <div class="fact"><strong>57%</strong><span>of drowning deaths are among people aged 0–29</span></div>
+        </div>
+        <p>The problem is not simply whether a pool has a lifeguard or a camera. There can still be a critical gap between something starting to go wrong in the water and the facility understanding what is happening, where the swimmer is and how staff should respond.</p>
+        <p>AquaGuard is being designed as an integrated wearable-and-facility system: combine multiple swimmer signals, add location and movement context, identify potentially dangerous patterns earlier, and route the right information to staff through a defined escalation workflow.</p>
+        <p>The facility side is intended to provide more than an alarm. The goal includes swimmer/location context, device health, escalation records, event history and an operational evidence trail.</p>
+        <p><strong>Market gap:</strong> based on the landscape reviewed so far, there are point solutions in drowning detection and pool safety, but we have not identified a like-for-like commercial system combining the full AquaGuard model — wearable multi-sensor intelligence, swimmer location, facility infrastructure, device-fleet monitoring, escalation workflows and auditable software — as one integrated operating layer.</p>
+        <p>The software foundation and operating logic already exist. The next major step is completing the integrated physical prototype, waterproof engineering and controlled pool validation, followed by a facility pilot.</p>
+        <div class="split">
+          <div class="box">
+            <h3>Current focus</h3>
+            <ul><li>Integrated prototype engineering</li><li>Waterproof and controlled-pool validation</li><li>Manufacturing path and pilot preparation</li></ul>
+          </div>
+          <div class="box">
+            <h3>What could help next</h3>
+            <ul><li>Funding</li><li>Hardware / manufacturing partners</li><li>Pilot facility and validation partners</li></ul>
+          </div>
+        </div>
+        <p class="source">Public-health figures: <a href="https://www.who.int/news-room/fact-sheets/detail/drowning" target="_blank" rel="noreferrer">World Health Organization — Drowning fact sheet</a>. AquaGuard is intended as a safety aid and does not replace lifeguards, supervision or emergency procedures.</p>
+      </article>
+
+      <article class="card" id="covat">
+        <div class="cardhead">
+          <div><div class="tag">ERP / FINANCE / OPERATIONS</div><h2>COVAT</h2></div>
+          <div class="stage">Working product · commercialization</div>
+        </div>
+        <p class="lead">A cloud financial operating system connecting day-to-day business activity to controlled accounting, tax and reporting.</p>
+        <p>COVAT brings together accounting, sales, purchasing, inventory, banking, reconciliation, reporting, tax, projects, assets, HR and wider operating workflows in one environment.</p>
+        <p>It is not a Gulf-only product. The core platform is intended to work internationally, with country-specific localization for tax, currency, documents and regulatory requirements rather than rebuilding the product for every market.</p>
+        <p>The core challenge now is commercialization: early customers, implementation and distribution partners, country expansion and the resources required to turn a working product into a scaled international SaaS business.</p>
+        <a class="cta" href="https://covat.vercel.app" target="_blank" rel="noreferrer">Open the COVAT demo ↗</a>
+        <div class="split">
+          <div class="box">
+            <h3>Current focus</h3>
+            <ul><li>Productionization and market readiness</li><li>Early-customer validation</li><li>International localization path</li></ul>
+          </div>
+          <div class="box">
+            <h3>What could help next</h3>
+            <ul><li>First customers</li><li>Implementation / distribution partners</li><li>Commercial scale capital</li></ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" id="cento">
+        <div class="cardhead">
+          <div><div class="tag">EMERGING INTERFACES / DIGITAL SCENT</div><h2>Cento</h2></div>
+          <div class="stage">Research · validation · partner stage</div>
+        </div>
+        <p class="lead">An exploration of the “playback layer” for digital scent.</p>
+        <p>The idea was triggered by research from Osmo. Their “Scent Teleportation” work has demonstrated a laboratory workflow in which a real-world smell can be sampled, analysed through GC-MS and AI-based odor mapping, then reconstructed through automated formulation.</p>
+        <p>That raised a practical product question: if images have screens and sound has speakers, what could the consumer and commercial playback layer for scent look like?</p>
+        <p>Cento explores that layer — a connected scent device and software platform able to receive a digital instruction and reproduce an appropriate scent as part of an experience. Potential use cases include perfume discovery, hospitality, retail, museums, training and immersive entertainment.</p>
+        <p>The goal is not to reproduce Osmo's laboratory research. It is to investigate the product, device and commercial interface that could sit downstream from advances in scent digitization.</p>
+        <div class="split">
+          <div class="box">
+            <h3>Current focus</h3>
+            <ul><li>Technical feasibility and use-case validation</li><li>Hardware concept</li><li>R&D partnership model</li></ul>
+          </div>
+          <div class="box">
+            <h3>What could help next</h3>
+            <ul><li>Scent-technology / R&D partner</li><li>Hardware development partner</li><li>Prototype funding</li></ul>
+          </div>
+        </div>
+        <p class="source">Research catalyst: <a href="https://www.osmo.ai/blog/update-scent-teleportation-we-did-it" target="_blank" rel="noreferrer">Osmo — How we invented scent teleportation</a>.</p>
+      </article>
+    </section>
+
+    <section class="wrap ask">
+      <div class="tag">THE COMMON NEXT STEP</div>
+      <h2>From building to distribution, validation and scale.</h2>
+      <p style="color:var(--muted);max-width:840px">I have not completed a conventional institutional VC round for these ventures. Most of the work so far has been driven independently while approaching selected companies, manufacturers, potential partners and investors directly. The gap I am trying to close now is getting strong products and validated concepts in front of the people who can help commercialize, finance or scale them.</p>
+      <div class="askgrid">
+        <div class="askitem">Strategic introductions and market access</div>
+        <div class="askitem">Commercial launch and distribution support</div>
+        <div class="askitem">Relevant investment and co-development capital</div>
+        <div class="askitem">Pilot, manufacturing and specialist partners</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap foot">
+      <span>Mustafa Barakat · Qatar · Remote / Global</span>
+      <span>External venture brief · Updated 3 October 2026</span>
+    </div>
+  </footer>
+</body>
+</html>
