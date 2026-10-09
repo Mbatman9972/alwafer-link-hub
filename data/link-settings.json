@@ -1,31 +1,31 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-19T12:18:23.980Z",
+  "updatedAt": "2026-10-09T02:33:49.662Z",
   "profiles": {
     "mustafa": {
-      "title": "Alwafer",
-      "subtitle": "Alwafer",
+      "title": "ALWAFER",
+      "subtitle": "Alwafer Agency",
       "tagline": "Empowering creators. Building influence. Elevating brands.\nتمكّن المبدعين، نبني التأثير، نرتقي بالعلامات التجارية.",
-      "profileImage": "/assets/alwefer-mark.svg",
+      "profileImage": "/assets/profiles/alwafer-profile.png",
       "links": {
         "apply": {
-          "enabled": true,
-          "url": "https://www.tiktok.com/t/ZS94Y5FgW/",
+          "enabled": false,
+          "url": "",
           "label": "Apply to Join the Agency"
         },
         "youtube": {
-          "enabled": true,
-          "url": "https://tr.ee/yPCI6KMgGl",
+          "enabled": false,
+          "url": "",
           "label": "YouTube"
         },
         "tiktok": {
-          "enabled": true,
-          "url": "https://www.tiktok.com/@alwaferr?is_from_webapp=1&sender_device=pc",
+          "enabled": false,
+          "url": "",
           "label": "TikTok"
         },
         "telegram": {
-          "enabled": true,
-          "url": "https://tr.ee/sQON9alEmk",
+          "enabled": false,
+          "url": "",
           "label": "Telegram"
         },
         "instagram": {
@@ -39,9 +39,9 @@
           "label": "WhatsApp"
         },
         "website": {
-          "enabled": true,
-          "url": "/portfolio/",
-          "label": "Alwafer Venture Portfolio / محفظة الوافر"
+          "enabled": false,
+          "url": "",
+          "label": "Website"
         }
       }
     },
