@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-17T04:43:39.767Z",
+  "updatedAt": "2026-11-17T04:43:44.083Z",
   "profiles": {
     "mustafa": {
       "title": "ALWAFER",
@@ -82,7 +82,7 @@
           "label": "WhatsApp"
         },
         "website": {
-          "enabled": true,
+          "enabled": false,
           "url": "https://promaesta.com/",
           "label": "Website"
         }
