@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-17T04:43:45.495Z",
+  "updatedAt": "2026-11-18T13:55:00.081Z",
   "profiles": {
     "mustafa": {
       "title": "ALWAFER",
@@ -62,13 +62,13 @@
           "label": "YouTube"
         },
         "tiktok": {
-          "enabled": true,
+          "enabled": false,
           "url": "https://tiktok.me/group/ZSCBDAR5x/",
           "label": "TikTok"
         },
         "telegram": {
           "enabled": true,
-          "url": "https://t.me/+MRy1gP9ebYsyOTdk",
+          "url": "https://t.me/+b62Ki38Z5NIzY2Q0",
           "label": "Telegram"
         },
         "instagram": {
@@ -77,7 +77,7 @@
           "label": "Instagram"
         },
         "whatsapp": {
-          "enabled": true,
+          "enabled": false,
           "url": "https://wa.me/message/QD55GJDHZ4NTC1",
           "label": "WhatsApp"
         },
